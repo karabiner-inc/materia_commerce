@@ -10,6 +10,8 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+alias MateriaUtils.Test.TsvParser
+
 alias Materia.Accounts
 alias Materia.Locations
 
@@ -37,3 +39,19 @@ Mails.create_mail_template(%{ mail_template_type: "user_registration_request", s
 Mails.create_mail_template(%{ mail_template_type: "user_registration_completed", subject: "【本登録完了しました】{!name}様 本登録完了のご案内", body: "{!name}様\nこの度は当サービスのご利用誠にありがとうございます。\n\n本登録が完了いたしました。\n\nIDの問い合わせ機能はない為、本メールを大切に保管してください。\n\n  ユーザーID: {!email}\n  パスワード: 登録時に入力いただいたパスワード\n 本サービスを末長くよろしくお願いいたします。\n\n サインイン: https://{!sign_in_url} \n\n------------------------------\nカラビナテクノロジー株式会社\n〒810-0001 \n福岡市中央区天神1-2-4 農業共済ビル2F\n------------------------------" })
 Mails.create_mail_template(%{ mail_template_type: "password_reset_request", subject: "【パスワード再登録申請】{!email}様 パスワード再登録のご案内", body: "{!email}様\n当サービスよりパスワード再登録の申請を受け付けました。\n\n下記URLのリンクをクリックし、30分以内にパスワード再登録をお願いいたします。\n\n 本サービスを末長くよろしくお願いいたします。\n\n https://{!password_reset_url}?param=!{password_reset_token} \n\n------------------------------\nカラビナテクノロジー株式会社\n〒810-0001 \n福岡市中央区天神1-2-4 農業共済ビル2F\n------------------------------" })
 Mails.create_mail_template(%{ mail_template_type: "password_reset_completed", subject: "【パスワード再登録完了】{!name}様 パスワード再登録完了のご案内", body: "{!name}様\n当サービスよりパスワードが再登録されました。\n\nユーザーID: {!email}\n  パスワード: 再登録時に入力いただいたパスワード\n\n 本サービスを末長くよろしくお願いいたします。\n\n サインイン: https://{!sign_in_url} \n\n------------------------------\nカラビナテクノロジー株式会社\n〒810-0001 \n福岡市中央区天神1-2-4 農業共済ビル2F\n------------------------------" })
+
+alias MateriaCommerce.Products
+
+items = "
+name	category1	category2	category3	category4	item_code	model_number	jan_code	thumbnail	image_url	size1	size2	size3	size4	weight1	weight2	weight3	weight4	delivery_area	manufacturer	status	color	description	start_datetime	end_datetime	tax_category
+炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	0	Blue	高級炊飯器	2018-11-01 09:00:00	2018-12-16 08:59:59	一般消費税
+炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	高級炊飯器	2018-12-17 09:00:00	2019-12-31 08:59:59	一般消費税
+炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	超高級炊飯器	2020-01-01 09:00:00	2999-12-31 08:59:59	一般消費税
+"
+jsons = TsvParser.parse_tsv_to_json(items, "name")
+
+    cars = jsons
+    |> Enum.map(fn(json) ->
+      {:ok, item} = json
+      |> Products.create_item()
+    end)

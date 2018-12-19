@@ -8,7 +8,7 @@ defmodule MateriaCommerce.Mixfile do
       elixir: "~> 1.6",
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
-      description: "This library is a summary of the functions that are generally required for Web service development.",
+      description: "This library is a summary of the functions that are generally required for E-Commerce service development.",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
@@ -58,8 +58,8 @@ defmodule MateriaCommerce.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:materia_utils, git: "git@github.com:karabiner-inc/materia_utils.git", override: true},
       {:materia, "~> 0.1.0"},
-      {:materia_utils, "~> 0.1.1"},
       {:ex_doc, ">= 0.0.0", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
     ]

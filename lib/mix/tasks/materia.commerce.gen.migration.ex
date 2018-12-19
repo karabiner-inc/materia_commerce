@@ -1,5 +1,5 @@
-defmodule Mix.Tasks.Materia.Gen.Migration do
-  @shortdoc "Generates Materia's migration files."
+defmodule Mix.Tasks.MateriaCommerce.Gen.Migration do
+  @shortdoc "Generates MateriaCommerce's migration files."
 
   use Mix.Task
 
@@ -29,7 +29,7 @@ defmodule Mix.Tasks.Materia.Gen.Migration do
     |> Enum.each(fn{file_name, index} ->
       {:ok, file} = File.read(migration_module_path <> "/" <> file_name)
       create_file(
-      Path.join([@migrations_file_path, "#{timestamp(index)}_materia_#{file_name}"])
+      Path.join([@migrations_file_path, "#{timestamp(index)}_materia_commerce_#{file_name}"])
         |> Path.relative_to(Mix.Project.app_path),
       file)
     end)
