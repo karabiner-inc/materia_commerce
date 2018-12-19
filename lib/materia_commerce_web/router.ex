@@ -38,6 +38,8 @@ defmodule MateriaCommerceWeb.Router do
     post "tmp-registration", UserController, :registration_tmp_user
     post "request-password-reset", UserController, :request_password_reset
 
+    resources "/items", ItemController, except: [:new, :edit]
+
   end
 
   scope "/api", MateriaWeb do
