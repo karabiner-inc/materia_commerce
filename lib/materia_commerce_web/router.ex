@@ -46,6 +46,7 @@ defmodule MateriaCommerceWeb.Router do
   scope "/api", MateriaCommerceWeb do
     resources "/items", ItemController, except: [:new, :edit]
     resources "/taxes", TaxController, except: [:new, :edit]
+    resources "/prices", PriceController, except: [:new, :edit]
   end
 
   scope "/api", MateriaWeb do

@@ -69,4 +69,70 @@ defmodule MateriaCommerce.ProductsTest do
       assert %Ecto.Changeset{} = Products.change_tax(tax)
     end
   end
+
+  describe "prices" do
+    alias MateriaCommerce.Products.Price
+
+    @valid_attrs %{description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", start_datetime: "2010-04-17 14:00:00.000000Z", unit_price: "120.5"}
+    @update_attrs %{description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", start_datetime: "2011-05-18 15:01:01.000000Z", unit_price: "456.7"}
+    @invalid_attrs %{description: nil, end_datetime: nil, start_datetime: nil, unit_price: nil}
+
+    def price_fixture(attrs \\ %{}) do
+      {:ok, price} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Products.create_price()
+
+      price
+    end
+
+    test "list_prices/0 returns all prices" do
+      price = price_fixture()
+      assert Products.list_prices() == [price]
+    end
+
+    test "get_price!/1 returns the price with given id" do
+      price = price_fixture()
+      assert Products.get_price!(price.id) == price
+    end
+
+    test "create_price/1 with valid data creates a price" do
+      assert {:ok, %Price{} = price} = Products.create_price(@valid_attrs)
+      assert price.description == "some description"
+      assert price.end_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert price.start_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert price.unit_price == Decimal.new("120.5")
+    end
+
+    test "create_price/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Products.create_price(@invalid_attrs)
+    end
+
+    test "update_price/2 with valid data updates the price" do
+      price = price_fixture()
+      assert {:ok, price} = Products.update_price(price, @update_attrs)
+      assert %Price{} = price
+      assert price.description == "some updated description"
+      assert price.end_datetime == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert price.start_datetime == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert price.unit_price == Decimal.new("456.7")
+    end
+
+    test "update_price/2 with invalid data returns error changeset" do
+      price = price_fixture()
+      assert {:error, %Ecto.Changeset{}} = Products.update_price(price, @invalid_attrs)
+      assert price == Products.get_price!(price.id)
+    end
+
+    test "delete_price/1 deletes the price" do
+      price = price_fixture()
+      assert {:ok, %Price{}} = Products.delete_price(price)
+      assert_raise Ecto.NoResultsError, fn -> Products.get_price!(price.id) end
+    end
+
+    test "change_price/1 returns a price changeset" do
+      price = price_fixture()
+      assert %Ecto.Changeset{} = Products.change_price(price)
+    end
+  end
 end
