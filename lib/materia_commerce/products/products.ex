@@ -337,4 +337,100 @@ defmodule MateriaCommerce.Products do
   def change_tax(%Tax{} = tax) do
     Tax.changeset(tax, %{})
   end
+
+  alias MateriaCommerce.Products.Price
+
+  @doc """
+  Returns the list of prices.
+
+  ## Examples
+
+      iex> list_prices()
+      [%Price{}, ...]
+
+  """
+  def list_prices do
+    @repo.all(Price)
+  end
+
+  @doc """
+  Gets a single price.
+
+  Raises `Ecto.NoResultsError` if the Price does not exist.
+
+  ## Examples
+
+      iex> get_price!(123)
+      %Price{}
+
+      iex> get_price!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_price!(id), do: @repo.get!(Price, id)
+
+  @doc """
+  Creates a price.
+
+  ## Examples
+
+      iex> create_price(%{field: value})
+      {:ok, %Price{}}
+
+      iex> create_price(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_price(attrs \\ %{}) do
+    %Price{}
+    |> Price.changeset(attrs)
+    |> @repo.insert()
+  end
+
+  @doc """
+  Updates a price.
+
+  ## Examples
+
+      iex> update_price(price, %{field: new_value})
+      {:ok, %Price{}}
+
+      iex> update_price(price, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_price(%Price{} = price, attrs) do
+    price
+    |> Price.update_changeset(attrs)
+    |> @repo.update()
+  end
+
+  @doc """
+  Deletes a Price.
+
+  ## Examples
+
+      iex> delete_price(price)
+      {:ok, %Price{}}
+
+      iex> delete_price(price)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_price(%Price{} = price) do
+    @repo.delete(price)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking price changes.
+
+  ## Examples
+
+      iex> change_price(price)
+      %Ecto.Changeset{source: %Price{}}
+
+  """
+  def change_price(%Price{} = price) do
+    Price.changeset(price, %{})
+  end
 end
