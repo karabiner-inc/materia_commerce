@@ -2,6 +2,7 @@
 
 [![hex.pm](https://img.shields.io/apm/l/materia_commerce.svg)](https://github.com/karabiner-inc/materia_commerce)
 [![Coverage Status](https://coveralls.io/repos/github/karabiner-inc/materia_commerce/badge.svg?branch=master)](https://coveralls.io/github/karabiner-inc/materia_commerce?branch=master)
+[![Build Status](https://travis-ci.org/karabiner-inc/materia_commerce.svg?branch=master)](https://travis-ci.org/karabiner-inc/materia_commerce)
 
 To start your Phoenix server:
 
