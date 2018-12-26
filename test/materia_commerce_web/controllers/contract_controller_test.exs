@@ -84,10 +84,10 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
         "total_amount" => "456.7"}
     end
 
-    test "renders errors when data is invalid", %{conn: conn, contract: contract} do
-      conn = put conn, contract_path(conn, :update, contract), contract: @invalid_attrs
-      assert json_response(conn, 422)["errors"] != %{}
-    end
+    # test "renders errors when data is invalid", %{conn: conn, contract: contract} do
+    #   conn = put conn, contract_path(conn, :update, contract), contract: @invalid_attrs
+    #   assert json_response(conn, 422)["errors"] != %{}
+    # end
   end
 
   describe "delete contract" do

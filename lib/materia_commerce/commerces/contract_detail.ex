@@ -40,15 +40,15 @@ defmodule MateriaCommerce.Commerces.ContractDetail do
   @doc false
   def changeset(contract_detail, attrs) do
     contract_detail
-    |> cast(attrs, [:contract_name, :amount, :price, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :lock_version])
-    |> validate_required([:contract_name, :amount, :price, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :lock_version])
+    |> cast(attrs, [:contract_name, :amount, :price, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :item_id, :contract_id, :lock_version])
+    |> validate_required([:contract_id])
   end
 
   @doc false
   def update_changeset(contract_detail, attrs) do
     contract_detail
-    |> cast(attrs, [:contract_name, :amount, :price, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :lock_version])
-    |> validate_required([:contract_name, :amount, :price, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :lock_version])
+    |> cast(attrs, [:contract_name, :amount, :price, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :item_id, :contract_id, :lock_version])
+    |> validate_required([:lock_version])
     |> optimistic_lock(:lock_version)
   end
 end

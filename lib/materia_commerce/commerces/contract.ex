@@ -28,14 +28,14 @@ defmodule MateriaCommerce.Commerces.Contract do
   def changeset(contract, attrs) do
     contract
     |> cast(attrs, [:contract_no, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :lock_version])
-    |> validate_required([:contract_no, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :lock_version])
+    |> validate_required([:contract_no])
   end
 
   @doc false
   def update_changeset(contract, attrs) do
     contract
     |> cast(attrs, [:contract_no, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :lock_version])
-    |> validate_required([:contract_no, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :lock_version])
+    |> validate_required([:lock_version])
     |> optimistic_lock(:lock_version)
   end
 end
