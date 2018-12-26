@@ -58,7 +58,7 @@ defmodule MateriaCommerce.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:materia_utils, git: "git@github.com:karabiner-inc/materia_utils.git", override: true},
+      {:materia_utils, git: "https://github.com/karabiner-inc/materia_utils.git", override: true},
       {:materia, "~> 0.1.0"},
       {:ex_doc, ">= 0.0.0", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
