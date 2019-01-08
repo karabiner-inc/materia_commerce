@@ -1,7 +1,7 @@
 defmodule MateriaCommerceWeb.ItemController do
   use MateriaCommerceWeb, :controller
 
-  alias MateriaCommerce.Product
+  alias MateriaCommerce.Products
   alias MateriaCommerce.Products.Item
 
   action_fallback MateriaCommerceWeb.FallbackController
