@@ -1,6 +1,6 @@
 # materia_commerce Commerce
 
-[![hex.pm](https://img.shields.io/apm/l/materia_commerce.svg)](https://github.com/karabiner-inc/materia_commerce)
+[![hex.pm](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/karabiner-inc/materia_commerce/blob/master/LICENSE)
 [![Coverage Status](https://coveralls.io/repos/github/karabiner-inc/materia_commerce/badge.svg?branch=master)](https://coveralls.io/github/karabiner-inc/materia_commerce?branch=master)
 [![Build Status](https://travis-ci.org/karabiner-inc/materia_commerce.svg?branch=master)](https://travis-ci.org/karabiner-inc/materia_commerce)
 
