@@ -55,3 +55,32 @@ jsons = TsvParser.parse_tsv_to_json(items, "name")
       {:ok, item} = json
       |> Products.create_item()
     end)
+
+
+alias MateriaCommerce.Products.Tax
+taxes = [
+  %{
+    name: "test1 tax", 
+    start_datetime: "2018-11-01 09:00:00",
+    end_datetime: "2018-12-01 09:00:00",
+    tax_category: "category1",
+    tax_rate: 0.5,
+  },
+  %{
+    name: "test2 tax", 
+    start_datetime: "2018-12-01 09:00:00",
+    end_datetime: "2019-01-01 09:00:00",
+    tax_category: "category1",
+    tax_rate: 0.5,
+  },
+  %{
+    name: "test3 tax", 
+    start_datetime: "2019-01-01 09:00:00",
+    end_datetime: "2019-02-01 09:00:00",
+    tax_category: "category1",
+    tax_rate: 0.5,
+  },
+]
+
+taxes
+|> Enum.map(fn(tax) -> Products.create_tax(tax) end)

@@ -274,6 +274,62 @@ defmodule MateriaCommerce.Products do
   def get_tax!(id), do: @repo.get!(Tax, id)
 
   @doc """
+  主キーを想定したパラメータで現在のTax情報を取得する
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> current_tax = MateriaCommerce.Products.get_current_tax_history(base_datetime, [{:tax_category, "category1"}])
+  iex(3)> current_tax.name
+  "test2 tax"
+  """
+  def get_current_tax_history(base_datetime, key_word_list) do
+    taxes = MateriaUtils.Ecto.EctoUtil.list_current_history(
+      @repo,
+      MateriaCommerce.Products.Tax,
+      base_datetime,
+      key_word_list
+    )
+    tax =
+    if taxes == [] do
+      nil
+    else
+      [tax] = taxes
+      tax
+    end
+  end
+
+  @doc false
+  def delete_future_tax_histories(base_datetime, key_word_list) do
+    MateriaUtils.Ecto.EctoUtil.delete_future_histories(
+      @repo,
+      MateriaCommerce.Products.Tax,
+      base_datetime,
+      key_word_list
+    )
+  end
+
+  @doc """
+  現在以前の直近のtax情報を取得する
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+  iex(3)> current_tax.name
+  "test1 tax"
+  """
+  def get_recent_tax_history(base_datetime, key_word_list) do
+    taxes = MateriaUtils.Ecto.EctoUtil.list_recent_history(
+      @repo,
+      MateriaCommerce.Products.Tax,
+      base_datetime,
+      key_word_list
+    )
+    if taxes == [] do
+      nil
+    else
+      [tax] = taxes
+      tax
+    end
+  end
+  
+  @doc """
   Creates a tax.
 
   ## Examples

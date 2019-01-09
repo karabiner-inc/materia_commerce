@@ -20,7 +20,7 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
   describe "index" do
     test "lists all taxes", %{conn: conn} do
       conn = get conn, tax_path(conn, :index)
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200)["data"] != []
     end
   end
 

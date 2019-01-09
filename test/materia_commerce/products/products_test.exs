@@ -20,12 +20,32 @@ defmodule MateriaCommerce.ProductsTest do
 
     test "list_taxes/0 returns all taxes" do
       tax = tax_fixture()
-      assert Products.list_taxes() == [tax]
+      assert Products.list_taxes() |> Enum.any?(fn(x) -> x == tax end)
     end
 
     test "get_tax!/1 returns the tax with given id" do
       tax = tax_fixture()
       assert Products.get_tax!(tax.id) == tax
+    end
+
+    test "get_current_tax_history/2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      current_tax = MateriaCommerce.Products.get_current_tax_history(base_datetime, [{:tax_category, "category1"}])
+      assert current_tax.name == "test2 tax"
+    end
+
+    # test "get_recent_tax_history/2" do
+    #   {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
+    #   current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+    #   assert current_tax.name == "test1 tax"
+    # end
+
+    test "delete_future_tax_histories/2 delete test3 tax" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      {result, _} = MateriaCommerce.Products.delete_future_tax_histories(base_datetime, [{:tax_category, "category1"}])
+      taxes = Products.list_taxes()
+      assert result == 1
+      assert !Enum.any?(taxes, fn(tax)-> tax.name == "test3 tax" end)
     end
 
     test "create_tax/1 with valid data creates a tax" do
