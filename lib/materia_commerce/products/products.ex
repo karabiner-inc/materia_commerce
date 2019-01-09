@@ -425,6 +425,62 @@ defmodule MateriaCommerce.Products do
   """
   def get_price!(id), do: @repo.get!(Price, id)
 
+
+  @doc """
+  主キーを想定したパラメータで現在のPrice情報を取得する
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> current_price = MateriaCommerce.Products.get_current_price_history(base_datetime, [{:item_id, 1}])
+  iex(3)> current_price.unit_price
+  Decimal.new(200)
+  """
+  def get_current_price_history(base_datetime, key_word_list) do
+    prices = MateriaUtils.Ecto.EctoUtil.list_current_history(
+      @repo,
+      MateriaCommerce.Products.Price,
+      base_datetime,
+      key_word_list
+    )
+    if prices == [] do
+      nil
+    else
+      [price] = prices
+      price
+    end
+  end
+
+  @doc false
+  def delete_future_price_histories(base_datetime, key_word_list) do
+    MateriaUtils.Ecto.EctoUtil.delete_future_histories(
+      @repo,
+      MateriaCommerce.Products.Price,
+      base_datetime,
+      key_word_list
+    )
+  end
+
+  @doc """
+  現在以前の直近のPrice情報を取得する
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+  iex(3)> current_price.unit_price
+  Decimal.new(100)
+  """
+  def get_recent_price_history(base_datetime, key_word_list) do
+    prices = MateriaUtils.Ecto.EctoUtil.list_recent_history(
+      @repo,
+      MateriaCommerce.Products.Price,
+      base_datetime,
+      key_word_list
+    )
+    if prices == [] do
+      nil
+    else
+      [price] = prices
+      price
+    end
+  end
+
   @doc """
   Creates a price.
 

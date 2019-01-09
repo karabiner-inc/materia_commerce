@@ -84,3 +84,31 @@ taxes = [
 
 taxes
 |> Enum.map(fn(tax) -> Products.create_tax(tax) end)
+
+alias MateriaCommerce.Products.Price
+prices = [
+  %{
+    description: "test1 price", 
+    start_datetime: "2018-11-01 09:00:00",
+    end_datetime: "2018-12-01 09:00:00",
+    item_id: 1,
+    unit_price: 100,
+  },
+  %{
+    description: "test2 price", 
+    start_datetime: "2018-12-01 09:00:00",
+    end_datetime: "2019-01-01 09:00:00",
+    item_id: 1,
+    unit_price: 200,
+  },
+  %{
+    description: "test3 price", 
+    start_datetime: "2019-01-01 09:00:00",
+    end_datetime: "2019-02-01 09:00:00",
+    item_id: 1,
+    unit_price: 300,
+  },
+]
+
+prices
+|> Enum.map(fn(price) -> Products.create_price(price) end)
