@@ -108,12 +108,32 @@ defmodule MateriaCommerce.ProductsTest do
 
     test "list_prices/0 returns all prices" do
       price = price_fixture()
-      assert Products.list_prices() == [price]
+      assert Products.list_prices() |> Enum.count() > 0
     end
 
     test "get_price!/1 returns the price with given id" do
       price = price_fixture()
       assert Products.get_price!(price.id) == price
+    end
+
+    test "get_current_price_history/2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      current_price = MateriaCommerce.Products.get_current_price_history(base_datetime, [])
+      assert current_price.unit_price == Decimal.new(200)
+    end
+
+    # test "get_recent_tax_history/2" do
+    #   {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
+    #   current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+    #   assert current_tax.name == "test1 tax"
+    # end
+
+    test "delete_future_price_histories/2 delete test3 price" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      {result, _} = MateriaCommerce.Products.delete_future_price_histories(base_datetime, [])
+      prices = Products.list_prices()
+      assert result == 1
+      assert !Enum.any?(prices, fn(price)-> price.unit_price == 300 end)
     end
 
     test "create_price/1 with valid data creates a price" do

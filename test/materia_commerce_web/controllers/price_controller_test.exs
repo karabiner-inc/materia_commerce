@@ -20,7 +20,7 @@ defmodule MateriaCommerceWeb.PriceControllerTest do
   describe "index" do
     test "lists all prices", %{conn: conn} do
       conn = get conn, price_path(conn, :index)
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200)["data"] != []
     end
   end
 
