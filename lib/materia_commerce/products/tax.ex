@@ -26,6 +26,5 @@ defmodule MateriaCommerce.Products.Tax do
     tax
     |> cast(attrs, [:name, :tax_category, :tax_rate, :start_datetime, :end_datetime, :lock_version])
     |> validate_required([:name, :tax_category, :tax_rate, :start_datetime, :end_datetime, :lock_version])
-    |> optimistic_lock(:lock_version)
   end
 end

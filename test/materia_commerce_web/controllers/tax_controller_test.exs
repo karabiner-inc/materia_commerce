@@ -57,7 +57,7 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "end_datetime" => "2011-05-18T15:01:01.000000Z",
-        "lock_version" => 1,
+        "lock_version" => 0,
         "name" => "some updated name",
         "start_datetime" => "2011-05-18T15:01:01.000000Z",
         "tax_category" => "some updated tax_category",

@@ -34,11 +34,11 @@ defmodule MateriaCommerce.ProductsTest do
       assert current_tax.name == "test2 tax"
     end
 
-    # test "get_recent_tax_history/2" do
-    #   {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
-    #   current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
-    #   assert current_tax.name == "test1 tax"
-    # end
+    test "get_recent_tax_history/2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
+      current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+      assert current_tax.name == "test3 tax"
+    end
 
     test "delete_future_tax_histories/2 delete test3 tax" do
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
@@ -55,6 +55,42 @@ defmodule MateriaCommerce.ProductsTest do
       assert tax.start_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
       assert tax.tax_category == "some tax_category"
       assert tax.tax_rate == Decimal.new("120.5")
+    end
+
+    test "create_new_tax_history/4 error parameters have not lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      attr =  %{
+        "name"=> "test1 tax", 
+        "tax_category"=> "category1",
+        "tax_rate"=> 0.3,
+      }
+      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr) end)
+    end
+
+    test "create_new_tax_history/4 error different lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      attr =  %{
+        "name"=> "test1 tax", 
+        "tax_category"=> "category1",
+        "lock_version" => 99,
+        "tax_rate"=> 0.3,
+      }
+      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr) end)
+    end
+
+    test "create_new_tax_history/4 create twice new data" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      attr =  %{
+        "name"=> "test1 tax", 
+        "lock_version"=> 0,
+        "tax_category"=> "category1",
+        "tax_rate"=> 0.3,
+      }
+      Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      [tax|_] = Products.list_taxes()
+      IO.inspect tax
+      assert tax.start_datetime == DateTime.from_naive!(~N[2018-11-17 09:00:00.000000Z], "Etc/UTC")
+      assert tax.tax_rate == Decimal.new(0.3)
     end
 
     test "create_tax/1 with invalid data returns error changeset" do
@@ -122,10 +158,10 @@ defmodule MateriaCommerce.ProductsTest do
       assert current_price.unit_price == Decimal.new(200)
     end
 
-    # test "get_recent_tax_history/2" do
+    # test "get_recent_price_history/2" do
     #   {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
-    #   current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
-    #   assert current_tax.name == "test1 tax"
+    #   current_tax = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:tax_category, "category1"}])
+    #   assert current_tax.name == "test3 price"
     # end
 
     test "delete_future_price_histories/2 delete test3 price" do

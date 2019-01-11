@@ -328,6 +328,90 @@ defmodule MateriaCommerce.Products do
       tax
     end
   end
+
+  @doc """
+  新規のtax情報履歴を登録する
+  start_datetimeに指定した以降の先日付の登録データがある場合、削除して登録する。
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> attr = %{"name" => "test1 tax", "tax_category" => "category1", tax_rate => 0.3}
+  iex(3)> {:ok, tax} = MateriaCommerce.Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+  iex(4)> tax.start_datetime
+  #DateTime<2018-12-17 09:00:00Z>
+  iex(5)> tax.end_datetime
+  #DateTime<9999-12-31 23:59:59Z>
+  iex(6)> {:ok, next_start_date} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
+  iex(7)> attr = %{"name" => "test1 tax", "tax_category" => "category1", tax_rate => 0.3, "lock_version" => 0}
+  iex(8)> {:ok, tax} = MateriaCommerce.Products.create_new_tax_history(%{}, next_start_date, [{:tax_category, "category1"}], attr)
+  iex(9)> MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+  nil
+  iex(10)> tax = MateriaCommerce.Products.get_current_tax_history(base_datetime, [{:tax_category, "category1"}])
+  iex(11)> tax.start_datetime
+  #DateTime<2018-12-17 09:00:00.000000Z>
+  iex(12)> tax.end_datetime
+  #DateTime<2019-12-17 08:59:59.000000Z>
+  iex(13)> tax = MateriaCommerce.Products.get_current_tax_history(next_start_date, [{:tax_category, "category1"}])
+  iex(14)> tax.start_datetime
+  #DateTime<2019-12-17 09:00:00.000000Z>
+  iex(15)> tax.end_datetime
+  #DateTime<9999-12-31 23:59:59.000000Z>
+  iex(16)> tax = MateriaCommerce.Products.get_recent_tax_history(next_start_date, [{:tax_category, "category1"}])
+  iex(17)> tax.start_datetime
+  #DateTime<2018-12-17 09:00:00Z>
+  iex(18)> tax.end_datetime
+  #DateTime<2019-12-17 08:59:59Z>
+  """
+  def create_new_tax_history(%{}, start_datetime, key_word_list, attr) do
+
+    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("9999-12-31 23:59:59Z")
+ 
+     recent_tax = get_recent_tax_history(start_datetime, key_word_list)
+
+     #未来日付のデータがある場合削除する
+     {i, _reason} = delete_future_tax_histories(start_datetime, key_word_list)
+     tax =
+     if recent_tax == nil do
+       # 新規登録
+       attr = attr
+       |> Map.put("start_datetime", start_datetime)
+       |> Map.put("end_datetime", end_datetime)
+       attr =
+       #if Map.has_key?(attr, "end_datetime") do
+       #  attr
+       #else
+       #   Map.put(attr, "end_datetime", end_datetime)
+       #end
+       {:ok, tax} = create_tax(attr)
+     else
+       # 2回目以降のヒストリー登録の場合
+       # 楽観排他チェック
+       _ = cond do
+        !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
+        attr["lock_version"] != recent_tax.lock_version -> raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+        true -> :ok
+       end
+ 
+       attr = Map.keys(attr)
+       |> Enum.reduce(recent_tax, fn(key, acc) ->
+         acc = acc
+         |> Map.put(String.to_atom(key), attr[key])
+       end)
+ 
+       attr = attr
+       |> Map.put(:lock_version, recent_tax.lock_version + 1)
+       |> Map.put(:start_datetime, start_datetime)
+       |> Map.put(:end_datetime, end_datetime)
+       #if !Map.has_key?(attr, :end_datetime) do
+       #  attr = Map.put(attr, :end_datetime, end_datetime)
+       #end
+       {:ok, tax} = create_tax(attr)
+       # 直近の履歴のend_datetimeを更新する
+       recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
+       struct_tax = struct(Tax, recent_tax)
+       update_tax(struct_tax, %{end_datetime: recent_end_datetime})
+     end
+ 
+   end
   
   @doc """
   Creates a tax.
