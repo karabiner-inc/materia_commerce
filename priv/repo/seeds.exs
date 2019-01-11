@@ -60,25 +60,32 @@ jsons = TsvParser.parse_tsv_to_json(items, "name")
 alias MateriaCommerce.Products.Tax
 taxes = [
   %{
-    name: "test1 tax", 
+    name: "test1 tax",
     start_datetime: "2018-11-01 09:00:00",
-    end_datetime: "2018-12-01 09:00:00",
+    end_datetime: "2018-12-01 08:59:59",
     tax_category: "category1",
     tax_rate: 0.5,
   },
   %{
-    name: "test2 tax", 
+    name: "test2 tax",
     start_datetime: "2018-12-01 09:00:00",
-    end_datetime: "2019-01-01 09:00:00",
+    end_datetime: "2019-01-01 08:59:59",
     tax_category: "category1",
     tax_rate: 0.5,
   },
   %{
-    name: "test3 tax", 
+    name: "test3 tax",
     start_datetime: "2019-01-01 09:00:00",
-    end_datetime: "2019-02-01 09:00:00",
+    end_datetime: "2019-02-01 08:59:59",
     tax_category: "category1",
     tax_rate: 0.5,
+  },
+  %{
+    name: "tax category2",
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "9999-12-31 23:59:59",
+    tax_category: "category2",
+    tax_rate: 1,
   },
 ]
 
@@ -90,23 +97,30 @@ prices = [
   %{
     description: "test1 price", 
     start_datetime: "2018-11-01 09:00:00",
-    end_datetime: "2018-12-01 09:00:00",
+    end_datetime: "2018-12-01 08:59:59",
     item_id: 1,
     unit_price: 100,
   },
   %{
     description: "test2 price", 
     start_datetime: "2018-12-01 09:00:00",
-    end_datetime: "2019-01-01 09:00:00",
+    end_datetime: "2019-01-01 08:59:59",
     item_id: 1,
     unit_price: 200,
   },
   %{
     description: "test3 price", 
     start_datetime: "2019-01-01 09:00:00",
-    end_datetime: "2019-02-01 09:00:00",
+    end_datetime: "2019-02-01 08:59:59",
     item_id: 1,
     unit_price: 300,
+  },
+  %{
+    description: "price item_id2",
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "9999-12-31 23:59:59",
+    item_id: 2,
+    unit_price: 1000,
   },
 ]
 
