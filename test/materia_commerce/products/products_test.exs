@@ -88,6 +88,64 @@ defmodule MateriaCommerce.ProductsTest do
       assert tax.tax_rate == Decimal.new("120.5")
     end
 
+    test "create_new_tax_history/4 error parameters have not lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      attr =  %{
+        "name"=> "test1 tax", 
+        "tax_category"=> "category1",
+        "tax_rate"=> 0.3,
+      }
+      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr) end)
+    end
+
+    test "create_new_tax_history/4 error different lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      attr =  %{
+        "name"=> "test1 tax", 
+        "tax_category"=> "category1",
+        "lock_version" => 99,
+        "tax_rate"=> 0.3,
+      }
+      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr) end)
+    end
+
+    test "create_new_tax_history/4 create data" do
+      # 登録されているデータを全消しして作る処理をテスト
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2017-11-17 09:00:00Z")
+      attr =  %{
+        "name"=> "test1 tax", 
+        "lock_version"=> 0,
+        "tax_category"=> "category1",
+        "tax_rate"=> 0.3,
+      }
+      {:ok, create_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      taxes = Products.list_taxes() |> Enum.filter(fn(x) -> x.tax_category == "category1" end)
+      tax = taxes |> Enum.filter(fn(x) -> x.id == create_tax.id end) |> Enum.at(0)
+      assert tax.id == create_tax.id
+      assert tax.name == "test1 tax"
+      assert tax.start_datetime == DateTime.from_naive!(~N[2017-11-17 09:00:00.000000Z], "Etc/UTC")
+      assert tax.tax_rate == Decimal.new(0.3)
+      assert Enum.count(taxes) == 1
+    end
+
+    test "create_new_tax_history/4 update data" do
+      # すでに登録されているデータを更新
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
+      attr =  %{
+        "name"=> "test1 tax update", 
+        "lock_version"=> 0,
+        "tax_category"=> "category1",
+        "tax_rate"=> 0.4,
+      }
+      {:ok, update_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      taxes = Products.list_taxes() |> Enum.filter(fn(x) -> x.tax_category == "category1" end)
+      tax = taxes |> Enum.filter(fn(x) -> x.id == update_tax.id end) |>  Enum.at(0)
+      assert tax.id == update_tax.id
+      assert tax.name == "test1 tax update"
+      assert tax.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+      assert tax.tax_rate == Decimal.new(0.4)
+    end
+
     test "create_tax/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Products.create_tax(@invalid_attrs)
     end
