@@ -78,19 +78,37 @@ defmodule MateriaCommerce.ProductsTest do
       assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr) end)
     end
 
-    test "create_new_tax_history/4 create twice new data" do
-      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+    test "create_new_tax_history/4 create data" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2017-11-17 09:00:00Z")
       attr =  %{
         "name"=> "test1 tax", 
         "lock_version"=> 0,
         "tax_category"=> "category1",
         "tax_rate"=> 0.3,
       }
-      Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
-      [tax|_] = Products.list_taxes()
-      IO.inspect tax
-      assert tax.start_datetime == DateTime.from_naive!(~N[2018-11-17 09:00:00.000000Z], "Etc/UTC")
+      {:ok, _} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      taxes = Products.list_taxes()
+      tax = taxes |> Enum.at(0)
+      assert tax.name == "test1 tax"
+      assert tax.start_datetime == DateTime.from_naive!(~N[2017-11-17 09:00:00.000000Z], "Etc/UTC")
       assert tax.tax_rate == Decimal.new(0.3)
+      assert Enum.count(taxes) == 1 # 全て消して作成するのでデータは一つになる
+    end
+
+    test "create_new_tax_history/4 update data" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-18 09:00:00Z")
+      attr =  %{
+        "name"=> "test1 tax update", 
+        "lock_version"=> 0,
+        "tax_category"=> "category1",
+        "tax_rate"=> 0.4,
+      }
+      {:ok, update_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      taxes = Products.list_taxes()
+      tax = taxes |> Enum.at(0)
+      assert tax.name == "test1 tax update"
+      assert tax.start_datetime == DateTime.from_naive!(~N[2018-11-18 09:00:00.000000Z], "Etc/UTC")
+      assert tax.tax_rate == Decimal.new(0.4)
     end
 
     test "create_tax/1 with invalid data returns error changeset" do
