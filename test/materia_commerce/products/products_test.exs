@@ -35,7 +35,38 @@ defmodule MateriaCommerce.ProductsTest do
     end
 
     test "get_recent_tax_history/2" do
-      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
+      # NoResult
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
+      current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+      assert current_tax == nil
+
+      # BoundaryValueMin
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
+      current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+      assert current_tax.name == "test1 tax"
+
+      # BoundaryValueMax
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:00Z")
+      current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+      assert current_tax.name == "test1 tax"
+
+      # BoundaryValueMin
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
+      current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+      assert current_tax.name == "test2 tax"
+
+      # BoundaryValueMax
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
+      current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+      assert current_tax.name == "test2 tax"
+
+      # BoundaryValueMin
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:01Z")
+      current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
+      assert current_tax.name == "test3 tax"
+
+      # LatestEndDateTimeOver
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-02-01 09:00:00Z")
       current_tax = MateriaCommerce.Products.get_recent_tax_history(base_datetime, [{:tax_category, "category1"}])
       assert current_tax.name == "test3 tax"
     end
@@ -79,6 +110,7 @@ defmodule MateriaCommerce.ProductsTest do
     end
 
     test "create_new_tax_history/4 create data" do
+      # 登録されているデータを全消しして作る処理をテスト
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2017-11-17 09:00:00Z")
       attr =  %{
         "name"=> "test1 tax", 
@@ -86,17 +118,19 @@ defmodule MateriaCommerce.ProductsTest do
         "tax_category"=> "category1",
         "tax_rate"=> 0.3,
       }
-      {:ok, _} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
-      taxes = Products.list_taxes()
-      tax = taxes |> Enum.at(0)
+      {:ok, create_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      taxes = Products.list_taxes() |> Enum.filter(fn(x) -> x.tax_category == "category1" end)
+      tax = taxes |> Enum.filter(fn(x) -> x.id == create_tax.id end) |> Enum.at(0)
+      assert tax.id == create_tax.id
       assert tax.name == "test1 tax"
       assert tax.start_datetime == DateTime.from_naive!(~N[2017-11-17 09:00:00.000000Z], "Etc/UTC")
       assert tax.tax_rate == Decimal.new(0.3)
-      assert Enum.count(taxes) == 1 # 全て消して作成するのでデータは一つになる
+      assert Enum.count(taxes) == 1
     end
 
     test "create_new_tax_history/4 update data" do
-      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-18 09:00:00Z")
+      # すでに登録されているデータを更新
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
       attr =  %{
         "name"=> "test1 tax update", 
         "lock_version"=> 0,
@@ -104,10 +138,12 @@ defmodule MateriaCommerce.ProductsTest do
         "tax_rate"=> 0.4,
       }
       {:ok, update_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      IO.inspect(update_tax)
       taxes = Products.list_taxes()
-      tax = taxes |> Enum.at(0)
+      tax = taxes |> Enum.filter(fn(x) -> x.id == update_tax.id end) |>  Enum.at(0)
+      assert tax.id == update_tax.id
       assert tax.name == "test1 tax update"
-      assert tax.start_datetime == DateTime.from_naive!(~N[2018-11-18 09:00:00.000000Z], "Etc/UTC")
+      assert tax.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
       assert tax.tax_rate == Decimal.new(0.4)
     end
 
@@ -172,15 +208,46 @@ defmodule MateriaCommerce.ProductsTest do
 
     test "get_current_price_history/2" do
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
-      current_price = MateriaCommerce.Products.get_current_price_history(base_datetime, [])
+      current_price = MateriaCommerce.Products.get_current_price_history(base_datetime, [{:item_id, 1}])
       assert current_price.unit_price == Decimal.new(200)
     end
 
-    # test "get_recent_price_history/2" do
-    #   {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
-    #   current_tax = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:tax_category, "category1"}])
-    #   assert current_tax.name == "test3 price"
-    # end
+    test "get_recent_price_history/2" do
+      # NoResult
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      assert current_price == nil
+
+      # BoundaryValueMin
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      assert current_price.unit_price == Decimal.new(100)
+
+      # BoundaryValueMax
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:00Z")
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      assert current_price.unit_price == Decimal.new(100)
+
+      # BoundaryValueMin
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      assert current_price.unit_price == Decimal.new(200)
+
+      # BoundaryValueMax
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      assert current_price.unit_price == Decimal.new(200)
+
+      # BoundaryValueMin
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:01Z")
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      assert current_price.unit_price == Decimal.new(300)
+
+      # LatestEndDateTimeOver
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-02-01 09:00:01Z")
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      assert current_price.unit_price == Decimal.new(300)
+    end
 
     test "delete_future_price_histories/2 delete test3 price" do
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
