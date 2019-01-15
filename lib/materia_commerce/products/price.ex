@@ -17,14 +17,14 @@ defmodule MateriaCommerce.Products.Price do
   @doc false
   def changeset(price, attrs) do
     price
-    |> cast(attrs, [:description, :unit_price, :start_datetime, :end_datetime, :lock_version])
+    |> cast(attrs, [:description, :unit_price, :start_datetime, :end_datetime, :lock_version, :item_id])
     |> validate_required([:description, :unit_price, :start_datetime, :end_datetime, :lock_version])
   end
 
   @doc false
   def update_changeset(price, attrs) do
     price
-    |> cast(attrs, [:description, :unit_price, :start_datetime, :end_datetime, :lock_version])
+    |> cast(attrs, [:description, :unit_price, :start_datetime, :end_datetime, :lock_version, :item_id])
     |> validate_required([:description, :unit_price, :start_datetime, :end_datetime, :lock_version])
     |> optimistic_lock(:lock_version)
   end
