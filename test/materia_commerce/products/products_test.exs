@@ -138,8 +138,7 @@ defmodule MateriaCommerce.ProductsTest do
         "tax_rate"=> 0.4,
       }
       {:ok, update_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
-      IO.inspect(update_tax)
-      taxes = Products.list_taxes()
+      taxes = Products.list_taxes() |> Enum.filter(fn(x) -> x.tax_category == "category1" end)
       tax = taxes |> Enum.filter(fn(x) -> x.id == update_tax.id end) |>  Enum.at(0)
       assert tax.id == update_tax.id
       assert tax.name == "test1 tax update"
