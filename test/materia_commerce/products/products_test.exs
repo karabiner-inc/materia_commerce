@@ -322,7 +322,6 @@ defmodule MateriaCommerce.ProductsTest do
       assert price.description == "test4 price"
       assert price.start_datetime == DateTime.from_naive!(~N[2019-01-02 09:00:00.000000Z], "Etc/UTC")
       assert price.unit_price == Decimal.new(580)
-      IO.inspect(prices)
     end
 
     test "delete_future_price_histories/2 delete test3 price" do
@@ -370,6 +369,28 @@ defmodule MateriaCommerce.ProductsTest do
     test "change_price/1 returns a price changeset" do
       price = price_fixture()
       assert %Ecto.Changeset{} = Products.change_price(price)
+    end
+  end
+
+  describe "item in price and tax" do
+    test "get_current_products/2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      key_word_list = [{:item_code, "ICZ1000"}]
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, key_word_list)
+      assert Enum.count(current_product) == 1
+      current_product = current_product |> List.first()
+      assert Map.has_key?(current_product, :product)
+      assert Map.has_key?(current_product.product, :item)
+      assert Map.has_key?(current_product.product, :price)
+      assert Map.has_key?(current_product.product, :tax)
+
+      current_item = Products.get_current_item_history(base_datetime, key_word_list)
+      current_price = Products.get_current_price_history(base_datetime, key_word_list)
+      current_tax = Products.get_current_tax_history(base_datetime, [{:tax_category, current_item.tax_category}])
+
+      assert current_product.product.item == current_item
+      assert current_product.product.price == current_price
+      assert current_product.product.tax == current_tax
     end
   end
 end

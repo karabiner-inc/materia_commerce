@@ -727,4 +727,100 @@ defmodule MateriaCommerce.Products do
   def change_price(%Price{} = price) do
     Price.changeset(price, %{})
   end
+
+
+  @doc """
+  主キーを想定したパラメータで現在のItem情報を取得し､
+  ・Item情報のitem_codeからPrice情報を取得
+  ・Item情報のtax_categoryからTax情報を取得する｡
+  Returns: [%{product: %{item: %Item{}, price: %Price{}, tax: %Tax{}}}]
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> key_word_list = [{:item_code, "ICZ1000"}]
+  iex(3)> current_product = MateriaCommerce.Products.get_current_products(base_datetime, key_word_list)
+  iex(4)> current_product |> List.first()
+  %{
+  product: %{
+    item: %MateriaCommerce.Products.Item{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "items">,
+      category1: "電化製品",
+      category2: "調理器具",
+      category3: "炊飯器",
+      category4: "2020年モデル",
+      color: "Blue",
+      delivery_area: "離島のぞく",
+      description: "高級炊飯器",
+      end_datetime: #DateTime<2019-12-31 08:59:59.000000Z>,
+      id: 2,
+      image_url: "http://z1000.com/img.png",
+      inserted_at: ~N[2019-01-17 09:44:41.048099],
+      item_code: "ICZ1000",
+      jan_code: "123456789123",
+      lock_version: 0,
+      manufacturer: "松芝電気",
+      model_number: "Z1000",
+      name: "炊飯器Z1000",
+      size1: "H30cm",
+      size2: "W40cm",
+      size3: "D40cm",
+      size4: "外装 60cm×60cm×50cm",
+      start_datetime: #DateTime<2018-12-17 09:00:00.000000Z>,
+      status: 1,
+      tax_category: "一般消費税",
+      thumbnail: "hogehoge",
+      updated_at: ~N[2019-01-17 09:44:41.048106],
+      weight1: "本体重量 1.2kg",
+      weight2: "梱包重量 1.5kg",
+      weight3: "最大重量 2.0kg",
+      weight4: "最小重量 1.0kg"
+    },
+    price: %MateriaCommerce.Products.Price{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "prices">,
+      description: "test2 price",
+      end_datetime: #DateTime<2019-01-01 08:59:59.000000Z>,
+      id: 2,
+      inserted_at: ~N[2019-01-17 09:44:41.088508],
+      item_code: "ICZ1000",
+      lock_version: 0,
+      start_datetime: #DateTime<2018-12-01 09:00:00.000000Z>,
+      unit_price: #Decimal<200>,
+      updated_at: ~N[2019-01-17 09:44:41.088514]
+    },
+    tax: %MateriaCommerce.Products.Tax{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "taxes">,
+      end_datetime: #DateTime<9999-12-31 23:59:59.000000Z>,
+      id: 5,
+      inserted_at: ~N[2019-01-17 09:44:41.086082],
+      lock_version: 0,
+      name: "一般消費税",
+      start_datetime: #DateTime<2018-01-01 09:00:00.000000Z>,
+      tax_category: "一般消費税",
+      tax_rate: #Decimal<100>,
+      updated_at: ~N[2019-01-17 09:44:41.086086]
+    }
+  }
+  }
+  """
+  def get_current_products(base_datetime, key_word_list) do
+
+    tax = MateriaCommerce.Products.Tax
+          |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
+    price = MateriaCommerce.Products.Price
+            |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
+    item = MateriaCommerce.Products.Item
+           |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
+
+    # AddPk
+    item = [key_word_list]
+          |> Enum.reduce(item, fn(key_word, acc) ->
+      acc
+      |> where(^key_word)
+    end)
+
+    item
+    |> join(:left, [i], p in subquery(price), item_code: i.item_code)
+    |> join(:left, [i], t in subquery(tax), tax_category: i.tax_category)
+    |> select([i, p, t], %{product: %{item: i, price: p, tax: t}})
+    |> @repo.all()
+  end
 end
