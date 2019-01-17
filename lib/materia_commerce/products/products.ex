@@ -236,6 +236,7 @@ defmodule MateriaCommerce.Products do
       recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
       struct_item = struct(Item, recent_item)
       update_item(struct_item, %{end_datetime: recent_end_datetime})
+      {:ok, item}
     end
 
 
@@ -409,6 +410,7 @@ defmodule MateriaCommerce.Products do
        recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
        struct_tax = struct(Tax, recent_tax)
        update_tax(struct_tax, %{end_datetime: recent_end_datetime})
+       {:ok, tax}
      end
  
    end
@@ -514,7 +516,7 @@ defmodule MateriaCommerce.Products do
   主キーを想定したパラメータで現在のPrice情報を取得する
 
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
-  iex(2)> current_price = MateriaCommerce.Products.get_current_price_history(base_datetime, [{:item_id, 1}])
+  iex(2)> current_price = MateriaCommerce.Products.get_current_price_history(base_datetime, [{:item_code, "ITEM:1"}])
   iex(3)> current_price.unit_price
   Decimal.new(200)
   """
@@ -546,7 +548,7 @@ defmodule MateriaCommerce.Products do
   @doc """
   現在以前の直近のPrice情報を取得する
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
-  iex(2)> current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+  iex(2)> current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ITEM:1"}])
   iex(3)> current_price.unit_price
   Decimal.new(100)
   """
@@ -563,6 +565,102 @@ defmodule MateriaCommerce.Products do
       [price] = prices
       price
     end
+  end
+
+  @doc """
+  新規のprice情報履歴を登録する
+  start_datetimeに指定した以降の先日付の登録データがある場合、削除して登録する。
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> recent = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ITEM:1"}])
+  iex(3)> recent.start_datetime
+  #DateTime<2018-12-01 09:00:00Z>
+  iex(4)> recent.end_datetime
+  #DateTime<2019-01-01 08:59:59Z>
+  iex(5)> recent.lock_version
+  0
+  iex(6)> attr = %{"description" => "add price", "item_code" => "ITEM:1", "unit_price" => 400, "lock_version" => recent.lock_version}
+  iex(7)> {:ok, price} = MateriaCommerce.Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ITEM:1"}], attr)
+  iex(8)> price.start_datetime
+  #DateTime<2018-12-17 09:00:00Z>
+  iex(9)> price.end_datetime
+  #DateTime<9999-12-31 23:59:59Z>
+  iex(10)> recent = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ITEM:1"}])
+  iex(11)> recent.start_datetime
+  #DateTime<2018-12-01 09:00:00Z>
+  iex(12)> recent.end_datetime
+  #DateTime<2018-12-17 08:59:59Z>
+  iex(13)> {:ok, next_start_date} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-12-17 09:00:00Z")
+  iex(14)> recent = MateriaCommerce.Products.get_recent_price_history(next_start_date, [{:item_code, "ITEM:1"}])
+  iex(15)> recent.start_datetime
+  #DateTime<2018-12-17 09:00:00Z>
+  iex(16)> recent.end_datetime
+  #DateTime<9999-12-31 23:59:59Z>
+  iex(17)> recent.lock_version
+  1
+  iex(18)> attr = %{"description" => "add price", "item_code" => "ITEM:1", "unit_price" => 400, "lock_version" => recent.lock_version}
+  iex(19)> {:ok, price} = MateriaCommerce.Products.create_new_price_history(%{}, next_start_date, [{:item_code, "ITEM:1"}], attr)
+  iex(20)> price.start_datetime
+  #DateTime<2019-12-17 09:00:00Z>
+  iex(21)> price.end_datetime
+  #DateTime<9999-12-31 23:59:59Z>
+  iex(22)> recent = MateriaCommerce.Products.get_recent_price_history(next_start_date, [{:item_code, "ITEM:1"}])
+  iex(23)> recent.start_datetime
+  #DateTime<2018-12-17 09:00:00Z>
+  iex(24)> recent.end_datetime
+  #DateTime<2019-12-17 08:59:59Z>
+  """
+  def create_new_price_history(%{}, start_datetime, key_word_list, attr) do
+
+    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("9999-12-31 23:59:59Z")
+
+    recent_price = get_recent_price_history(start_datetime, key_word_list)
+
+    #未来日付のデータがある場合削除する
+    {i, _reason} = delete_future_price_histories(start_datetime, key_word_list)
+    tax =
+      if recent_price == nil do
+        # 新規登録
+        attr = attr
+               |> Map.put("start_datetime", start_datetime)
+               |> Map.put("end_datetime", end_datetime)
+        attr =
+          #if Map.has_key?(attr, "end_datetime") do
+          #  attr
+          #else
+          #   Map.put(attr, "end_datetime", end_datetime)
+          #end
+          {:ok, price} = create_price(attr)
+      else
+        # 2回目以降のヒストリー登録の場合
+        # 楽観排他チェック
+        _ = cond do
+          !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
+          attr["lock_version"] != recent_price.lock_version -> raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+          true -> :ok
+        end
+
+        attr = Map.keys(attr)
+               |> Enum.reduce(recent_price, fn(key, acc) ->
+          acc = acc
+                |> Map.put(String.to_atom(key), attr[key])
+        end)
+
+        attr = attr
+               |> Map.put(:lock_version, recent_price.lock_version + 1)
+               |> Map.put(:start_datetime, start_datetime)
+               |> Map.put(:end_datetime, end_datetime)
+        #if !Map.has_key?(attr, :end_datetime) do
+        #  attr = Map.put(attr, :end_datetime, end_datetime)
+        #end
+        {:ok, price} = create_price(attr)
+        # 直近の履歴のend_datetimeを更新する
+        recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
+        struct_price = struct(Price, recent_price)
+        update_price(struct_price, %{end_datetime: recent_end_datetime})
+        {:ok, price}
+      end
+
   end
 
   @doc """

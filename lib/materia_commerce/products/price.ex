@@ -9,7 +9,7 @@ defmodule MateriaCommerce.Products.Price do
     field :lock_version, :integer, default: 0
     field :start_datetime, :utc_datetime
     field :unit_price, :decimal
-    field :item_id, :id
+    field :item_code, :string
 
     timestamps()
   end
@@ -17,14 +17,14 @@ defmodule MateriaCommerce.Products.Price do
   @doc false
   def changeset(price, attrs) do
     price
-    |> cast(attrs, [:description, :unit_price, :start_datetime, :end_datetime, :lock_version, :item_id])
+    |> cast(attrs, [:description, :unit_price, :start_datetime, :end_datetime, :lock_version, :item_code])
     |> validate_required([:description, :unit_price, :start_datetime, :end_datetime, :lock_version])
   end
 
   @doc false
   def update_changeset(price, attrs) do
     price
-    |> cast(attrs, [:description, :unit_price, :start_datetime, :end_datetime, :lock_version, :item_id])
+    |> cast(attrs, [:description, :unit_price, :start_datetime, :end_datetime, :lock_version, :item_code])
     |> validate_required([:description, :unit_price, :start_datetime, :end_datetime, :lock_version])
     |> optimistic_lock(:lock_version)
   end
