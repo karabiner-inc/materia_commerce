@@ -207,45 +207,121 @@ defmodule MateriaCommerce.ProductsTest do
 
     test "get_current_price_history/2" do
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
-      current_price = MateriaCommerce.Products.get_current_price_history(base_datetime, [{:item_id, 1}])
+      current_price = MateriaCommerce.Products.get_current_price_history(base_datetime, [{:item_code, "ICZ1000"}])
       assert current_price.unit_price == Decimal.new(200)
     end
 
     test "get_recent_price_history/2" do
       # NoResult
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ICZ1000"}])
       assert current_price == nil
 
       # BoundaryValueMin
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
-      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ICZ1000"}])
       assert current_price.unit_price == Decimal.new(100)
 
       # BoundaryValueMax
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:00Z")
-      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ICZ1000"}])
       assert current_price.unit_price == Decimal.new(100)
 
       # BoundaryValueMin
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
-      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ICZ1000"}])
       assert current_price.unit_price == Decimal.new(200)
 
       # BoundaryValueMax
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
-      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ICZ1000"}])
       assert current_price.unit_price == Decimal.new(200)
 
       # BoundaryValueMin
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:01Z")
-      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ICZ1000"}])
       assert current_price.unit_price == Decimal.new(300)
 
       # LatestEndDateTimeOver
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-02-01 09:00:01Z")
-      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_id, 1}])
+      current_price = MateriaCommerce.Products.get_recent_price_history(base_datetime, [{:item_code, "ICZ1000"}])
       assert current_price.unit_price == Decimal.new(300)
+    end
+
+    test "create_new_price_history/4 error parameters have not lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      attr =  %{
+        "description"=> "test1 price",
+        "item_code"=> "ICZ1000",
+        "unit_price"=> 150,
+      }
+      assert_raise(KeyError, fn -> Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr) end)
+    end
+
+    test "create_new_price_history/4 error different lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      attr =  %{
+        "description"=> "test1 price",
+        "item_code"=> "ICZ1000",
+        "unit_price"=> 150,
+        "lock_version" => 99,
+      }
+      assert_raise(KeyError, fn -> Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr) end)
+    end
+
+    test "create_new_price_history/4 create data" do
+      # 登録されているデータを全消しして作る処理をテスト
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2017-11-17 09:00:00Z")
+      attr =  %{
+        "description"=> "test1 price",
+        "item_code"=> "ICZ1000",
+        "unit_price"=> 150,
+        "lock_version"=> 0,
+      }
+      {:ok, create_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr)
+      prices = Products.list_prices() |> Enum.filter(fn(x) -> x.item_code == "ICZ1000" end)
+      price = prices |> Enum.filter(fn(x) -> x.id == create_price.id end) |> Enum.at(0)
+      assert price.id == create_price.id
+      assert price.description == "test1 price"
+      assert price.start_datetime == DateTime.from_naive!(~N[2017-11-17 09:00:00.000000Z], "Etc/UTC")
+      assert price.unit_price == Decimal.new(150)
+      assert Enum.count(prices) == 1
+    end
+
+    test "create_new_price_history/4 update data" do
+      # 最終データの更新
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
+      attr =  %{
+        "description"=> "test3 price update",
+        "item_code"=> "ICZ1000",
+        "unit_price"=> 480,
+        "lock_version"=> 0,
+      }
+      {:ok, update_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr)
+      prices = Products.list_prices() |> Enum.filter(fn(x) -> x.item_code == "ICZ1000" end)
+      price = prices |> Enum.filter(fn(x) -> x.id == update_price.id end) |> Enum.at(0)
+      assert price.id == update_price.id
+      assert price.description == "test3 price update"
+      assert price.start_datetime == DateTime.from_naive!(~N[2019-01-01 09:00:00.000000Z], "Etc/UTC")
+      assert price.unit_price == Decimal.new(480)
+    end
+
+    test "create_new_price_history/4 create latest history data" do
+      # 最終履歴登録
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-02 09:00:00Z")
+      attr =  %{
+        "description"=> "test4 price",
+        "item_code"=> "ICZ1000",
+        "unit_price"=> 580,
+        "lock_version"=> 0,
+      }
+      {:ok, create_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr)
+      prices = Products.list_prices() |> Enum.filter(fn(x) -> x.item_code == "ICZ1000" end)
+      price = prices |> Enum.filter(fn(x) -> x.id == create_price.id end) |> Enum.at(0)
+      assert price.id == create_price.id
+      assert price.description == "test4 price"
+      assert price.start_datetime == DateTime.from_naive!(~N[2019-01-02 09:00:00.000000Z], "Etc/UTC")
+      assert price.unit_price == Decimal.new(580)
     end
 
     test "delete_future_price_histories/2 delete test3 price" do
@@ -293,6 +369,28 @@ defmodule MateriaCommerce.ProductsTest do
     test "change_price/1 returns a price changeset" do
       price = price_fixture()
       assert %Ecto.Changeset{} = Products.change_price(price)
+    end
+  end
+
+  describe "item in price and tax" do
+    test "get_current_products/2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      key_word_list = [{:item_code, "ICZ1000"}]
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, key_word_list)
+      assert Enum.count(current_product) == 1
+      current_product = current_product |> List.first()
+      assert Map.has_key?(current_product, :product)
+      assert Map.has_key?(current_product.product, :item)
+      assert Map.has_key?(current_product.product, :price)
+      assert Map.has_key?(current_product.product, :tax)
+
+      current_item = Products.get_current_item_history(base_datetime, key_word_list)
+      current_price = Products.get_current_price_history(base_datetime, key_word_list)
+      current_tax = Products.get_current_tax_history(base_datetime, [{:tax_category, current_item.tax_category}])
+
+      assert current_product.product.item == current_item
+      assert current_product.product.price == current_price
+      assert current_product.product.tax == current_tax
     end
   end
 end

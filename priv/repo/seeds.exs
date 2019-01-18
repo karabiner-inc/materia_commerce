@@ -87,6 +87,13 @@ taxes = [
     tax_category: "category2",
     tax_rate: 1,
   },
+  %{
+    name: "一般消費税",
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "9999-12-31 23:59:59",
+    tax_category: "一般消費税",
+    tax_rate: 100,
+  },
 ]
 
 taxes
@@ -98,28 +105,28 @@ prices = [
     description: "test1 price", 
     start_datetime: "2018-11-01 09:00:00",
     end_datetime: "2018-12-01 08:59:59",
-    item_id: 1,
+    item_code: "ICZ1000",
     unit_price: 100,
   },
   %{
     description: "test2 price", 
     start_datetime: "2018-12-01 09:00:00",
     end_datetime: "2019-01-01 08:59:59",
-    item_id: 1,
+    item_code: "ICZ1000",
     unit_price: 200,
   },
   %{
     description: "test3 price", 
     start_datetime: "2019-01-01 09:00:00",
     end_datetime: "2019-02-01 08:59:59",
-    item_id: 1,
+    item_code: "ICZ1000",
     unit_price: 300,
   },
   %{
-    description: "price item_id2",
+    description: "price item_code2",
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "9999-12-31 23:59:59",
-    item_id: 2,
+    item_code: "ICZ1001",
     unit_price: 1000,
   },
 ]
