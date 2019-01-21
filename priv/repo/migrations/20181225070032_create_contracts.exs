@@ -18,7 +18,9 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContracts do
       add :status, :string
       add :expiration_date, :utc_datetime
       add :contracted_date, :utc_datetime
-      add :lock_version, :bigint
+      add :start_datetime, :utc_datetime
+      add :end_datetime, :utc_datetime
+      add :lock_version, :integer
 
       timestamps()
     end

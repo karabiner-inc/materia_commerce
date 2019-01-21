@@ -27,6 +27,8 @@ defmodule MateriaCommerceWeb.ContractView do
       status: contract.status,
       expiration_date: contract.expiration_date,
       contracted_date: contract.contracted_date,
+      start_datetime: contract.start_datetime,
+      end_datetime: contract.end_datetime,
       lock_version: contract.lock_version}
   end
 end

@@ -4,9 +4,9 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
   alias MateriaCommerce.Commerces
   alias MateriaCommerce.Commerces.Contract
 
-  @create_attrs %{billing_address: 42, buyer_id: 42, contract_no: "some contract_no", contracted_date: "2010-04-17 14:00:00.000000Z", delivery_address: 42, delivery_end_datetime: "2010-04-17 14:00:00.000000Z", delivery_start_datetime: "2010-04-17 14:00:00.000000Z", expiration_date: "2010-04-17 14:00:00.000000Z", seller_id: 42, sender_address: 42, settlement: "some settlement", shipping_fee: "120.5", status: "some status", tax_amount: "120.5", total_amount: "120.5"}
-  @update_attrs %{billing_address: 43, buyer_id: 43, contract_no: "some updated contract_no", contracted_date: "2011-05-18 15:01:01.000000Z", delivery_address: 43, delivery_end_datetime: "2011-05-18 15:01:01.000000Z", delivery_start_datetime: "2011-05-18 15:01:01.000000Z", expiration_date: "2011-05-18 15:01:01.000000Z", seller_id: 43, sender_address: 43, settlement: "some updated settlement", shipping_fee: "456.7", status: "some updated status", tax_amount: "456.7", total_amount: "456.7"}
-  @invalid_attrs %{billing_address: nil, buyer_id: nil, contract_no: nil, contracted_date: nil, delivery_address: nil, delivery_end_datetime: nil, delivery_start_datetime: nil, expiration_date: nil, seller_id: nil, sender_address: nil, settlement: nil, shipping_fee: nil, status: nil, tax_amount: nil, total_amount: nil}
+  @create_attrs %{billing_address: 42, buyer_id: 42, contract_no: "some contract_no", contracted_date: "2010-04-17 14:00:00.000000Z", delivery_address: 42, delivery_end_datetime: "2010-04-17 14:00:00.000000Z", delivery_start_datetime: "2010-04-17 14:00:00.000000Z", end_datetime: "2010-04-17 14:00:00.000000Z", expiration_date: "2010-04-17 14:00:00.000000Z", lock_version: 42, seller_id: 42, sender_address: 42, settlement: "some settlement", shipping_fee: "120.5", start_datetime: "2010-04-17 14:00:00.000000Z", status: "some status", tax_amount: "120.5", total_amount: "120.5"}
+  @update_attrs %{billing_address: 43, buyer_id: 43, contract_no: "some updated contract_no", contracted_date: "2011-05-18 15:01:01.000000Z", delivery_address: 43, delivery_end_datetime: "2011-05-18 15:01:01.000000Z", delivery_start_datetime: "2011-05-18 15:01:01.000000Z", end_datetime: "2011-05-18 15:01:01.000000Z", expiration_date: "2011-05-18 15:01:01.000000Z", lock_version: 43, seller_id: 43, sender_address: 43, settlement: "some updated settlement", shipping_fee: "456.7", start_datetime: "2011-05-18 15:01:01.000000Z", status: "some updated status", tax_amount: "456.7", total_amount: "456.7"}
+  @invalid_attrs %{billing_address: nil, buyer_id: nil, contract_no: nil, contracted_date: nil, delivery_address: nil, delivery_end_datetime: nil, delivery_start_datetime: nil, end_datetime: nil, expiration_date: nil, lock_version: nil, seller_id: nil, sender_address: nil, settlement: nil, shipping_fee: nil, start_datetime: nil, status: nil, tax_amount: nil, total_amount: nil}
 
   def fixture(:contract) do
     {:ok, contract} = Commerces.create_contract(@create_attrs)
@@ -35,16 +35,18 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
         "billing_address" => 42,
         "buyer_id" => 42,
         "contract_no" => "some contract_no",
-        "contracted_date" => "2010-04-17T14:00:00.000000Z",
+        "contracted_date" => "2010-04-17 14:00:00.000000Z",
         "delivery_address" => 42,
-        "delivery_end_datetime" => "2010-04-17T14:00:00.000000Z",
-        "delivery_start_datetime" => "2010-04-17T14:00:00.000000Z",
-        "expiration_date" => "2010-04-17T14:00:00.000000Z",
-        "lock_version" => 0,
+        "delivery_end_datetime" => "2010-04-17 14:00:00.000000Z",
+        "delivery_start_datetime" => "2010-04-17 14:00:00.000000Z",
+        "end_datetime" => "2010-04-17 14:00:00.000000Z",
+        "expiration_date" => "2010-04-17 14:00:00.000000Z",
+        "lock_version" => 42,
         "seller_id" => 42,
         "sender_address" => 42,
         "settlement" => "some settlement",
         "shipping_fee" => "120.5",
+        "start_datetime" => "2010-04-17 14:00:00.000000Z",
         "status" => "some status",
         "tax_amount" => "120.5",
         "total_amount" => "120.5"}
@@ -69,16 +71,18 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
         "billing_address" => 43,
         "buyer_id" => 43,
         "contract_no" => "some updated contract_no",
-        "contracted_date" => "2011-05-18T15:01:01.000000Z",
+        "contracted_date" => "2011-05-18 15:01:01.000000Z",
         "delivery_address" => 43,
-        "delivery_end_datetime" => "2011-05-18T15:01:01.000000Z",
-        "delivery_start_datetime" => "2011-05-18T15:01:01.000000Z",
-        "expiration_date" => "2011-05-18T15:01:01.000000Z",
-        "lock_version" => 1,
+        "delivery_end_datetime" => "2011-05-18 15:01:01.000000Z",
+        "delivery_start_datetime" => "2011-05-18 15:01:01.000000Z",
+        "end_datetime" => "2011-05-18 15:01:01.000000Z",
+        "expiration_date" => "2011-05-18 15:01:01.000000Z",
+        "lock_version" => 43,
         "seller_id" => 43,
         "sender_address" => 43,
         "settlement" => "some updated settlement",
         "shipping_fee" => "456.7",
+        "start_datetime" => "2011-05-18 15:01:01.000000Z",
         "status" => "some updated status",
         "tax_amount" => "456.7",
         "total_amount" => "456.7"}
