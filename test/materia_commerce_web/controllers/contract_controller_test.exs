@@ -15,6 +15,7 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   end
 
   describe "index" do

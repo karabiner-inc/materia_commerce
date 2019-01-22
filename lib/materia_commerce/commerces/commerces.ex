@@ -14,6 +14,7 @@ defmodule MateriaCommerce.Commerces do
   Returns the list of contracts.
 
   ## Examples
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> list_contracts = MateriaCommerce.Commerces.list_contracts
   iex(2)> view = MateriaCommerceWeb.ContractView.render("index.json", %{contracts: list_contracts}) |> Enum.map(fn x -> Map.delete(x, :id) end)
   iex(3)> view = view |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end)
@@ -114,6 +115,7 @@ defmodule MateriaCommerce.Commerces do
   Raises `Ecto.NoResultsError` if the Contract does not exist.
 
   ## Examples
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> contract = MateriaCommerce.Commerces.get_contract!(1)
   iex(2)> view = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract})
   iex(3)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
@@ -146,6 +148,7 @@ defmodule MateriaCommerce.Commerces do
   Creates a contract.
 
   ## Examples
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> attrs = %{"contract_no" => "TEST","settlement" => "TEST","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => "ステータス","start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59"}
   iex(2)> {:ok, contract} = MateriaCommerce.Commerces.create_contract(attrs)
   iex(3)> view = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
@@ -182,6 +185,7 @@ defmodule MateriaCommerce.Commerces do
   Updates a contract.
 
   ## Examples
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> attrs = %{"contract_no" => "TEST-UPDATE"}
   iex(2)> contract = MateriaCommerce.Commerces.get_contract!(1)
   iex(3)> {:ok, contract} = MateriaCommerce.Commerces.update_contract(contract, attrs)
@@ -219,6 +223,7 @@ defmodule MateriaCommerce.Commerces do
   Deletes a Contract.
 
   ## Examples
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> contract = MateriaCommerce.Commerces.get_contract!(1)
   iex(2)> {:ok, contract} = MateriaCommerce.Commerces.delete_contract(contract)
   iex(3)> list_contracts = MateriaCommerce.Commerces.list_contracts |> Enum.find(fn x -> x.id == 1 end)
@@ -231,6 +236,7 @@ defmodule MateriaCommerce.Commerces do
   @doc """
   主キーを想定したパラメータで現在のContract情報を取得する
 
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
   iex(2)> key_word_list = [{:contract_no, "0000-0000-0000"}]
   iex(3)> contract = MateriaCommerce.Commerces.get_current_contract_history(base_datetime, key_word_list)
@@ -271,6 +277,8 @@ defmodule MateriaCommerce.Commerces do
 
   @doc """
   start_datetimeに指定した以降の先日付の登録データがある場合、削除する｡
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
   iex(2)> key_word_list = [{:contract_no, "0000-0000-0000"}]
   iex(3)> contract = MateriaCommerce.Commerces.delete_future_contract_histories(base_datetime, key_word_list)
@@ -349,6 +357,8 @@ defmodule MateriaCommerce.Commerces do
 
   @doc """
   現在以前の直近のContract情報を取得する
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
   iex(2)> key_word_list = [{:contract_no, "0000-0000-0000"}]
   iex(3)> view = MateriaCommerce.Commerces.get_recent_contract_history(base_datetime, key_word_list) |> Map.delete(:id)
@@ -387,6 +397,8 @@ defmodule MateriaCommerce.Commerces do
   @doc """
   新規のContract情報履歴を登録する
   start_datetimeに指定した以降の先日付の登録データがある場合、削除して登録する。
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
   iex(2)> key_word_list = [{:contract_no, "0000-0000-0000"}]
   iex(3)> recent = MateriaCommerce.Commerces.get_recent_contract_history(base_datetime, key_word_list) |> Map.delete(:id)
