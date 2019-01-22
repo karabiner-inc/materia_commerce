@@ -23,6 +23,8 @@ defmodule MateriaCommerce.Commerces.Contract do
     field :tax_amount, :decimal
     field :total_amount, :decimal
 
+    has_many :contract_details, MateriaCommerce.Commerces.ContractDetail
+
     timestamps()
   end
 
@@ -30,13 +32,12 @@ defmodule MateriaCommerce.Commerces.Contract do
   def changeset(contract, attrs) do
     contract
     |> cast(attrs, [:contract_no, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :start_datetime, :end_datetime, :lock_version])
-    |> validate_required([:contract_no, :start_datetime, :end_datetime])
+    |> validate_required([:contract_no, :start_datetime, :end_datetime, :lock_version])
   end
 
   def update_changeset(contract, attrs) do
     contract
     |> cast(attrs, [:contract_no, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :start_datetime, :end_datetime, :lock_version])
-    |> validate_required([:lock_version])
-    |> optimistic_lock(:lock_version)
+    |> validate_required([:contract_no, :lock_version])
   end
 end

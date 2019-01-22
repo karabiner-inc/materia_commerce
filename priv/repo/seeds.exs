@@ -133,3 +133,51 @@ prices = [
 
 prices
 |> Enum.map(fn(price) -> Products.create_price(price) end)
+
+alias MateriaCommerce.Commerces
+
+contracts = [
+  %{
+    contract_no: "0000-0000-0000",
+    settlement: "9999-9999-9999",
+    shipping_fee: 100.01,
+    tax_amount: 80,
+    total_amount: 1180.01,
+    status: "ステータス1",
+    start_datetime: "2018-11-01 09:00:00",
+    end_datetime: "2018-12-01 08:59:59",
+  },
+  %{
+    contract_no: "0000-0000-0000",
+    settlement: "9999-9999-9999",
+    shipping_fee: 110.01,
+    tax_amount: 80,
+    total_amount: 1190.01,
+    status: "ステータス2",
+    start_datetime: "2018-12-01 09:00:00",
+    end_datetime: "2019-01-01 08:59:59",
+  },
+  %{
+    contract_no: "0000-0000-0000",
+    settlement: "9999-9999-9999",
+    shipping_fee: 200,
+    tax_amount: 80,
+    total_amount: 1280,
+    status: "ステータス3",
+    start_datetime: "2019-01-01 09:00:00",
+    end_datetime: "2019-02-01 08:59:59",
+  },
+  %{
+    contract_no: "1111-1111-1111",
+    settlement: "9999-9999-9999",
+    shipping_fee: 200,
+    tax_amount: 80,
+    total_amount: 1280,
+    status: "ステータス",
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "2999-12-31 23:59:59",
+  },
+]
+
+contracts
+|> Enum.map(fn(contract) -> Commerces.create_contract(contract) end)
