@@ -19,7 +19,7 @@ defmodule MateriaCommerce.Commerces.Contract do
     field :settlement, :string
     field :shipping_fee, :decimal
     field :start_datetime, :utc_datetime
-    field :status, :string
+    field :status, :integer, default: 1
     field :tax_amount, :decimal
     field :total_amount, :decimal
 

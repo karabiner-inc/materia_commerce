@@ -36,7 +36,7 @@ defmodule MateriaCommerce.Commerces do
     settlement: "9999-9999-9999",
     shipping_fee: "100.01",
     start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: "ステータス1",
+    status: 1,
     tax_amount: "80",
     total_amount: "1180.01",
   },
@@ -57,7 +57,7 @@ defmodule MateriaCommerce.Commerces do
     settlement: "9999-9999-9999",
     shipping_fee: "110.01",
     start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: "ステータス2",
+    status: 2,
     tax_amount: "80",
     total_amount: "1190.01",
   },
@@ -78,7 +78,7 @@ defmodule MateriaCommerce.Commerces do
     settlement: "9999-9999-9999",
     shipping_fee: "200",
     start_datetime: "2019-01-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: "ステータス3",
+    status: 3,
     tax_amount: "80",
     total_amount: "1280",
   },
@@ -99,7 +99,7 @@ defmodule MateriaCommerce.Commerces do
     settlement: "9999-9999-9999",
     shipping_fee: "200",
     start_datetime: "2018-01-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: "ステータス",
+    status: 0,
     tax_amount: "80",
     total_amount: "1280",
   }
@@ -137,7 +137,7 @@ defmodule MateriaCommerce.Commerces do
   settlement: "9999-9999-9999",
   shipping_fee: "100.01",
   start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-  status: "ステータス1",
+  status: 1,
   tax_amount: "80",
   total_amount: "1180.01",
   }
@@ -149,7 +149,7 @@ defmodule MateriaCommerce.Commerces do
 
   ## Examples
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
-  iex(1)> attrs = %{"contract_no" => "TEST","settlement" => "TEST","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => "ステータス","start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59"}
+  iex(1)> attrs = %{"contract_no" => "TEST","settlement" => "TEST","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => 0,"start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59"}
   iex(2)> {:ok, contract} = MateriaCommerce.Commerces.create_contract(attrs)
   iex(3)> view = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
   iex(4)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
@@ -170,7 +170,7 @@ defmodule MateriaCommerce.Commerces do
   settlement: "TEST",
   shipping_fee: "9999",
   start_datetime: "2018-01-01 18:00:00+09:00 JST Asia/Tokyo",
-  status: "ステータス",
+  status: 0,
   tax_amount: "99",
   total_amount: "9999",
   }
@@ -208,7 +208,7 @@ defmodule MateriaCommerce.Commerces do
   settlement: "9999-9999-9999",
   shipping_fee: "100.01",
   start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-  status: "ステータス1",
+  status: 1,
   tax_amount: "80",
   total_amount: "1180.01",
   }
@@ -259,7 +259,7 @@ defmodule MateriaCommerce.Commerces do
   settlement: "9999-9999-9999",
   shipping_fee: "110.01",
   start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-  status: "ステータス2",
+  status: 2,
   tax_amount: "80",
   total_amount: "1190.01"
   }
@@ -303,7 +303,7 @@ defmodule MateriaCommerce.Commerces do
     settlement: "9999-9999-9999",
     shipping_fee: "100.01",
     start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: "ステータス1",
+    status: 1,
     tax_amount: "80",
     total_amount: "1180.01"
   },
@@ -324,7 +324,7 @@ defmodule MateriaCommerce.Commerces do
     settlement: "9999-9999-9999",
     shipping_fee: "110.01",
     start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: "ステータス2",
+    status: 2,
     tax_amount: "80",
     total_amount: "1190.01"
   },
@@ -345,7 +345,7 @@ defmodule MateriaCommerce.Commerces do
     settlement: "9999-9999-9999",
     shipping_fee: "200",
     start_datetime: "2018-01-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: "ステータス",
+    status: 0,
     tax_amount: "80",
     total_amount: "1280"
   }
@@ -379,7 +379,7 @@ defmodule MateriaCommerce.Commerces do
   settlement: "9999-9999-9999",
   shipping_fee: "110.01",
   start_datetime: "2018-12-01 09:00:00Z",
-  status: "ステータス2",
+  status: 2,
   tax_amount: "80",
   total_amount: "1190.01"
   }
@@ -419,11 +419,11 @@ defmodule MateriaCommerce.Commerces do
   settlement: "9999-9999-9999",
   shipping_fee: "110.01",
   start_datetime: "2018-12-01 09:00:00Z",
-  status: "ステータス2",
+  status: 2,
   tax_amount: "80",
   total_amount: "1190.01"
   }
-  iex(5)> attrs = %{"contract_no" => "0000-0000-0000","settlement" => "9999-9999-9999","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => "ステータス", "lock_version" => recent.lock_version}
+  iex(5)> attrs = %{"contract_no" => "0000-0000-0000","settlement" => "9999-9999-9999","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => 0, "lock_version" => recent.lock_version}
   iex(6)> {:ok, contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, key_word_list, attrs)
   iex(7)> contract = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
   iex(8)> contract = [contract] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
@@ -444,7 +444,7 @@ defmodule MateriaCommerce.Commerces do
   settlement: "9999-9999-9999",
   shipping_fee: "9999",
   start_datetime: "2018-12-17 18:00:00+09:00 JST Asia/Tokyo",
-  status: "ステータス",
+  status: 0,
   tax_amount: "99",
   total_amount: "9999"
   }
@@ -467,11 +467,11 @@ defmodule MateriaCommerce.Commerces do
   settlement: "9999-9999-9999",
   shipping_fee: "9999",
   start_datetime: "2018-12-17 09:00:00Z",
-  status: "ステータス",
+  status: 0,
   tax_amount: "99",
   total_amount: "9999"
   }
-  iex(12)> attrs = %{"contract_no" => "0000-0000-0000","settlement" => "8888-8888-8888","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => "ステータス", "lock_version" => recent.lock_version}
+  iex(12)> attrs = %{"contract_no" => "0000-0000-0000","settlement" => "8888-8888-8888","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => 0, "lock_version" => recent.lock_version}
   iex(13)> {:ok, contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, next_start_date, key_word_list, attrs)
   iex(14)> contract = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
   iex(15)> contract = [contract] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
@@ -492,7 +492,7 @@ defmodule MateriaCommerce.Commerces do
   settlement: "8888-8888-8888",
   shipping_fee: "9999",
   start_datetime: "2019-12-17 18:00:00+09:00 JST Asia/Tokyo",
-  status: "ステータス",
+  status: 0,
   tax_amount: "99",
   total_amount: "9999"
   }
@@ -514,7 +514,7 @@ defmodule MateriaCommerce.Commerces do
   settlement: "9999-9999-9999",
   shipping_fee: "9999",
   start_datetime: "2018-12-17 09:00:00Z",
-  status: "ステータス",
+  status: 0,
   tax_amount: "99",
   total_amount: "9999"
   }
