@@ -181,3 +181,60 @@ contracts = [
 
 contracts
 |> Enum.map(fn(contract) -> Commerces.create_contract(contract) end)
+
+
+contract_details = [
+  %{
+    contract_no: "0000-0000-0000",
+    amount: 1,
+    price: 100,
+    category1: "Single Detail",
+    start_datetime: "2018-11-01 09:00:00",
+    end_datetime: "2018-12-01 08:59:59",
+  },
+  %{
+    contract_no: "0000-0000-0000",
+    amount: 2,
+    price: 200,
+    category1: "Multiple Details:1",
+    start_datetime: "2018-12-01 09:00:00",
+    end_datetime: "2019-01-01 08:59:59",
+  },
+  %{
+    contract_no: "0000-0000-0000",
+    amount: 3,
+    price: 300,
+    item_code: "ICZ1000",
+    category1: "Multiple Details:2 With Item",
+    start_datetime: "2018-12-01 09:00:00",
+    end_datetime: "2019-01-01 08:59:59",
+  },
+  %{
+    contract_no: "0000-0000-0000",
+    amount: 4,
+    price: 400,
+    category1: "Multiple Details:1",
+    start_datetime: "2019-01-01 09:00:00",
+    end_datetime: "2019-02-01 08:59:59"
+  },
+  %{
+    contract_no: "0000-0000-0000",
+    amount: 5,
+    price: 500,
+    item_code: "ICZ1000",
+    category1: "Multiple Details:2 With Item",
+    start_datetime: "2019-01-01 09:00:00",
+    end_datetime: "2019-02-01 08:59:59"
+  },
+  %{
+    contract_no: "1111-1111-1111",
+    amount: 1,
+    price: 100,
+    category1: "Single Detail",
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "2999-12-31 23:59:59",
+  },
+]
+
+contract_details
+|> Enum.map(fn(contract) -> Commerces.create_contract_detail(contract) end)

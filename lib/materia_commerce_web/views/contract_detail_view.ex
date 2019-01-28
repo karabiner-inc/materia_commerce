@@ -1,20 +1,25 @@
 defmodule MateriaCommerceWeb.ContractDetailView do
   use MateriaCommerceWeb, :view
   alias MateriaCommerceWeb.ContractDetailView
+  alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{contract_details: contract_details}) do
-    %{data: render_many(contract_details, ContractDetailView, "contract_detail.json")}
+    render_many(contract_details, ContractDetailView, "contract_detail.json")
   end
 
   def render("show.json", %{contract_detail: contract_detail}) do
-    %{data: render_one(contract_detail, ContractDetailView, "contract_detail.json")}
+    render_one(contract_detail, ContractDetailView, "contract_detail.json")
   end
 
   def render("contract_detail.json", %{contract_detail: contract_detail}) do
-    %{id: contract_detail.id,
+    %{
+      id: contract_detail.id,
       contract_name: contract_detail.contract_name,
+      contract_no: contract_detail.contract_no,
       amount: contract_detail.amount,
       price: contract_detail.price,
+      purchase_amount: contract_detail.purchase_amount,
+      merchandise_cost: contract_detail.merchandise_cost,
       description: contract_detail.description,
       name: contract_detail.name,
       category1: contract_detail.category1,
@@ -38,6 +43,11 @@ defmodule MateriaCommerceWeb.ContractDetailView do
       manufacturer: contract_detail.manufacturer,
       color: contract_detail.color,
       tax_category: contract_detail.tax_category,
-      lock_version: contract_detail.lock_version}
+      start_datetime: CalendarUtil.convert_time_utc2local(contract_detail.start_datetime),
+      end_datetime: CalendarUtil.convert_time_utc2local(contract_detail.end_datetime),
+      lock_version: contract_detail.lock_version,
+      inserted_at: CalendarUtil.convert_time_utc2local(contract_detail.inserted_at),
+      updated_at: CalendarUtil.convert_time_utc2local(contract_detail.updated_at)
+    }
   end
 end

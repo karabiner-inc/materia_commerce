@@ -11,7 +11,7 @@ defmodule MateriaCommerceWeb.ContractDetailController do
     render(conn, "index.json", contract_details: contract_details)
   end
 
-  def create(conn, %{"contract_detail" => contract_detail_params}) do
+  def create(conn, contract_detail_params) do
     with {:ok, %ContractDetail{} = contract_detail} <- Commerces.create_contract_detail(contract_detail_params) do
       conn
       |> put_status(:created)
@@ -25,8 +25,8 @@ defmodule MateriaCommerceWeb.ContractDetailController do
     render(conn, "show.json", contract_detail: contract_detail)
   end
 
-  def update(conn, %{"id" => id, "contract_detail" => contract_detail_params}) do
-    contract_detail = Commerces.get_contract_detail!(id)
+  def update(conn, contract_detail_params) do
+    contract_detail = Commerces.get_contract_detail!(contract_detail_params["id"])
 
     with {:ok, %ContractDetail{} = contract_detail} <- Commerces.update_contract_detail(contract_detail, contract_detail_params) do
       render(conn, "show.json", contract_detail: contract_detail)
