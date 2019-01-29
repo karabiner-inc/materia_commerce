@@ -15,27 +15,30 @@ defmodule MateriaCommerceWeb.PriceControllerTest do
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   end
 
   describe "index" do
     test "lists all prices", %{conn: conn} do
       conn = get conn, price_path(conn, :index)
-      assert json_response(conn, 200)["data"] != []
+      assert json_response(conn, 200) != []
     end
   end
 
   describe "create price" do
     test "renders price when data is valid", %{conn: conn} do
       conn = post conn, price_path(conn, :create), price: @create_attrs
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id} = json_response(conn, 201)
 
       conn = get conn, price_path(conn, :show, id)
-      assert json_response(conn, 200)["data"] == %{
+      assert json_response(conn, 200)
+             |> Map.delete("updated_at")
+             |> Map.delete("inserted_at")  == %{
         "id" => id,
         "description" => "some description",
-        "end_datetime" => "2010-04-17T14:00:00.000000Z",
+        "end_datetime" => "2010-04-17T23:00:00.000000+09:00",
         "lock_version" => 0,
-        "start_datetime" => "2010-04-17T14:00:00.000000Z",
+        "start_datetime" => "2010-04-17T23:00:00.000000+09:00",
         "unit_price" => "120.5"}
     end
 
@@ -50,15 +53,17 @@ defmodule MateriaCommerceWeb.PriceControllerTest do
 
     test "renders price when data is valid", %{conn: conn, price: %Price{id: id} = price} do
       conn = put conn, price_path(conn, :update, price), price: @update_attrs
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get conn, price_path(conn, :show, id)
-      assert json_response(conn, 200)["data"] == %{
+      assert json_response(conn, 200)
+             |> Map.delete("updated_at")
+             |> Map.delete("inserted_at") == %{
         "id" => id,
         "description" => "some updated description",
-        "end_datetime" => "2011-05-18T15:01:01.000000Z",
+        "end_datetime" => "2011-05-19T00:01:01.000000+09:00",
         "lock_version" => 1,
-        "start_datetime" => "2011-05-18T15:01:01.000000Z",
+        "start_datetime" => "2011-05-19T00:01:01.000000+09:00",
         "unit_price" => "456.7"}
     end
 

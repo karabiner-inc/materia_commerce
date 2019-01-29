@@ -15,6 +15,7 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   end
 
   describe "index" do
@@ -30,7 +31,9 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
       assert %{"id" => id} = json_response(conn, 201)
 
       conn = get conn, item_path(conn, :show, id)
-      assert json_response(conn, 200) == %{
+      assert json_response(conn, 200)
+             |> Map.delete("updated_at")
+             |> Map.delete("inserted_at") == %{
         "id" => id,
         "category1" => "some category1",
         "category2" => "some category2",
@@ -39,7 +42,7 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
         "color" => "some color",
         "delivery_area" => "some delivery_area",
         "description" => "some description",
-        "end_datetime" => "2010-04-17T14:00:00.000000Z",
+        "end_datetime" => "2010-04-17T23:00:00.000000+09:00",
         "image_url" => "some image_url",
         "item_code" => "some item_code",
         "jan_code" => "some jan_code",
@@ -51,7 +54,7 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
         "size2" => "some size2",
         "size3" => "some size3",
         "size4" => "some size4",
-        "start_datetime" => "2010-04-17T14:00:00.000000Z",
+        "start_datetime" => "2010-04-17T23:00:00.000000+09:00",
         "status" => 0,
         "tax_category" => "some tax_category",
         "thumbnail" => "some thumbnail",
@@ -75,7 +78,9 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
       assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get conn, item_path(conn, :show, id)
-      assert json_response(conn, 200) == %{
+      assert json_response(conn, 200)
+             |> Map.delete("updated_at")
+             |> Map.delete("inserted_at") == %{
         "id" => id,
         "category1" => "some updated category1",
         "category2" => "some updated category2",
@@ -84,7 +89,7 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
         "color" => "some updated color",
         "delivery_area" => "some updated delivery_area",
         "description" => "some updated description",
-        "end_datetime" => "2011-05-18T15:01:01.000000Z",
+        "end_datetime" => "2011-05-19T00:01:01.000000+09:00",
         "image_url" => "some updated image_url",
         "item_code" => "some updated item_code",
         "jan_code" => "some updated jan_code",
@@ -96,7 +101,7 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
         "size2" => "some updated size2",
         "size3" => "some updated size3",
         "size4" => "some updated size4",
-        "start_datetime" => "2011-05-18T15:01:01.000000Z",
+        "start_datetime" => "2011-05-19T00:01:01.000000+09:00",
         "status" => 1,
         "tax_category" => "some updated tax_category",
         "thumbnail" => "some updated thumbnail",

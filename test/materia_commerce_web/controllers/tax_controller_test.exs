@@ -15,27 +15,30 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   end
 
   describe "index" do
     test "lists all taxes", %{conn: conn} do
       conn = get conn, tax_path(conn, :index)
-      assert json_response(conn, 200)["data"] != []
+      assert json_response(conn, 200)!= []
     end
   end
 
   describe "create tax" do
     test "renders tax when data is valid", %{conn: conn} do
       conn = post conn, tax_path(conn, :create), tax: @create_attrs
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id} = json_response(conn, 201)
 
       conn = get conn, tax_path(conn, :show, id)
-      assert json_response(conn, 200)["data"] == %{
+      assert json_response(conn, 200)
+             |> Map.delete("updated_at")
+             |> Map.delete("inserted_at") == %{
         "id" => id,
-        "end_datetime" => "2010-04-17T14:00:00.000000Z",
+        "end_datetime" => "2010-04-17T23:00:00.000000+09:00",
         "lock_version" => 0,
         "name" => "some name",
-        "start_datetime" => "2010-04-17T14:00:00.000000Z",
+        "start_datetime" => "2010-04-17T23:00:00.000000+09:00",
         "tax_category" => "some tax_category",
         "tax_rate" => "120.5"}
     end
@@ -51,15 +54,17 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
 
     test "renders tax when data is valid", %{conn: conn, tax: %Tax{id: id} = tax} do
       conn = put conn, tax_path(conn, :update, tax), tax: @update_attrs
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get conn, tax_path(conn, :show, id)
-      assert json_response(conn, 200)["data"] == %{
+      assert json_response(conn, 200)
+             |> Map.delete("updated_at")
+             |> Map.delete("inserted_at") == %{
         "id" => id,
-        "end_datetime" => "2011-05-18T15:01:01.000000Z",
+        "end_datetime" => "2011-05-19T00:01:01.000000+09:00",
         "lock_version" => 0,
         "name" => "some updated name",
-        "start_datetime" => "2011-05-18T15:01:01.000000Z",
+        "start_datetime" => "2011-05-19T00:01:01.000000+09:00",
         "tax_category" => "some updated tax_category",
         "tax_rate" => "456.7"}
     end
