@@ -192,7 +192,7 @@ defmodule MateriaCommerce.Products do
   """
   def create_new_item_history(%{}, start_datetime, key_word_list, attr) do
 
-   {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("9999-12-31 23:59:59Z")
+   {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
 
     recent_item = get_recent_item_history(start_datetime, key_word_list)
 
@@ -364,7 +364,7 @@ defmodule MateriaCommerce.Products do
   """
   def create_new_tax_history(%{}, start_datetime, key_word_list, attr) do
 
-    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("9999-12-31 23:59:59Z")
+    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
  
      recent_tax = get_recent_tax_history(start_datetime, key_word_list)
 
@@ -612,7 +612,7 @@ defmodule MateriaCommerce.Products do
   """
   def create_new_price_history(%{}, start_datetime, key_word_list, attr) do
 
-    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("9999-12-31 23:59:59Z")
+    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
 
     recent_price = get_recent_price_history(start_datetime, key_word_list)
 
