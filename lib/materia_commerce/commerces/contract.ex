@@ -23,8 +23,6 @@ defmodule MateriaCommerce.Commerces.Contract do
     field :tax_amount, :decimal
     field :total_amount, :decimal
 
-    has_many :contract_details, MateriaCommerce.Commerces.ContractDetail
-
     timestamps()
   end
 

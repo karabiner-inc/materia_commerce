@@ -52,8 +52,7 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                "start_datetime" => "2010-04-17T23:00:00.000000+09:00",
                "status" => 0,
                "tax_amount" => "120.5",
-               "total_amount" => "120.5",
-               "contract_details" => []
+               "total_amount" => "120.5"
              }
     end
 
@@ -93,8 +92,7 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                "start_datetime" => "2011-05-19T00:01:01.000000+09:00",
                "status" => 1,
                "tax_amount" => "456.7",
-               "total_amount" => "456.7",
-               "contract_details" => []
+               "total_amount" => "456.7"
              }
     end
 
