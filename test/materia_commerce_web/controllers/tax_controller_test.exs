@@ -27,7 +27,7 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
 
   describe "create tax" do
     test "renders tax when data is valid", %{conn: conn} do
-      conn = post conn, tax_path(conn, :create), tax: @create_attrs
+      conn = post conn, tax_path(conn, :create), @create_attrs
       assert %{"id" => id} = json_response(conn, 201)
 
       conn = get conn, tax_path(conn, :show, id)
@@ -44,7 +44,7 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, tax_path(conn, :create), tax: @invalid_attrs
+      conn = post conn, tax_path(conn, :create), @invalid_attrs
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -53,7 +53,7 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
     setup [:create_tax]
 
     test "renders tax when data is valid", %{conn: conn, tax: %Tax{id: id} = tax} do
-      conn = put conn, tax_path(conn, :update, tax), tax: @update_attrs
+      conn = put conn, tax_path(conn, :update, tax), @update_attrs
       assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get conn, tax_path(conn, :show, id)
@@ -70,7 +70,7 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, tax: tax} do
-      conn = put conn, tax_path(conn, :update, tax), tax: @invalid_attrs
+      conn = put conn, tax_path(conn, :update, tax), @invalid_attrs
       assert json_response(conn, 422)["errors"] != %{}
     end
   end

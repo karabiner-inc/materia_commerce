@@ -11,6 +11,10 @@ defmodule MateriaCommerceWeb.ContractDetailView do
     render_one(contract_detail, ContractDetailView, "contract_detail.json")
   end
 
+  def render("show.json", %{contract_details: contract_details}) do
+    render_many(contract_details, ContractDetailView, "contract_detail.json")
+  end
+
   def render("contract_detail.json", %{contract_detail: contract_detail}) do
     %{
       id: contract_detail.id,

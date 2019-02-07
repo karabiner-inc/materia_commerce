@@ -182,9 +182,9 @@ defmodule MateriaCommerce.ProductsTest do
   describe "prices" do
     alias MateriaCommerce.Products.Price
 
-    @valid_attrs %{description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", start_datetime: "2010-04-17 14:00:00.000000Z", unit_price: "120.5"}
-    @update_attrs %{description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", start_datetime: "2011-05-18 15:01:01.000000Z", unit_price: "456.7"}
-    @invalid_attrs %{description: nil, end_datetime: nil, start_datetime: nil, unit_price: nil}
+    @valid_attrs %{description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", item_code: "some item_code", merchandise_cost: "120.5", purchase_amount: "120.5", start_datetime: "2010-04-17 14:00:00.000000Z", unit_price: "120.5"}
+    @update_attrs %{description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", item_code: "some updated item_code", merchandise_cost: "456.7", purchase_amount: "456.7", start_datetime: "2011-05-18 15:01:01.000000Z", unit_price: "456.7"}
+    @invalid_attrs %{description: nil, end_datetime: nil, item_code: nil, lock_version: nil, merchandise_cost: nil, purchase_amount: nil, start_datetime: nil, unit_price: nil}
 
     def price_fixture(attrs \\ %{}) do
       {:ok, price} =

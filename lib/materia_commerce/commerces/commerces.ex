@@ -2,7 +2,7 @@ defmodule MateriaCommerce.Commerces do
   @moduledoc """
   The Commerces context.
   """
-
+  require Logger
   import Ecto.Query, warn: false
 
   alias MateriaCommerce.Commerces.Contract
@@ -257,6 +257,7 @@ defmodule MateriaCommerce.Commerces do
   }
   """
   def get_current_contract_history(base_datetime, key_word_list) do
+    Logger.debug("*-----  #{__MODULE__}.get_current_contract_history -----*")
     contracts = MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, Contract, base_datetime, key_word_list)
     contract =
       if contracts == [] do
@@ -341,6 +342,7 @@ defmodule MateriaCommerce.Commerces do
   ]
   """
   def delete_future_contract_histories(base_datetime, key_word_list) do
+    Logger.debug("*-----  #{__MODULE__}.delete_future_contract_histories -----*")
     contracts = MateriaUtils.Ecto.EctoUtil.delete_future_histories(@repo, Contract, base_datetime, key_word_list)
   end
 
@@ -374,6 +376,7 @@ defmodule MateriaCommerce.Commerces do
   }
   """
   def get_recent_contract_history(base_datetime, key_word_list) do
+    Logger.debug("*-----  #{__MODULE__}.get_recent_contract_history -----*")
     contracts = MateriaUtils.Ecto.EctoUtil.list_recent_history(@repo, Contract, base_datetime, key_word_list)
     if contracts == [] do
       nil
@@ -507,7 +510,7 @@ defmodule MateriaCommerce.Commerces do
   }
   """
   def create_new_contract_history(%{}, start_datetime, key_word_list, attr) do
-
+    Logger.debug("*-----  #{__MODULE__}.create_new_contract_history -----*")
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
     recent_contract = get_recent_contract_history(start_datetime, key_word_list)
 
@@ -809,6 +812,7 @@ defmodule MateriaCommerce.Commerces do
   ]
   """
   def get_current_contract_detail_history(base_datetime, key_word_list) do
+    Logger.debug("*-----  #{__MODULE__}.get_current_contract_detail_history -----*")
     MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, ContractDetail, base_datetime, key_word_list)
   end
 
@@ -962,6 +966,7 @@ defmodule MateriaCommerce.Commerces do
   ]
   """
   def delete_future_contract_detail_histories(base_datetime, key_word_list) do
+    Logger.debug("*-----  #{__MODULE__}.delete_future_contract_detail_histories -----*")
     MateriaUtils.Ecto.EctoUtil.delete_future_histories(@repo, ContractDetail, base_datetime, key_word_list)
   end
 
@@ -1047,6 +1052,7 @@ defmodule MateriaCommerce.Commerces do
   ]
   """
   def get_recent_contract_detail_history(base_datetime, key_word_list) do
+    Logger.debug("*-----  #{__MODULE__}.get_recent_contract_detail_history -----*")
     MateriaUtils.Ecto.EctoUtil.list_recent_history(@repo, ContractDetail, base_datetime, key_word_list)
   end
 
@@ -1239,7 +1245,7 @@ defmodule MateriaCommerce.Commerces do
   ]
   """
   def create_new_contract_detail_history(%{}, start_datetime, key_word_list, attrs) do
-
+    Logger.debug("*-----  #{__MODULE__}.create_new_contract_detail_history -----*")
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
     recent_contract_detail = get_recent_contract_detail_history(start_datetime, key_word_list)
 
@@ -1248,6 +1254,7 @@ defmodule MateriaCommerce.Commerces do
     contract_detail =
       if recent_contract_detail == [] do
         # 新規登録
+        Logger.debug("*-----  #{__MODULE__}.create_new_contract_detail_history new -----*")
         contract_detail = attrs
                           |> Enum.map(
                                fn attr ->
@@ -1262,6 +1269,7 @@ defmodule MateriaCommerce.Commerces do
       else
         # 2回目以降のヒストリー登録の場合
         # 楽観排他チェック
+        Logger.debug("*-----  #{__MODULE__}.create_new_contract_detail_history recent -----*")
         attrs
         |> Enum.map(
              fn attr ->
@@ -1374,6 +1382,7 @@ defmodule MateriaCommerce.Commerces do
   }
   """
   def check_recent_contract_detail(recent_contract_detail, id, lock_version) do
+    Logger.debug("*-----  #{__MODULE__}.check_recent_contract_detail -----*")
     filter = Enum.filter(recent_contract_detail, fn x -> x.id == id end) |> List.first
     cond do
       filter != nil and filter.lock_version != lock_version -> false
@@ -1487,11 +1496,12 @@ defmodule MateriaCommerce.Commerces do
   ]
   """
   def get_current_commerces(base_datetime, key_word_list) do
+    Logger.debug("*-----  #{__MODULE__}.get_current_commerces -----*")
     contract_detail = MateriaCommerce.Commerces.ContractDetail
                       |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
 
     contract = MateriaCommerce.Commerces.Contract
-          |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
+               |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
 
     # AddPk
     contract = [key_word_list]
@@ -1513,11 +1523,17 @@ defmodule MateriaCommerce.Commerces do
               |> Map.keys()
               |> Enum.map(
                    fn key ->
-                     %{
-                       contract: key,
-                       contract_details: results[key]
-                                         |> Enum.map(fn result -> result.contract_details end)
-                     }
+                     contract_details = results[key]
+                                        |> Enum.flat_map(
+                                             fn result ->
+                                               cond do
+                                                 result.contract_details.id == nil -> []
+                                                 true -> [result.contract_details]
+                                               end
+                                             end
+                                           )
+                     key
+                     |> Map.put(:contract_details, contract_details)
                    end
                  )
   end

@@ -11,7 +11,7 @@ defmodule MateriaCommerceWeb.TaxController do
     render(conn, "index.json", taxes: taxes)
   end
 
-  def create(conn, %{"tax" => tax_params}) do
+  def create(conn, tax_params) do
     with {:ok, %Tax{} = tax} <- Products.create_tax(tax_params) do
       conn
       |> put_status(:created)
@@ -25,8 +25,8 @@ defmodule MateriaCommerceWeb.TaxController do
     render(conn, "show.json", tax: tax)
   end
 
-  def update(conn, %{"id" => id, "tax" => tax_params}) do
-    tax = Products.get_tax!(id)
+  def update(conn, tax_params) do
+    tax = Products.get_tax!(tax_params["id"])
 
     with {:ok, %Tax{} = tax} <- Products.update_tax(tax, tax_params) do
       render(conn, "show.json", tax: tax)

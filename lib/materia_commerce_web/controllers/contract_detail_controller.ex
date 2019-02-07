@@ -3,8 +3,9 @@ defmodule MateriaCommerceWeb.ContractDetailController do
 
   alias MateriaCommerce.Commerces
   alias MateriaCommerce.Commerces.ContractDetail
+  alias MateriaUtils.Calendar.CalendarUtil
 
-  action_fallback MateriaCommerceWeb.FallbackController
+  action_fallback MateriaWeb.FallbackController
 
   def index(conn, _params) do
     contract_details = Commerces.list_contract_details()
@@ -38,5 +39,34 @@ defmodule MateriaCommerceWeb.ContractDetailController do
     with {:ok, %ContractDetail{}} <- Commerces.delete_contract_detail(contract_detail) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  def search_current_contract_details(conn, %{"key_words" => key_words}) do
+    now = CalendarUtil.now()
+    key_words = key_words
+                |> Enum.reduce([],
+                     fn (key_word, acc) ->
+                       key = Map.keys(key_word)
+                             |> List.first
+                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
+                     end
+                   )
+    contract_details = Commerces.get_current_contract_detail_history(now, key_words)
+    render(conn, "index.json", contract_details: contract_details)
+  end
+
+  def current_contract_details(conn, %{"key_words" => key_words, "contract_details" => contract_details}) do
+    IO.inspect(key_words)
+    IO.inspect(contract_details)
+    now = CalendarUtil.now()
+    key_words = key_words
+                |> Enum.reduce([],
+                     fn (key_word, acc) ->
+                       key = Map.keys(key_word)
+                             |> List.first
+                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
+                     end
+                   )
+    MateriaWeb.ControllerBase.transaction_flow(conn, :contract_details, Commerces, :create_new_contract_detail_history, [now, key_words, contract_details])
   end
 end

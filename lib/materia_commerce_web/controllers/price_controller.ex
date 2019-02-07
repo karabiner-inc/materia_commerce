@@ -11,7 +11,7 @@ defmodule MateriaCommerceWeb.PriceController do
     render(conn, "index.json", prices: prices)
   end
 
-  def create(conn, %{"price" => price_params}) do
+  def create(conn, price_params) do
     with {:ok, %Price{} = price} <- Products.create_price(price_params) do
       conn
       |> put_status(:created)
@@ -25,9 +25,8 @@ defmodule MateriaCommerceWeb.PriceController do
     render(conn, "show.json", price: price)
   end
 
-  def update(conn, %{"id" => id, "price" => price_params}) do
-    price = Products.get_price!(id)
-
+  def update(conn, price_params) do
+    price = Products.get_price!(price_params["id"])
     with {:ok, %Price{} = price} <- Products.update_price(price, price_params) do
       render(conn, "show.json", price: price)
     end
