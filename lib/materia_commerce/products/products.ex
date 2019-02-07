@@ -817,10 +817,29 @@ defmodule MateriaCommerce.Products do
       |> where(^key_word)
     end)
 
-    item
-    |> join(:left, [i], p in subquery(price), item_code: i.item_code)
-    |> join(:left, [i], t in subquery(tax), tax_category: i.tax_category)
-    |> select([i, p, t], %{product: %{item: i, price: p, tax: t}})
-    |> @repo.all()
+    results = item
+              |> join(:left, [i], p in subquery(price), item_code: i.item_code)
+              |> join(:left, [i], t in subquery(tax), tax_category: i.tax_category)
+              |> select([i, p, t], %{item: i, price: p, tax: t})
+              |> @repo.all()
+              |> Enum.map(
+                   fn result ->
+                     item = result.item
+                     item =
+                       cond do
+                         result.price.id != nil ->
+                           Map.put(item, :price, result.price)
+                         true ->
+                           Map.put(item, :price, nil)
+                       end
+                     item =
+                       cond do
+                         result.tax.id != nil ->
+                           Map.put(item, :tax, result.tax)
+                         true ->
+                           Map.put(item, :tax, nil)
+                       end
+                   end
+                 )
   end
 end

@@ -55,9 +55,7 @@ defmodule MateriaCommerceWeb.ContractDetailController do
     render(conn, "index.json", contract_details: contract_details)
   end
 
-  def current_contract_details(conn, %{"key_words" => key_words, "contract_details" => contract_details}) do
-    IO.inspect(key_words)
-    IO.inspect(contract_details)
+  def current_contract_details(conn, %{"key_words" => key_words, "params" => params}) do
     now = CalendarUtil.now()
     key_words = key_words
                 |> Enum.reduce([],
@@ -67,6 +65,6 @@ defmodule MateriaCommerceWeb.ContractDetailController do
                        acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
                      end
                    )
-    MateriaWeb.ControllerBase.transaction_flow(conn, :contract_details, Commerces, :create_new_contract_detail_history, [now, key_words, contract_details])
+    MateriaWeb.ControllerBase.transaction_flow(conn, :contract_details, Commerces, :create_new_contract_detail_history, [now, key_words, params])
   end
 end

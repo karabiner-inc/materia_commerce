@@ -3,8 +3,9 @@ defmodule MateriaCommerceWeb.TaxController do
 
   alias MateriaCommerce.Products
   alias MateriaCommerce.Products.Tax
+  alias MateriaUtils.Calendar.CalendarUtil
 
-  action_fallback MateriaCommerceWeb.FallbackController
+  action_fallback MateriaWeb.FallbackController
 
   def index(conn, _params) do
     taxes = Products.list_taxes()
@@ -38,5 +39,32 @@ defmodule MateriaCommerceWeb.TaxController do
     with {:ok, %Tax{}} <- Products.delete_tax(tax) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  def search_current_taxes(conn, %{"key_words" => key_words}) do
+    now = CalendarUtil.now()
+    key_words = key_words
+                |> Enum.reduce([],
+                     fn (key_word, acc) ->
+                       key = Map.keys(key_word)
+                             |> List.first
+                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
+                     end
+                   )
+    taxes = Products.get_current_tax_history(now, key_words)
+    render(conn, "index.json", taxes: taxes)
+  end
+
+  def current_taxes(conn, %{"key_words" => key_words, "params" => params}) do
+    now = CalendarUtil.now()
+    key_words = key_words
+                |> Enum.reduce([],
+                     fn (key_word, acc) ->
+                       key = Map.keys(key_word)
+                             |> List.first
+                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
+                     end
+                   )
+    MateriaWeb.ControllerBase.transaction_flow(conn, :tax, Products, :create_new_tax_history, [now, key_words, params])
   end
 end

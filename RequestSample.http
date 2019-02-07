@@ -66,6 +66,43 @@ DELETE {{url}}/api/items/{{item_id}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
+### :search_current_items
+POST   {{url}}/api/search-items HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"item_code": "ICZ1000"}
+  ]
+}
+
+### :search_current_items
+POST   {{url}}/api/search-items HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_contracts
+POST   {{url}}/api/current-items     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"item_code": "ICZ1000"}
+  ],
+  "params": {
+    "item_code": "ICZ1000",
+    "category1": "電化製品",
+    "name": "炊飯器Z1000!!",
+    "lock_version": 0
+  }
+}
+
 ###############################################
 ###### MateriaCommerceWeb.TaxController
 ### :index
@@ -117,6 +154,42 @@ DELETE {{url}}/api/taxes/{{tax_id}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
+### :search_current_contracts
+POST   {{url}}/api/search-taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"tax_category": "category1"}
+  ]
+}
+
+### :search_current_contracts
+POST   {{url}}/api/search-taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_contracts
+POST   {{url}}/api/current-taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"tax_category": "category1"}
+  ],
+  "params": {
+    "tax_category": "category1",
+    "tax_rate": 200,
+    "lock_version": 0
+  }
+}
+
 ###############################################
 ###### MateriaCommerceWeb.PriceController
 ### :index
@@ -165,6 +238,43 @@ Authorization: Bearer {{access_token}}
 DELETE {{url}}/api/prices/{{price_id}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{access_token}}
+
+### :search_current_prices
+POST   {{url}}/api/search-prices HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"item_code": "ICZ1000"}
+  ]
+}
+
+### :search_current_prices
+POST   {{url}}/api/search-prices HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_prices
+POST   {{url}}/api/current-prices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"item_code": "ICZ1000"}
+  ],
+  "params": {
+    "item_code": "ICZ1000",
+    "unit_price": 0,
+    "description": "description",
+    "lock_version": 0
+  }
+}
 
 ###############################################
 ###### MateriaCommerceWeb.ContractController
@@ -242,7 +352,7 @@ Authorization: Bearer {{access_token}}
   "key_words": [
     {"contract_no": "1111-1111-1111"}
   ],
-  "contracts": {
+  "params": {
     "contract_no": "1111-1111-1111",
     "settlement": "8888-8888-8888",
     "lock_version": 0
@@ -325,7 +435,7 @@ Authorization: Bearer {{access_token}}
   "key_words": [
     {"contract_no": "1111-1111-1111"}
   ],
-  "contract_details": [
+  "params": [
     {
       "contract_no": "1111-1111-1111",
       "contract_name": "Update",

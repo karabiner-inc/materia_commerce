@@ -53,11 +53,11 @@ defmodule MateriaCommerceWeb.Router do
     resources "/contract_details", ContractDetailController, except: [:new, :edit]
 
     post "/search-items", ItemController, :search_current_items
-    post "/search-taxes", ItemController, :search_current_taxes
-    post "/search-prices", ItemController, :search_current_prices
+    post "/search-taxes", TaxController, :search_current_taxes
+    post "/search-prices", PriceController, :search_current_prices
     post "/current-items", ItemController, :current_items
-    post "/current-taxes", ItemController, :current_taxes
-    post "/current-prices", ItemController, :current_prices
+    post "/current-taxes", TaxController, :current_taxes
+    post "/current-prices", PriceController, :current_prices
 
     post "/search-contracts", ContractController, :search_current_contracts
     post "/search-contract-details", ContractDetailController, :search_current_contract_details

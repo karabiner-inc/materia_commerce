@@ -1400,7 +1400,7 @@ defmodule MateriaCommerce.Commerces do
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
   iex(2)> key_word_list = [{:contract_no, "0000-0000-0000"}]
-  iex(3)> current_commerces = MateriaCommerce.Commerces.get_current_commerces(base_datetime, key_word_list)
+  iex(3)> current_commerces = MateriaCommerce.Commerces.get_current_contracts(base_datetime, key_word_list)
   iex(4)> first_data = current_commerces |> List.first
   iex(5)> [first_data.contract] |> Enum.map(fn x -> x = Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id); x = Map.delete(x, :__meta__); x = Map.delete(x, :__struct__); end) |> List.first
   %{
@@ -1495,7 +1495,7 @@ defmodule MateriaCommerce.Commerces do
   }
   ]
   """
-  def get_current_commerces(base_datetime, key_word_list) do
+  def get_current_contracts(base_datetime, key_word_list) do
     Logger.debug("*-----  #{__MODULE__}.get_current_commerces -----*")
     contract_detail = MateriaCommerce.Commerces.ContractDetail
                       |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)

@@ -11,7 +11,7 @@ config :materia_commerce, MateriaCommerceWeb.Test.Endpoint,
   watchers: []
 
 # Print only warnings and errors during test
-config :logger, :console, format: "[$level] $message\n"
+config :logger, level: :info
 
 # Configure your database
 config :materia_commerce, MateriaCommerce.Test.Repo,
