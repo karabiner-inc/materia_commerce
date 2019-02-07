@@ -38,6 +38,7 @@ defmodule MateriaCommerce.Commerces do
     status: 1,
     tax_amount: "80",
     total_amount: "1180.01",
+    contract_details: [],
   },
   %{
     billing_address: nil,
@@ -58,6 +59,7 @@ defmodule MateriaCommerce.Commerces do
     status: 2,
     tax_amount: "80",
     total_amount: "1190.01",
+    contract_details: [],
   },
   %{
     billing_address: nil,
@@ -78,6 +80,7 @@ defmodule MateriaCommerce.Commerces do
     status: 3,
     tax_amount: "80",
     total_amount: "1280",
+    contract_details: [],
   },
   %{
     billing_address: nil,
@@ -98,6 +101,7 @@ defmodule MateriaCommerce.Commerces do
     status: 0,
     tax_amount: "80",
     total_amount: "1280",
+    contract_details: [],
   }
   ]
   """
@@ -118,6 +122,7 @@ defmodule MateriaCommerce.Commerces do
   %{
   billing_address: nil,
   buyer_id: nil,
+  contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
   delivery_address: nil,
@@ -151,6 +156,7 @@ defmodule MateriaCommerce.Commerces do
   %{
   billing_address: nil,
   buyer_id: nil,
+  contract_details: [],
   contract_no: "TEST",
   contracted_date: "",
   delivery_address: nil,
@@ -204,6 +210,7 @@ defmodule MateriaCommerce.Commerces do
   status: 1,
   tax_amount: "80",
   total_amount: "1180.01",
+  contract_details: []
   }
   """
   def update_contract(%Contract{} = contract, attrs) do
@@ -238,6 +245,7 @@ defmodule MateriaCommerce.Commerces do
   %{
   billing_address: nil,
   buyer_id: nil,
+  contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
   delivery_address: nil,
@@ -282,6 +290,7 @@ defmodule MateriaCommerce.Commerces do
   %{
     billing_address: nil,
     buyer_id: nil,
+    contract_details: [],
     contract_no: "0000-0000-0000",
     contracted_date: "",
     delivery_address: nil,
@@ -302,6 +311,7 @@ defmodule MateriaCommerce.Commerces do
   %{
     billing_address: nil,
     buyer_id: nil,
+    contract_details: [],
     contract_no: "0000-0000-0000",
     contracted_date: "",
     delivery_address: nil,
@@ -322,6 +332,7 @@ defmodule MateriaCommerce.Commerces do
   %{
     billing_address: nil,
     buyer_id: nil,
+    contract_details: [],
     contract_no: "1111-1111-1111",
     contracted_date: "",
     delivery_address: nil,
@@ -422,6 +433,7 @@ defmodule MateriaCommerce.Commerces do
   %{
   billing_address: nil,
   buyer_id: nil,
+  contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
   delivery_address: nil,
@@ -469,6 +481,7 @@ defmodule MateriaCommerce.Commerces do
   %{
   billing_address: nil,
   buyer_id: nil,
+  contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
   delivery_address: nil,
@@ -1395,103 +1408,102 @@ defmodule MateriaCommerce.Commerces do
   主キーを想定したパラメータで現在のContract情報を取得し､
   ・Contract情報のcontract_noからContractDetail情報を取得
 
-  Returns: [%{contact: %Contract{}, contract_details: [%ContractDetail{}]}]
-
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
   iex(2)> key_word_list = [{:contract_no, "0000-0000-0000"}]
   iex(3)> current_commerces = MateriaCommerce.Commerces.get_current_contracts(base_datetime, key_word_list)
-  iex(4)> first_data = current_commerces |> List.first
-  iex(5)> [first_data.contract] |> Enum.map(fn x -> x = Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id); x = Map.delete(x, :__meta__); x = Map.delete(x, :__struct__); end) |> List.first
-  %{
-  billing_address: nil,
-  buyer_id: nil,
-  contract_no: "0000-0000-0000",
-  contracted_date: "",
-  delivery_address: nil,
-  delivery_end_datetime: "",
-  delivery_start_datetime: "",
-  end_datetime: "2019-01-01 08:59:59.000000Z",
-  expiration_date: "",
-  lock_version: 0,
-  seller_id: nil,
-  sender_address: nil,
-  settlement: "9999-9999-9999",
-  shipping_fee: "110.01",
-  start_datetime: "2018-12-01 09:00:00.000000Z",
-  status: 2,
-  tax_amount: "80",
-  total_amount: "1190.01"
-  }
-  iex(6)> first_data.contract_details |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id); x = Map.delete(x, :__meta__); x = Map.delete(x, :__struct__); end)
+  iex(4)> view = MateriaCommerceWeb.ContractView.render("index.json", %{contracts: current_commerces})
+  iex(5)> view |> Enum.map(fn x ->   x = Map.put(x, :contracted_date , to_string(x.contracted_date));  x = Map.put(x, :delivery_end_datetime , to_string(x.delivery_end_datetime));  x = Map.put(x, :delivery_start_datetime , to_string(x.delivery_start_datetime));  x = Map.put(x, :start_datetime , to_string(x.start_datetime));  x = Map.put(x, :end_datetime , to_string(x.end_datetime));  x = Map.put(x, :shipping_fee , to_string(x.shipping_fee));  x = Map.put(x, :tax_amount , to_string(x.tax_amount));  x = Map.put(x, :total_amount , to_string(x.total_amount));  x = Map.delete(x, :id);  x = Map.delete(x, :inserted_at);  x = Map.delete(x, :updated_at);  x = Map.put(x, :contract_details , x.contract_details |> Enum.map(    fn y ->       y = Map.put(y, :price , to_string(y.price));      y = Map.put(y, :end_datetime , to_string(y.end_datetime));      y = Map.put(y, :start_datetime , to_string(y.start_datetime));      y = Map.put(y, :merchandise_cost , to_string(y.merchandise_cost));      y = Map.put(y, :amount , to_string(y.amount));      y = Map.put(y, :purchase_amount , to_string(y.purchase_amount));      y = Map.delete(y, :id);      y = Map.delete(y, :updated_at);      y = Map.delete(y, :inserted_at);    end));end)
   [
   %{
-    price: "300",
-    category1: "Multiple Details:2 With Item",
-    lock_version: 0,
-    size2: nil,
-    manufacturer: nil,
-    size1: nil,
-    end_datetime: "2019-01-01 08:59:59.000000Z",
-    weight3: nil,
-    contract_name: nil,
-    delivery_area: nil,
-    image_url: nil,
-    description: nil,
-    category2: nil,
-    category4: nil,
-    weight4: nil,
-    color: nil,
-    size4: nil,
-    weight2: nil,
-    weight1: nil,
-    tax_category: nil,
+    billing_address: nil,
+    buyer_id: nil,
+    contract_details: [
+      %{
+        amount: "3",
+        category1: "Multiple Details:2 With Item",
+        category2: nil,
+        category3: nil,
+        category4: nil,
+        color: nil,
+        contract_name: nil,
+        contract_no: "0000-0000-0000",
+        delivery_area: nil,
+        description: nil,
+        end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
+        image_url: nil,
+        item_code: "ICZ1000",
+        jan_code: nil,
+        lock_version: 0,
+        manufacturer: nil,
+        merchandise_cost: "",
+        model_number: nil,
+        name: nil,
+        price: "300",
+        purchase_amount: "",
+        size1: nil,
+        size2: nil,
+        size3: nil,
+        size4: nil,
+        start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
+        tax_category: nil,
+        thumbnail: nil,
+        weight1: nil,
+        weight2: nil,
+        weight3: nil,
+        weight4: nil
+      },
+      %{
+        amount: "2",
+        category1: "Multiple Details:1",
+        category2: nil,
+        category3: nil,
+        category4: nil,
+        color: nil,
+        contract_name: nil,
+        contract_no: "0000-0000-0000",
+        delivery_area: nil,
+        description: nil,
+        end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
+        image_url: nil,
+        item_code: nil,
+        jan_code: nil,
+        lock_version: 0,
+        manufacturer: nil,
+        merchandise_cost: "",
+        model_number: nil,
+        name: nil,
+        price: "200",
+        purchase_amount: "",
+        size1: nil,
+        size2: nil,
+        size3: nil,
+        size4: nil,
+        start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
+        tax_category: nil,
+        thumbnail: nil,
+        weight1: nil,
+        weight2: nil,
+        weight3: nil,
+        weight4: nil
+      }
+    ],
     contract_no: "0000-0000-0000",
-    start_datetime: "2018-12-01 09:00:00.000000Z",
-    size3: nil,
-    model_number: nil,
-    category3: nil,
-    thumbnail: nil,
-    item_code: "ICZ1000",
-    jan_code: nil,
-    merchandise_cost: "",
-    amount: 3,
-    name: nil,
-    purchase_amount: ""
-  },
-  %{
-    price: "200",
-    category1: "Multiple Details:1",
+    contracted_date: "",
+    delivery_address: nil,
+    delivery_end_datetime: "",
+    delivery_start_datetime: "",
+    end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
+    expiration_date: nil,
     lock_version: 0,
-    size2: nil,
-    manufacturer: nil,
-    size1: nil,
-    end_datetime: "2019-01-01 08:59:59.000000Z",
-    weight3: nil,
-    contract_name: nil,
-    delivery_area: nil,
-    image_url: nil,
-    description: nil,
-    category2: nil,
-    category4: nil,
-    weight4: nil,
-    color: nil,
-    size4: nil,
-    weight2: nil,
-    weight1: nil,
-    tax_category: nil,
-    contract_no: "0000-0000-0000",
-    start_datetime: "2018-12-01 09:00:00.000000Z",
-    size3: nil,
-    model_number: nil,
-    category3: nil,
-    thumbnail: nil,
-    item_code: nil,
-    jan_code: nil,
-    merchandise_cost: "",
-    amount: 2,
-    name: nil,
-    purchase_amount: ""
+    seller_id: nil,
+    sender_address: nil,
+    settlement: "9999-9999-9999",
+    shipping_fee: "110.01",
+    start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
+    status: 2,
+    tax_amount: "80",
+    total_amount: "1190.01"
   }
   ]
   """

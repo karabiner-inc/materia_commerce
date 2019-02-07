@@ -379,18 +379,14 @@ defmodule MateriaCommerce.ProductsTest do
       current_product = MateriaCommerce.Products.get_current_products(base_datetime, key_word_list)
       assert Enum.count(current_product) == 1
       current_product = current_product |> List.first()
-      assert Map.has_key?(current_product, :product)
-      assert Map.has_key?(current_product.product, :item)
-      assert Map.has_key?(current_product.product, :price)
-      assert Map.has_key?(current_product.product, :tax)
+      assert Map.has_key?(current_product, :price)
+      assert Map.has_key?(current_product, :tax)
 
-      current_item = Products.get_current_item_history(base_datetime, key_word_list)
       current_price = Products.get_current_price_history(base_datetime, key_word_list)
-      current_tax = Products.get_current_tax_history(base_datetime, [{:tax_category, current_item.tax_category}])
+      current_tax = Products.get_current_tax_history(base_datetime, [{:tax_category, current_product.tax_category}])
 
-      assert current_product.product.item == current_item
-      assert current_product.product.price == current_price
-      assert current_product.product.tax == current_tax
+      assert current_product.price == current_price
+      assert current_product.tax == current_tax
     end
   end
 end
