@@ -820,7 +820,50 @@ defmodule MateriaCommerce.Products do
     item
     |> join(:left, [i], p in subquery(price), item_code: i.item_code)
     |> join(:left, [i], t in subquery(tax), tax_category: i.tax_category)
-    |> select([i, p, t], %{product: %{item: i, price: p, tax: t}})
+    |> select([i, p, t], %{item: i, price: p, tax: t})
     |> @repo.all()
+    |> Enum.map(
+         fn result ->
+           item = result.item
+           item =
+             cond do
+               result.price.id != nil ->
+                 Map.put(item, :price, result.price)
+               true ->
+                 Map.put(item, :price, nil)
+             end
+           item =
+             cond do
+               result.tax.id != nil ->
+                 Map.put(item, :tax, result.tax)
+               true ->
+                 Map.put(item, :tax, nil)
+             end
+         end
+       )
+  end
+
+  @doc """
+  主キーを想定したパラメータで現在のPrice情報を取得する
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> current_price = MateriaCommerce.Products.get_current_price(base_datetime, [{:item_code, "ICZ1000"}])
+  iex(3)> current_price.unit_price
+  Decimal.new(200)
+  """
+  def get_current_price(base_datetime, key_word_list) do
+    MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, MateriaCommerce.Products.Price, base_datetime, key_word_list)
+  end
+
+  @doc """
+  主キーを想定したパラメータで現在のTax情報を取得する
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> current_tax = MateriaCommerce.Products.get_current_tax(base_datetime, [{:tax_category, "category1"}])
+  iex(3)> current_tax.name
+  "test2 tax"
+  """
+  def get_current_tax(base_datetime, key_word_list) do
+    taxes = MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, MateriaCommerce.Products.Tax, base_datetime, key_word_list)
   end
 end

@@ -1,6 +1,8 @@
 defmodule MateriaCommerceWeb.ItemView do
   use MateriaCommerceWeb, :view
   alias MateriaCommerceWeb.ItemView
+  alias MateriaCommerceWeb.PriceView
+  alias MateriaCommerceWeb.TaxView
   alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{items: items}) do
@@ -12,7 +14,7 @@ defmodule MateriaCommerceWeb.ItemView do
   end
 
   def render("item.json", %{item: item}) do
-    %{
+    result_map = %{
       id: item.id,
       name: item.name,
       category1: item.category1,
@@ -44,5 +46,17 @@ defmodule MateriaCommerceWeb.ItemView do
       inserted_at: CalendarUtil.convert_time_utc2local(item.inserted_at),
       updated_at: CalendarUtil.convert_time_utc2local(item.updated_at)
     }
+
+    result_map = if Map.has_key?(item, :price) and item.price != nil do
+      Map.put(result_map, :price, PriceView.render("show.json", %{price: item.price}))
+    else
+      Map.put(result_map, :price, nil)
+    end
+
+    result_map = if Map.has_key?(item, :tax) and item.tax != nil do
+      Map.put(result_map, :tax, TaxView.render("show.json", %{tax: item.tax}))
+    else
+      Map.put(result_map, :tax, nil)
+    end
   end
 end

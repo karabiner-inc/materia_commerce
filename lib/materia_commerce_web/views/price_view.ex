@@ -14,11 +14,14 @@ defmodule MateriaCommerceWeb.PriceView do
   def render("price.json", %{price: price}) do
     %{
       id: price.id,
+      item_code: price.item_code,
       description: price.description,
       unit_price: price.unit_price,
-      lock_version: price.lock_version,
+      purchase_amount: price.purchase_amount,
+      merchandise_cost: price.merchandise_cost,
       start_datetime: CalendarUtil.convert_time_utc2local(price.start_datetime),
       end_datetime: CalendarUtil.convert_time_utc2local(price.end_datetime),
+      lock_version: price.lock_version,
       inserted_at: CalendarUtil.convert_time_utc2local(price.inserted_at),
       updated_at: CalendarUtil.convert_time_utc2local(price.updated_at)
     }

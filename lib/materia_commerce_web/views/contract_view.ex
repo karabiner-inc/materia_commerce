@@ -13,7 +13,7 @@ defmodule MateriaCommerceWeb.ContractView do
   end
 
   def render("contract.json", %{contract: contract}) do
-    %{
+    result_map = %{
       id: contract.id,
       contract_no: contract.contract_no,
       settlement: contract.settlement,
@@ -36,5 +36,11 @@ defmodule MateriaCommerceWeb.ContractView do
       inserted_at: CalendarUtil.convert_time_utc2local(contract.inserted_at),
       updated_at: CalendarUtil.convert_time_utc2local(contract.updated_at)
     }
+
+    result_map = if Map.has_key?(contract, :contract_details) and contract.contract_details != [] do
+      Map.put(result_map, :contract_details, ContractDetailView.render("index.json", %{contract_details: contract.contract_details}))
+    else
+      Map.put(result_map, :contract_details, [])
+    end
   end
 end

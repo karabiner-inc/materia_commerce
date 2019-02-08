@@ -3,8 +3,9 @@ defmodule MateriaCommerceWeb.ItemController do
 
   alias MateriaCommerce.Products
   alias MateriaCommerce.Products.Item
+  alias MateriaUtils.Calendar.CalendarUtil
 
-  action_fallback MateriaCommerceWeb.FallbackController
+  action_fallback MateriaWeb.FallbackController
 
   def index(conn, _params) do
     items = Products.list_items()
@@ -38,5 +39,32 @@ defmodule MateriaCommerceWeb.ItemController do
     with {:ok, %Item{}} <- Products.delete_item(item) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  def search_current_items(conn, %{"key_words" => key_words}) do
+    now = CalendarUtil.now()
+    key_words = key_words
+                |> Enum.reduce([],
+                     fn (key_word, acc) ->
+                       key = Map.keys(key_word)
+                             |> List.first
+                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
+                     end
+                   )
+    items = Products.get_current_products(now, key_words)
+    render(conn, "index.json", items: items)
+  end
+
+  def current_items(conn, %{"key_words" => key_words, "params" => params}) do
+    now = CalendarUtil.now()
+    key_words = key_words
+                |> Enum.reduce([],
+                     fn (key_word, acc) ->
+                       key = Map.keys(key_word)
+                             |> List.first
+                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
+                     end
+                   )
+    MateriaWeb.ControllerBase.transaction_flow(conn, :item, Products, :create_new_item_history, [now, key_words, params])
   end
 end

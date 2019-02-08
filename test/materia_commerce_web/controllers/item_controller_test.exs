@@ -61,7 +61,9 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
         "weight1" => "some weight1",
         "weight2" => "some weight2",
         "weight3" => "some weight3",
-        "weight4" => "some weight4"}
+        "weight4" => "some weight4",
+        "price" => nil,
+        "tax" => nil}
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -108,7 +110,9 @@ defmodule MateriaCommerceWeb.ItemControllerTest do
         "weight1" => "some updated weight1",
         "weight2" => "some updated weight2",
         "weight3" => "some updated weight3",
-        "weight4" => "some updated weight4"}
+        "weight4" => "some updated weight4",
+        "price" => nil,
+        "tax" => nil}
     end
 
     # test "renders errors when data is invalid", %{conn: conn, item: item} do

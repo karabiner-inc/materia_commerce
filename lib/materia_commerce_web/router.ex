@@ -44,11 +44,25 @@ defmodule MateriaCommerceWeb.Router do
   end
 
   scope "/api", MateriaCommerceWeb do
+    pipe_through :api
+
     resources "/items", ItemController, except: [:new, :edit]
     resources "/taxes", TaxController, except: [:new, :edit]
     resources "/prices", PriceController, except: [:new, :edit]
     resources "/contracts", ContractController, except: [:new, :edit]
     resources "/contract_details", ContractDetailController, except: [:new, :edit]
+
+    post "/search-items", ItemController, :search_current_items
+    post "/search-taxes", TaxController, :search_current_taxes
+    post "/search-prices", PriceController, :search_current_prices
+    post "/current-items", ItemController, :current_items
+    post "/current-taxes", TaxController, :current_taxes
+    post "/current-prices", PriceController, :current_prices
+
+    post "/search-contracts", ContractController, :search_current_contracts
+    post "/search-contract-details", ContractDetailController, :search_current_contract_details
+    post "/current-contracts", ContractController, :current_contracts
+    post "/current-contract-details", ContractDetailController, :current_contract_details
   end
 
   scope "/api", MateriaWeb do
