@@ -51,7 +51,7 @@ defmodule MateriaCommerceWeb.TaxController do
                        acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
                      end
                    )
-    taxes = Products.get_current_tax_history(now, key_words)
+    taxes = Products.get_current_tax(now, key_words)
     render(conn, "index.json", taxes: taxes)
   end
 

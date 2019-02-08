@@ -50,7 +50,7 @@ defmodule MateriaCommerceWeb.PriceController do
                        acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
                      end
                    )
-    prices = Products.get_current_price_history(now, key_words)
+    prices = Products.get_current_price(now, key_words)
     render(conn, "index.json", prices: prices)
   end
 

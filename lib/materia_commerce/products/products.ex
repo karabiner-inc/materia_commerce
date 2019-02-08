@@ -842,4 +842,28 @@ defmodule MateriaCommerce.Products do
          end
        )
   end
+
+  @doc """
+  主キーを想定したパラメータで現在のPrice情報を取得する
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> current_price = MateriaCommerce.Products.get_current_price(base_datetime, [{:item_code, "ICZ1000"}])
+  iex(3)> current_price.unit_price
+  Decimal.new(200)
+  """
+  def get_current_price(base_datetime, key_word_list) do
+    MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, MateriaCommerce.Products.Price, base_datetime, key_word_list)
+  end
+
+  @doc """
+  主キーを想定したパラメータで現在のTax情報を取得する
+
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(2)> current_tax = MateriaCommerce.Products.get_current_tax(base_datetime, [{:tax_category, "category1"}])
+  iex(3)> current_tax.name
+  "test2 tax"
+  """
+  def get_current_tax(base_datetime, key_word_list) do
+    taxes = MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, MateriaCommerce.Products.Tax, base_datetime, key_word_list)
+  end
 end
