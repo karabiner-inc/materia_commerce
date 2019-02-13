@@ -4,8 +4,11 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContractDetails do
   def change do
     create table(:contract_details) do
       add :contract_name, :string
+      add :contract_no, :string
       add :amount, :integer
-      add :price, :integer
+      add :price, :decimal
+      add :purchase_amount, :decimal
+      add :merchandise_cost, :decimal
       add :description, :text
       add :name, :string
       add :category1, :string
@@ -29,14 +32,14 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContractDetails do
       add :manufacturer, :string
       add :color, :string
       add :tax_category, :string
+      add :start_datetime, :utc_datetime
+      add :end_datetime, :utc_datetime
       add :lock_version, :bigint
-      add :contract_id, references(:contracts, on_delete: :nothing)
-      add :item_id, references(:items, on_delete: :nothing)
 
       timestamps()
     end
 
-    create index(:contract_details, [:contract_id])
-    create index(:contract_details, [:item_id])
+    create index(:contract_details, [:contract_no])
+    create index(:contract_details, [:item_code])
   end
 end

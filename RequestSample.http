@@ -1,0 +1,456 @@
+###############################################
+# リクエストテスト定義情報 => rest-client.env.json
+###############################################
+###### MateriaWeb.AuthenticatorController
+### :sign_in
+POST   {{url}}/api/sign-in   HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "{{login_email}}",
+  "password": "{{login_password}}"
+}
+
+> {%
+    client.global.set("access_token",  response.body.access_token);
+    client.global.set("refresh_token", response.body.refresh_token);
+    client.global.set("user_id",       response.body.id);
+  %}
+
+###############################################
+###### MateriaCommerceWeb.ItemController
+### :index
+GET    {{url}}/api/items     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+> {%
+    client.global.set("item_id",  response.body[0].id);
+  %}
+
+### :show
+GET    {{url}}/api/items/{{item_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :create
+POST   {{url}}/api/items     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "ItemNameTest",
+  "item_code": "ItemCode",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+> {%
+    client.global.set("item_id",  response.body.id);
+  %}
+
+### :update
+PUT    {{url}}/api/items/{{item_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "ItemNameTest_Update",
+  "item_code": "ItemCode_Update",
+  "start_datetime": "2000-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+### :delete
+DELETE {{url}}/api/items/{{item_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :search_current_items
+POST   {{url}}/api/search-items HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"item_code": "ICZ1000"}
+  ]
+}
+
+### :search_current_items
+POST   {{url}}/api/search-items HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_contracts
+POST   {{url}}/api/current-items     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"item_code": "ICZ1000"}
+  ],
+  "params": {
+    "item_code": "ICZ1000",
+    "category1": "電化製品",
+    "name": "炊飯器Z1000!!",
+    "lock_version": 0
+  }
+}
+
+###############################################
+###### MateriaCommerceWeb.TaxController
+### :index
+GET    {{url}}/api/taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+> {%
+    client.global.set("tax_id",  response.body[0].id);
+  %}
+
+### :show
+GET    {{url}}/api/taxes/{{tax_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :create
+POST   {{url}}/api/taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "TaxNameTest",
+  "tax_category": "TaxCategory1",
+  "tax_rate": 0.5,
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+> {%
+    client.global.set("tax_id",  response.body.id);
+  %}
+
+### :update
+PUT    {{url}}/api/taxes/{{tax_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "TaxNameTest_Update",
+  "tax_category": "TaxCategory1_Update",
+  "tax_rate": 100,
+  "start_datetime": "2000-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+### :delete
+DELETE {{url}}/api/taxes/{{tax_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :search_current_taxes
+POST   {{url}}/api/search-taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"tax_category": "category2"}
+  ]
+}
+
+### :search_current_taxes
+POST   {{url}}/api/search-taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_taxes
+POST   {{url}}/api/current-taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"tax_category": "category1"}
+  ],
+  "params": {
+    "tax_category": "category1",
+    "tax_rate": 200,
+    "lock_version": 0
+  }
+}
+
+###############################################
+###### MateriaCommerceWeb.PriceController
+### :index
+GET    {{url}}/api/prices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+> {%
+    client.global.set("price_id",  response.body[0].id);
+  %}
+
+### :show
+GET    {{url}}/api/prices/{{price_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :create
+POST   {{url}}/api/prices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "item_code": "ItemCode",
+  "unit_price": 10.5,
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+> {%
+    client.global.set("price_id",  response.body.id);
+  %}
+
+### :update
+PUT    {{url}}/api/prices/{{price_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "item_code": "ItemCode_Update",
+  "unit_price": 1000.5,
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+### :delete
+DELETE {{url}}/api/prices/{{price_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :search_current_prices
+POST   {{url}}/api/search-prices HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"item_code": "ICZ1001"}
+  ]
+}
+
+### :search_current_prices
+POST   {{url}}/api/search-prices HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_prices
+POST   {{url}}/api/current-prices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"item_code": "ICZ1000"}
+  ],
+  "params": {
+    "item_code": "ICZ1000",
+    "unit_price": 0,
+    "description": "description",
+    "lock_version": 0
+  }
+}
+
+###############################################
+###### MateriaCommerceWeb.ContractController
+### :index
+GET    {{url}}/api/contracts     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+> {%
+    client.global.set("contract_id",  response.body[0].id);
+  %}
+
+### :show
+GET    {{url}}/api/contracts/{{contract_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :create
+POST   {{url}}/api/contracts     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "contract_no": "Contract-Number",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+> {%
+    client.global.set("contract_id",  response.body.id);
+  %}
+
+### :update
+PUT    {{url}}/api/contracts/{{contract_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "contract_no": "Contract-Number_Update",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+### :delete
+DELETE {{url}}/api/contracts/{{contract_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :search_current_contracts
+POST   {{url}}/api/search-contracts     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"contract_no": "1111-1111-1111"}
+  ]
+}
+
+### :search_current_contracts
+POST   {{url}}/api/search-contracts     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_contracts
+POST   {{url}}/api/current-contracts     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"contract_no": "1111-1111-1111"}
+  ],
+  "params": {
+    "contract_no": "1111-1111-1111",
+    "settlement": "8888-8888-8888",
+    "lock_version": 0
+  }
+}
+
+###############################################
+###### MateriaCommerceWeb.ContractDetailController
+### :index
+GET    {{url}}/api/contract_details     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+> {%
+    client.global.set("contract_detail_id",  response.body[0].id);
+  %}
+
+### :show
+GET    {{url}}/api/contract_details/{{contract_detail_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :create
+POST   {{url}}/api/contract_details     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "contract_no": "Contract-Number",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+> {%
+    client.global.set("contract_detail_id",  response.body.id);
+  %}
+
+### :update
+PUT    {{url}}/api/contract_details/{{contract_detail_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "contract_no": "Contract-Number_Update",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z"
+}
+
+### :delete
+DELETE {{url}}/api/contract_details/{{contract_detail_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :search_current_contract_details
+POST   {{url}}/api/search-contract-details     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"contract_no": "1111-1111-1111"}
+  ]
+}
+
+### :search_current_contract_details
+POST   {{url}}/api/search-contract-details     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_contract_details
+POST   {{url}}/api/current-contract-details     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"contract_no": "1111-1111-1111"}
+  ],
+  "params": [
+    {
+      "contract_no": "1111-1111-1111",
+      "contract_name": "Update",
+      "amount": 2,
+      "price": 200,
+      "id": 6,
+      "lock_version": 0
+    },
+    {
+      "contract_no": "1111-1111-1111",
+      "contract_name": "NewRecord",
+      "amount": 3,
+      "price": 300
+    }
+  ]
+}
+
+###

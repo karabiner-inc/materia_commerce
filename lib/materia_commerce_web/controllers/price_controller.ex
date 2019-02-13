@@ -3,15 +3,16 @@ defmodule MateriaCommerceWeb.PriceController do
 
   alias MateriaCommerce.Products
   alias MateriaCommerce.Products.Price
+  alias MateriaUtils.Calendar.CalendarUtil
 
-  action_fallback MateriaCommerceWeb.FallbackController
+  action_fallback MateriaWeb.FallbackController
 
   def index(conn, _params) do
     prices = Products.list_prices()
     render(conn, "index.json", prices: prices)
   end
 
-  def create(conn, %{"price" => price_params}) do
+  def create(conn, price_params) do
     with {:ok, %Price{} = price} <- Products.create_price(price_params) do
       conn
       |> put_status(:created)
@@ -25,9 +26,8 @@ defmodule MateriaCommerceWeb.PriceController do
     render(conn, "show.json", price: price)
   end
 
-  def update(conn, %{"id" => id, "price" => price_params}) do
-    price = Products.get_price!(id)
-
+  def update(conn, price_params) do
+    price = Products.get_price!(price_params["id"])
     with {:ok, %Price{} = price} <- Products.update_price(price, price_params) do
       render(conn, "show.json", price: price)
     end
@@ -38,5 +38,32 @@ defmodule MateriaCommerceWeb.PriceController do
     with {:ok, %Price{}} <- Products.delete_price(price) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  def search_current_prices(conn, %{"key_words" => key_words}) do
+    now = CalendarUtil.now()
+    key_words = key_words
+                |> Enum.reduce([],
+                     fn (key_word, acc) ->
+                       key = Map.keys(key_word)
+                             |> List.first
+                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
+                     end
+                   )
+    prices = Products.get_current_price(now, key_words)
+    render(conn, "index.json", prices: prices)
+  end
+
+  def current_prices(conn, %{"key_words" => key_words, "params" => params}) do
+    now = CalendarUtil.now()
+    key_words = key_words
+                |> Enum.reduce([],
+                     fn (key_word, acc) ->
+                       key = Map.keys(key_word)
+                             |> List.first
+                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
+                     end
+                   )
+    MateriaWeb.ControllerBase.transaction_flow(conn, :price, Products, :create_new_price_history, [now, key_words, params])
   end
 end

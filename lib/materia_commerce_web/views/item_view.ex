@@ -1,6 +1,9 @@
 defmodule MateriaCommerceWeb.ItemView do
   use MateriaCommerceWeb, :view
   alias MateriaCommerceWeb.ItemView
+  alias MateriaCommerceWeb.PriceView
+  alias MateriaCommerceWeb.TaxView
+  alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{items: items}) do
     render_many(items, ItemView, "item.json")
@@ -11,7 +14,8 @@ defmodule MateriaCommerceWeb.ItemView do
   end
 
   def render("item.json", %{item: item}) do
-    %{id: item.id,
+    result_map = %{
+      id: item.id,
       name: item.name,
       category1: item.category1,
       category2: item.category2,
@@ -35,9 +39,24 @@ defmodule MateriaCommerceWeb.ItemView do
       status: item.status,
       color: item.color,
       description: item.description,
-      start_datetime: item.start_datetime,
-      end_datetime: item.end_datetime,
       tax_category: item.tax_category,
-      lock_version: item.lock_version}
+      lock_version: item.lock_version,
+      start_datetime: CalendarUtil.convert_time_utc2local(item.start_datetime),
+      end_datetime: CalendarUtil.convert_time_utc2local(item.end_datetime),
+      inserted_at: CalendarUtil.convert_time_utc2local(item.inserted_at),
+      updated_at: CalendarUtil.convert_time_utc2local(item.updated_at)
+    }
+
+    result_map = if Map.has_key?(item, :price) and item.price != nil do
+      Map.put(result_map, :price, PriceView.render("show.json", %{price: item.price}))
+    else
+      Map.put(result_map, :price, nil)
+    end
+
+    result_map = if Map.has_key?(item, :tax) and item.tax != nil do
+      Map.put(result_map, :tax, TaxView.render("show.json", %{tax: item.tax}))
+    else
+      Map.put(result_map, :tax, nil)
+    end
   end
 end
