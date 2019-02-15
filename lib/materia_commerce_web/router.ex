@@ -14,7 +14,11 @@ defmodule MateriaCommerceWeb.Router do
   end
 
   pipeline :guardian_auth do
-    plug Materia.AuthenticatePipeline
+    plug Materia.UserAuthPipeline
+  end
+
+  pipeline :guardian_auth_acount do
+    plug Materia.AccountAuthPipeline
   end
 
   pipeline :tmp_user_auth do
@@ -63,6 +67,13 @@ defmodule MateriaCommerceWeb.Router do
     post "/search-contract-details", ContractDetailController, :search_current_contract_details
     post "/current-contracts", ContractController, :current_contracts
     post "/current-contract-details", ContractDetailController, :current_contract_details
+  end
+
+  scope "/api", MateriaCommerceWeb do
+    pipe_through [ :api, :guardian_auth]
+
+    resources "/projects", ProjectController, except: [:new, :edit]
+    resources "/project_appendices", ProjectAppendixController, except: [:new, :edit]
   end
 
   scope "/api", MateriaWeb do
