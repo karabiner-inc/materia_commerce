@@ -1,7 +1,7 @@
 defmodule MateriaCommerce.ProjectsTest do
   use MateriaCommerce.DataCase
-  # todo
-  #doctest MateriaCommerce.Projects
+
+  doctest MateriaCommerce.Projects
   alias MateriaCommerce.Projects
 
   describe "projects" do
