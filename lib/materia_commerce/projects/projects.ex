@@ -286,7 +286,7 @@ defmodule MateriaCommerce.Projects do
   end
 
   def get_recent_project_appendix_history(base_datetime, keywords) do
-    MateriaUtils.Ecto.EctoUtil.list_recent_history(@repo, ProjectAppendix, base_datetime, keywords)
+    EctoUtil.list_recent_history(@repo, ProjectAppendix, base_datetime, keywords)
   end
 
   def create_new_project_appendix_history(%{}, start_datetime, keywords, attrs, user_id) do
@@ -376,5 +376,13 @@ defmodule MateriaCommerce.Projects do
       filter == nil -> false
       true -> filter
     end
+  end
+
+  def get_current_project(base_datetime, keywords) do
+    EctoUtil.list_current_history(@repo, Project, base_datetime, keywords)
+  end
+
+  def get_current_project_appendices(base_datetime, keywords) do
+    EctoUtil.list_current_history(@repo, ProjectAppendix, base_datetime, keywords)
   end
 end

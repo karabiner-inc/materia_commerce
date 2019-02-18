@@ -30,7 +30,7 @@ defmodule MateriaCommerceWeb.ProjectAppendixControllerTest do
   describe "index" do
     test "lists all project_appendices", %{conn: conn} do
       conn = get conn, project_appendix_path(conn, :index)
-      assert json_response(conn, 200) == []
+      assert json_response(conn, 200) != []
     end
   end
 
@@ -113,6 +113,69 @@ defmodule MateriaCommerceWeb.ProjectAppendixControllerTest do
       assert_error_sent 404, fn ->
         get conn, project_appendix_path(conn, :show, project_appendix)
       end
+    end
+  end
+
+  describe "current project_appendix" do
+    test "search", %{conn: conn} do
+      conn = post conn, project_appendix_path(conn, :search_current_project_appendices),
+                  key_words: [%{"project_number" => "PJ-01"}]
+      json_response(conn, 200)
+      |> Enum.map(
+           fn project_appendix ->
+             cond do
+               project_appendix["appendix_category"] == "Category1" ->
+                 assert project_appendix["appendix_number"] == "4"
+                 assert project_appendix["appendix_status"] == 3
+                 assert project_appendix["start_datetime"] == "2019-01-01T18:00:00.000000+09:00"
+                 assert project_appendix["end_datetime"] == "3000-01-01T08:59:59.000000+09:00"
+               project_appendix["appendix_category"] == "Category4" ->
+                 assert project_appendix["appendix_number"] == "5"
+                 assert project_appendix["appendix_status"] == 4
+                 assert project_appendix["start_datetime"] == "2019-01-01T18:00:00.000000+09:00"
+                 assert project_appendix["end_datetime"] == "3000-01-01T08:59:59.000000+09:00"
+             end
+           end
+         )
+    end
+
+    test "new history", %{conn: conn} do
+      create_conn = post conn, project_appendix_path(conn, :current_project_appendices),
+                  key_words: [%{"project_number" => "PJ-01"}],
+                  params: [
+                    %{
+                      "project_number" => "PJ-01",
+                      "appendix_category" => "Category5",
+                      "appendix_number" => "7",
+                      "appendix_status" => 6,
+                    },
+                    %{
+                      "project_number" => "PJ-01",
+                      "appendix_category" => "Category4",
+                      "appendix_number" => "8",
+                      "appendix_status" => 7,
+                      "id" => 5,
+                      "lock_version" => 0,
+                    }
+                  ]
+      conn = post conn, project_appendix_path(conn, :search_current_project_appendices),
+                  key_words: [%{"project_number" => "PJ-01"}]
+
+      json_response(conn, 200)
+      |> Enum.map(
+           fn project_appendix ->
+             cond do
+               project_appendix["appendix_category"] == "Category4" ->
+                 assert project_appendix["appendix_number"] == "8"
+                 assert project_appendix["appendix_status"] == 7
+                 assert project_appendix["end_datetime"] == "3000-01-01T08:59:59.000000+09:00"
+               project_appendix["appendix_category"] == "Category5" ->
+                 assert project_appendix["appendix_number"] == "7"
+                 assert project_appendix["appendix_status"] == 6
+                 assert project_appendix["end_datetime"] == "3000-01-01T08:59:59.000000+09:00"
+             end
+           end
+         )
     end
   end
 

@@ -30,7 +30,7 @@ defmodule MateriaCommerceWeb.ProjectControllerTest do
   describe "index" do
     test "lists all projects", %{conn: conn} do
       conn = get conn, project_path(conn, :index)
-      assert json_response(conn, 200) == []
+      assert json_response(conn, 200) != []
     end
   end
 
@@ -141,6 +141,37 @@ defmodule MateriaCommerceWeb.ProjectControllerTest do
       assert_error_sent 404, fn ->
         get conn, project_path(conn, :show, project)
       end
+    end
+  end
+
+  describe "current project" do
+    test "search", %{conn: conn} do
+      conn = post conn, project_path(conn, :search_current_projects),
+                  key_words: [%{"project_number" => "PJ-01"}]
+      project = json_response(conn, 200)
+                |> List.first
+      assert project["project_number"] == "PJ-01"
+      assert project["start_datetime"] == "2019-01-01T18:00:00.000000+09:00"
+      assert project["end_datetime"] == "3000-01-01T08:59:59.000000+09:00"
+      assert project["status"] == 2
+    end
+
+    test "new history", %{conn: conn} do
+      create_conn = post conn, project_path(conn, :current_projects),
+                  key_words: [%{"project_number" => "PJ-01"}],
+                  params: %{
+                    "project_number" => "PJ-01",
+                    "status" => 4,
+                    "lock_version" => 2,
+                  }
+
+      conn = post conn, project_path(conn, :search_current_projects),
+                  key_words: [%{"project_number" => "PJ-01"}]
+      project = json_response(conn, 200)
+                |> List.first
+      assert project["project_number"] == "PJ-01"
+      assert project["end_datetime"] == "3000-01-01T08:59:59.000000+09:00"
+      assert project["status"] == 4
     end
   end
 

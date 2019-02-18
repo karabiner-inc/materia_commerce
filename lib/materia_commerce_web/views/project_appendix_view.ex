@@ -8,6 +8,10 @@ defmodule MateriaCommerceWeb.ProjectAppendixView do
     render_many(project_appendices, ProjectAppendixView, "project_appendix.json")
   end
 
+  def render("show.json", %{project_appendices: project_appendices}) do
+    render_many(project_appendices, ProjectAppendixView, "project_appendix.json")
+  end
+
   def render("show.json", %{project_appendix: project_appendix}) do
     render_one(project_appendix, ProjectAppendixView, "project_appendix.json")
   end

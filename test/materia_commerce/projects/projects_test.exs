@@ -1,6 +1,6 @@
 defmodule MateriaCommerce.ProjectsTest do
   use MateriaCommerce.DataCase
-
+  # todo
   #doctest MateriaCommerce.Projects
   alias MateriaCommerce.Projects
 
@@ -135,6 +135,116 @@ defmodule MateriaCommerce.ProjectsTest do
       project = project_fixture()
       assert %Ecto.Changeset{} = Projects.change_project(project)
     end
+
+    test "get_current_project_history/2 " do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      result = MateriaCommerce.Projects.get_current_project_history(base_datetime, keywords)
+      assert result.project_number == "PJ-01"
+      assert result.status == 1
+    end
+
+    test "delete_future_project_histories/2 delete status2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      {result, _} = MateriaCommerce.Projects.delete_future_project_histories(base_datetime, keywords)
+      lists = MateriaCommerce.Projects.list_projects()
+      assert result == 1
+      assert !Enum.any?(lists, fn(list)-> list.status == 2 end)
+    end
+
+    test "get_recent_project_history/2 no result" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      result = MateriaCommerce.Projects.get_recent_project_history(base_datetime, keywords)
+      assert result == nil
+    end
+
+    test "get_recent_project_history/2 boundary values" do
+      keywords = [{:project_number, "PJ-01"}]
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
+      result = MateriaCommerce.Projects.get_recent_project_history(base_datetime, keywords)
+      assert result.status == 0
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:00Z")
+      result = MateriaCommerce.Projects.get_recent_project_history(base_datetime, keywords)
+      assert result.status == 0
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
+      result = MateriaCommerce.Projects.get_recent_project_history(base_datetime, keywords)
+      assert result.status == 1
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
+      result = MateriaCommerce.Projects.get_recent_project_history(base_datetime, keywords)
+      assert result.status == 1
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:01Z")
+      result = MateriaCommerce.Projects.get_recent_project_history(base_datetime, keywords)
+      assert result.status == 2
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-02-01 09:00:00Z")
+      result = MateriaCommerce.Projects.get_recent_project_history(base_datetime, keywords)
+      assert result.status == 2
+    end
+
+    test "create_new_project_history/5 error parameters lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      attr = %{
+        "project_number" => "PJ-01",
+        "status" => 4,
+      }
+      assert_raise(KeyError, fn -> MateriaCommerce.Projects.create_new_project_history(%{}, base_datetime, keywords, attr, 1) end)
+    end
+
+    test "create_new_project_history/5 error different lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      attr = %{
+        "project_number" => "PJ-01",
+        "status" => 4,
+        "lock_version" => 99,
+      }
+      assert_raise(KeyError, fn -> MateriaCommerce.Projects.create_new_project_history(%{}, base_datetime, keywords, attr, 1) end)
+    end
+
+    test "create_new_project_history/5 create data all delete" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2017-11-17 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      attr = %{
+        "project_number" => "PJ-01",
+        "status" => 4,
+        "lock_version" => 2,
+      }
+      {:ok, result} = MateriaCommerce.Projects.create_new_project_history(%{}, base_datetime, keywords, attr, 1)
+      lists = MateriaCommerce.Projects.list_projects() |> Enum.filter(fn(x) -> x.project_number == "PJ-01" end)
+      list = lists |> Enum.filter(fn(x) -> x.id == result.id end) |> Enum.at(0)
+      assert list.id == result.id
+      assert list.project_number == "PJ-01"
+      assert list.status == 4
+      assert list.start_datetime == DateTime.from_naive!(~N[2017-11-17 09:00:00.000000Z], "Etc/UTC")
+      assert list.end_datetime == DateTime.from_naive!(~N[2999-12-31 23:59:59.000000Z], "Etc/UTC")
+      assert Enum.count(lists) == 1
+    end
+
+    test "create_new_project_history/5 create latest history data" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-02 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      attr = %{
+        "project_number" => "PJ-01",
+        "status" => 4,
+        "lock_version" => 2,
+      }
+      {:ok, result} = MateriaCommerce.Projects.create_new_project_history(%{}, base_datetime, keywords, attr, 1)
+      lists = MateriaCommerce.Projects.list_projects() |> Enum.filter(fn(x) -> x.project_number == "PJ-01" end)
+      list = lists |> Enum.filter(fn(x) -> x.id == result.id end) |> Enum.at(0)
+      assert list.id == result.id
+      assert list.project_number == "PJ-01"
+      assert list.status == 4
+      assert list.start_datetime == DateTime.from_naive!(~N[2019-01-02 09:00:00.000000Z], "Etc/UTC")
+      assert list.end_datetime == DateTime.from_naive!(~N[2999-12-31 23:59:59.000000Z], "Etc/UTC")
+    end
   end
 
   describe "project_appendices" do
@@ -228,6 +338,233 @@ defmodule MateriaCommerce.ProjectsTest do
     test "change_project_appendix/1 returns a project_appendix changeset" do
       project_appendix = project_appendix_fixture()
       assert %Ecto.Changeset{} = Projects.change_project_appendix(project_appendix)
+    end
+
+    test "get_current_project_appendix_history/2 get status2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      result = MateriaCommerce.Projects.get_current_project_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 3
+
+      result
+      |> Enum.map(
+           fn x ->
+             assert x.project_number == "PJ-01"
+             cond do
+               x.appendix_category == "Category1" ->
+                 assert x.appendix_status == 0
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+               x.appendix_category == "Category2" ->
+                 assert x.appendix_status == 1
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+               x.appendix_category == "Category3" ->
+                 assert x.appendix_status == 2
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+             end
+           end
+         )
+    end
+
+    test "delete_future_project_appendix_histories/2 delete status3" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      {result, _} = MateriaCommerce.Projects.delete_future_project_appendix_histories(base_datetime, keywords)
+      details = MateriaCommerce.Projects.list_project_appendices() |> Enum.filter(fn x -> x.project_number == "PJ-01" end)
+      assert result == 2
+      assert Enum.count(details) == 3
+
+      details
+      |> Enum.map(
+           fn x ->
+             assert x.project_number == "PJ-01"
+             cond do
+               x.appendix_category == "Category1" ->
+                 assert x.appendix_status == 0
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+               x.appendix_category == "Category2" ->
+                 assert x.appendix_status == 1
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+               x.appendix_category == "Category3" ->
+                 assert x.appendix_status == 2
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+             end
+           end
+         )
+    end
+
+    test "get_recent_project_appendix_history/2 no result" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      result = MateriaCommerce.Projects.get_recent_project_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 0
+    end
+
+    test "get_recent_project_appendix_history/2 boundary values" do
+      keywords = [{:project_number, "PJ-01"}]
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
+      result = MateriaCommerce.Projects.get_recent_project_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 3
+      assert Enum.any?(result, fn x -> x.appendix_status == 0 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 1 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 2 end)
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
+      result = MateriaCommerce.Projects.get_recent_project_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 3
+      assert Enum.any?(result, fn x -> x.appendix_status == 0 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 1 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 2 end)
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:01Z")
+      result = MateriaCommerce.Projects.get_recent_project_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 2
+      assert Enum.any?(result, fn x -> x.appendix_status == 3 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 4 end)
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-02-01 09:00:00Z")
+      result = MateriaCommerce.Projects.get_recent_project_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 2
+      assert Enum.any?(result, fn x -> x.appendix_status == 3 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 4 end)
+    end
+
+    test "create_new_project_appendix_history/5 error parameters lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
+      keywords = [{:project_number, "PJ-01"}]
+      attrs = [
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category1",
+          "appendix_status" => "99",
+          "id" => 1,
+          "lock_version" => 0,
+        },
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category2",
+          "appendix_status" => "99",
+          "id" => 2,
+          #"lock_version" => 1,
+        },
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category5"
+        }
+      ]
+      assert_raise(KeyError, fn -> MateriaCommerce.Projects.create_new_project_appendix_history(%{}, base_datetime, keywords, attrs, 1) end)
+    end
+
+    test "create_new_project_appendix_history/5 error parameters error different lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
+      keywords = [{:project_number, "PJ-01"}]
+      attrs = [
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category1",
+          "appendix_status" => "99",
+          "id" => 1,
+          "lock_version" => 0,
+        },
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category2",
+          "appendix_status" => "99",
+          "id" => 2,
+          "lock_version" => 99,
+        },
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category5"
+        }
+      ]
+      assert_raise(KeyError, fn -> MateriaCommerce.Projects.create_new_project_appendix_history(%{}, base_datetime, keywords, attrs, 1) end)
+    end
+
+    test "create_new_project_appendix_history/5 create data all delete" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2017-11-17 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      attrs = [
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category90",
+        },
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category91",
+        },
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category92",
+        }
+      ]
+      {:ok, result} = Projects.create_new_project_appendix_history(%{}, base_datetime, keywords, attrs, 1)
+      assert Enum.count(result) == 3
+      result
+      |> Enum.map(
+           fn x ->
+             assert x.project_number == "PJ-01"
+             assert x.start_datetime == DateTime.from_naive!(~N[2017-11-17 09:00:00Z], "Etc/UTC")
+             assert x.end_datetime == DateTime.from_naive!(~N[2999-12-31 23:59:59Z], "Etc/UTC")
+           end
+         )
+
+      details = MateriaCommerce.Projects.list_project_appendices()
+                |> Enum.filter(fn x -> x.project_number == "PJ-01" end)
+      assert Enum.count(details) == 3
+    end
+
+    test "create_new_project_appendix_history/5 create latest history data" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-02 09:00:00Z")
+      keywords = [{:project_number, "PJ-01"}]
+      attrs = [
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category1",
+          "appendix_status" => "90",
+          "id" => 4,
+          "lock_version" => 1,
+        },
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category4",
+          "appendix_status" => "91",
+          "id" => 5,
+          "lock_version" => 0,
+        },
+        %{
+          "project_number" => "PJ-01",
+          "appendix_category" => "Category5",
+          "appendix_status" => "92",
+        }
+      ]
+      {:ok, result} = MateriaCommerce.Projects.create_new_project_appendix_history(%{}, base_datetime, keywords, attrs, 1)
+      assert Enum.count(result) == 3
+      result
+      |> Enum.map(
+           fn x ->
+             assert x.project_number == "PJ-01"
+             assert x.start_datetime == DateTime.from_naive!(~N[2019-01-02 09:00:00Z], "Etc/UTC")
+             assert x.end_datetime == DateTime.from_naive!(~N[2999-12-31 23:59:59Z], "Etc/UTC")
+             cond do
+               x.appendix_category == "Category1" ->
+                 assert x.appendix_status == 90
+               x.appendix_category == "Category4" ->
+                 assert x.appendix_status == 91
+               x.appendix_category == "Category5" ->
+                 assert x.appendix_status == 92
+             end
+           end
+         )
+      details = MateriaCommerce.Projects.list_project_appendices()
+                |> Enum.filter(fn x -> x.project_number == "PJ-01" end)
+      assert Enum.count(details) == 8
     end
   end
 end

@@ -74,6 +74,11 @@ defmodule MateriaCommerceWeb.Router do
 
     resources "/projects", ProjectController, except: [:new, :edit]
     resources "/project_appendices", ProjectAppendixController, except: [:new, :edit]
+
+    post "/search-projects", ProjectController, :search_current_projects
+    post "/search-project-appendices", ProjectAppendixController, :search_current_project_appendices
+    post "/current-projects", ProjectController, :current_projects
+    post "/current-project-appendices", ProjectAppendixController, :current_project_appendices
   end
 
   scope "/api", MateriaWeb do

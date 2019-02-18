@@ -453,4 +453,184 @@ Authorization: Bearer {{access_token}}
   ]
 }
 
+###############################################
+###### MateriaCommerceWeb.ProjectController
+### :index
+GET    {{url}}/api/projects     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+> {%
+    client.global.set("project_id",  response.body[0].id);
+  %}
+
+### :show
+GET    {{url}}/api/projects/{{project_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :create
+POST   {{url}}/api/projects     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "project_number": "Project-Number",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": "1"
+}
+
+> {%
+    client.global.set("project_id",  response.body.id);
+  %}
+
+### :update
+PUT    {{url}}/api/projects/{{project_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "project_number": "Project-Number_Update",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": "1"
+}
+
+### :delete
+DELETE {{url}}/api/projects/{{project_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :search_current_projects
+POST   {{url}}/api/search-projects     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"project_number": "PJ-01"}
+  ]
+}
+
+### :search_current_projects
+POST   {{url}}/api/search-projects     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_projects
+POST   {{url}}/api/current-projects     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"project_number": "PJ-01"}
+  ],
+  "params": {
+    "project_number": "PJ-01",
+    "status": "99",
+    "user_id": "1",
+    "lock_version": 2
+  }
+}
+
+###############################################
+###### MateriaCommerceWeb.ProjectAppendixController
+### :index
+GET    {{url}}/api/project_appendices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+> {%
+    client.global.set("project_appendix_id",  response.body[0].id);
+  %}
+
+### :show
+GET    {{url}}/api/project_appendices/{{project_appendix_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :create
+POST   {{url}}/api/project_appendices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "project_number": "Project-Number",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": "1",
+  "appendix_category": "Appendix_Category1"
+}
+
+> {%
+    client.global.set("project_appendix_id",  response.body.id);
+  %}
+
+### :update
+PUT    {{url}}/api/project_appendices/{{project_appendix_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "project_number": "Project-Number_Update",
+  "start_datetime": "1999-12-31 23:59:59Z",
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": "1",
+  "appendix_category": "Appendix_Category1_Update"
+}
+
+### :delete
+DELETE {{url}}/api/project_appendices/{{project_appendix_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### :search_current_project_appendices
+POST   {{url}}/api/search-project-appendices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"project_number": "PJ-01"}
+  ]
+}
+
+### :search_current_project_appendices
+POST   {{url}}/api/search-project-appendices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": []
+}
+
+### :current_contracts
+POST   {{url}}/api/current-project-appendices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "key_words": [
+    {"project_number": "PJ-01"}
+  ],
+  "params": [
+    {
+      "project_number": "PJ-01",
+      "appendix_category": "Category4",
+      "id": 5,
+      "lock_version": 0
+    },
+    {
+      "project_number": "PJ-01",
+      "appendix_category": "Category5"
+    }
+  ]
+}
+
 ###
