@@ -6,6 +6,9 @@ defmodule MateriaCommerce.Commerces do
   import Ecto.Query, warn: false
 
   alias MateriaCommerce.Commerces.Contract
+  alias MateriaCommerce.Commerces.ContractDetail
+  alias MateriaCommerce.Commerces.Request
+  alias MateriaCommerce.Commerces.RequestAppendix
   alias MateriaUtils.Calendar.CalendarUtil
 
   @repo Application.get_env(:materia, :repo)
@@ -564,8 +567,6 @@ defmodule MateriaCommerce.Commerces do
         {:ok, contract}
       end
   end
-
-  alias MateriaCommerce.Commerces.ContractDetail
 
   @doc """
   Returns the list of contract_details.
@@ -1549,6 +1550,1005 @@ defmodule MateriaCommerce.Commerces do
                    end
                  )
   end
+
+  @doc """
+  Returns the list of requests.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> results = MateriaCommerce.Commerces.list_requests
+  iex(3)> view = MateriaCommerceWeb.RequestView.render("index.json", %{requests: results})
+  iex(4)> view = view |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); x = Map.put(x, :user, Map.delete(x.user, :id)); x = Map.put(x, :inserted, Map.delete(x.inserted, :id)); end)
+  iex(5)> view |> Enum.count()
+  4
+  """
+  def list_requests do
+    Request
+    |> @repo.all()
+    |> @repo.preload([:user, :inserted])
+  end
+
+  @doc """
+  Gets a single request.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> results = MateriaCommerce.Commerces.get_request!(1)
+  iex(3)> view = MateriaCommerceWeb.RequestView.render("show.json", %{request: results})
+  iex(4)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); x = Map.put(x, :user, Map.delete(x.user, :id)); x = Map.put(x, :inserted, Map.delete(x.inserted, :id)); end) |> List.first
+  %{
+  accuracy: "accuracy",
+  description: "description",
+  end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
+  lock_version: 0,
+  note1: "note1",
+  note2: "note2",
+  note3: "note3",
+  note4: "note4",
+  request_appendices: [],
+  request_date1: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date2: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date3: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date4: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date5: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date6: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_key1: "key1",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_name: "History1",
+  request_number: "PJ-01",
+  quantity1: 0,
+  quantity2: 1,
+  quantity3: 2,
+  quantity4: 3,
+  quantity5: 4,
+  quantity6: 5,
+  status: 0,
+  user: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  }
+  """
+  def get_request!(id) do
+    Request
+    |> @repo.get!(id)
+    |> @repo.preload([:user, :inserted])
+  end
+
+  @doc """
+  Creates a request.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> start_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> {ok, end_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
+  iex(4)> attrs = %{"request_number" => "1", "start_datetime" => start_datetime, "end_datetime" => end_datetime, "inserted_id" => 1}
+  iex(5)> {:ok, results} = MateriaCommerce.Commerces.create_request(attrs)
+  iex(6)> view = MateriaCommerceWeb.RequestView.render("show.json", %{request: results})
+  iex(7)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); end) |> List.first
+  %{
+  accuracy: nil,
+  description: nil,
+  end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  inserted: nil,
+  lock_version: 0,
+  note1: nil,
+  note2: nil,
+  note3: nil,
+  note4: nil,
+  request_appendices: [],
+  request_date1: "",
+  request_date2: "",
+  request_date3: "",
+  request_date4: "",
+  request_date5: "",
+  request_date6: "",
+  request_key1: nil,
+  request_key2: nil,
+  request_key3: nil,
+  request_key4: nil,
+  request_name: nil,
+  request_number: "1",
+  quantity1: nil,
+  quantity2: nil,
+  quantity3: nil,
+  quantity4: nil,
+  quantity5: nil,
+  quantity6: nil,
+  status: 0,
+  user: nil
+  }
+  """
+  def create_request(attrs \\ %{}) do
+    %Request{}
+    |> Request.changeset(attrs)
+    |> @repo.insert()
+  end
+
+  @doc """
+  Updates a request.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> start_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> {ok, end_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
+  iex(3)> results = MateriaCommerce.Commerces.get_request!(1)
+  iex(4)> attrs = %{"request_number" => "1", "start_datetime" => start_datetime, "end_datetime" => end_datetime, "inserted_id" => 1}
+  iex(5)> {:ok, results} = MateriaCommerce.Commerces.update_request(results, attrs)
+  iex(6)> view = MateriaCommerceWeb.RequestView.render("show.json", %{request: results})
+  iex(7)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); x = Map.put(x, :user, Map.delete(x.user, :id)); x = Map.put(x, :inserted, Map.delete(x.inserted, :id)); end) |> List.first
+  %{
+  accuracy: "accuracy",
+  description: "description",
+  end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
+  lock_version: 0,
+  note1: "note1",
+  note2: "note2",
+  note3: "note3",
+  note4: "note4",
+  request_appendices: [],
+  request_date1: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date2: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date3: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date4: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date5: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date6: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_key1: "key1",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_name: "History1",
+  request_number: "1",
+  quantity1: 0,
+  quantity2: 1,
+  quantity3: 2,
+  quantity4: 3,
+  quantity5: 4,
+  quantity6: 5,
+  status: 0,
+  user: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  }
+  """
+  def update_request(%Request{} = request, attrs) do
+    request
+    |> Request.changeset(attrs)
+    |> @repo.update()
+  end
+
+  @doc """
+  Deletes a request.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> results = MateriaCommerce.Commerces.get_request!(1)
+  iex(3)> {:ok, results} = MateriaCommerce.Commerces.delete_request(results)
+  iex(4)> view = MateriaCommerceWeb.RequestView.render("show.json", %{request: results})
+  iex(5)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); x = Map.put(x, :user, Map.delete(x.user, :id)); x = Map.put(x, :inserted, Map.delete(x.inserted, :id)); end) |> List.first
+  %{
+  accuracy: "accuracy",
+  description: "description",
+  end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
+  lock_version: 0,
+  note1: "note1",
+  note2: "note2",
+  note3: "note3",
+  note4: "note4",
+  request_appendices: [],
+  request_date1: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date2: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date3: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date4: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date5: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date6: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_key1: "key1",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_name: "History1",
+  request_number: "PJ-01",
+  quantity1: 0,
+  quantity2: 1,
+  quantity3: 2,
+  quantity4: 3,
+  quantity5: 4,
+  quantity6: 5,
+  status: 0,
+  user: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  }
+  """
+  def delete_request(%Request{} = request) do
+    @repo.delete(request)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking request changes.
+
+  iex(1)> attrs = %MateriaCommerce.Commerces.Request{} |> Map.put(:request_number, "1") |> Map.put(:start_datetime, "1") |> Map.put(:end_datetime, "1") |> Map.put(:inserted_id, "1")
+  iex(2)> change_set = MateriaCommerce.Commerces.change_request(attrs)
+  iex(3)> change_set.valid?
+  true
+  """
+  def change_request(%Request{} = request) do
+    Request.changeset(request, %{})
+  end
+
+  @doc """
+  Returns the list of request_appendices.
+
+  iex(1)> MateriaCommerce.Commerces.list_request_appendices() |> Enum.count()
+  6
+  """
+  def list_request_appendices do
+    RequestAppendix
+    |> @repo.all()
+    |> @repo.preload([:inserted])
+  end
+
+  @doc """
+  Gets a single request_appendix.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> results = MateriaCommerce.Commerces.get_request_appendix!(1)
+  iex(3)> view = MateriaCommerceWeb.RequestAppendixView.render("show.json", %{request_appendix: results})
+  iex(4)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime));x = Map.put(x, :appendix_date, to_string(x.appendix_date));x = Map.put(x, :appendix_number, to_string(x.appendix_number));x = Map.put(x, :inserted, Map.delete(x.inserted, :id)); end) |> List.first
+  %{
+  appendix_category: "Category1",
+  appendix_date: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  appendix_description: "appendix_description",
+  appendix_name: "appendix_name",
+  appendix_number: "1",
+  appendix_status: 0,
+  end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
+  lock_version: 0,
+  request_key1: "key1",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_number: "PJ-01"
+  }
+  """
+  def get_request_appendix!(id) do
+    RequestAppendix
+    |> @repo.get!(id)
+    |> @repo.preload([:inserted])
+  end
+
+  @doc """
+  Creates a request_appendix.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> start_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> {ok, end_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
+  iex(4)> attrs = %{"request_number" => "1", "start_datetime" => start_datetime, "end_datetime" => end_datetime, "inserted_id" => 1}
+  iex(5)> {:ok, results} = MateriaCommerce.Commerces.create_request_appendix(attrs)
+  iex(6)> view = MateriaCommerceWeb.RequestAppendixView.render("show.json", %{request_appendix: results})
+  iex(7)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime));x = Map.put(x, :appendix_date, to_string(x.appendix_date));x = Map.put(x, :appendix_number, to_string(x.appendix_number));end) |> List.first
+  %{
+  appendix_category: nil,
+  appendix_date: "",
+  appendix_description: nil,
+  appendix_name: nil,
+  appendix_number: "",
+  appendix_status: nil,
+  end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  inserted: nil,
+  lock_version: 0,
+  request_key1: nil,
+  request_key2: nil,
+  request_key3: nil,
+  request_key4: nil,
+  request_number: "1"
+  }
+  """
+  def create_request_appendix(attrs \\ %{}) do
+    %RequestAppendix{}
+    |> RequestAppendix.changeset(attrs)
+    |> @repo.insert()
+  end
+
+  @doc """
+  Updates a request_appendix.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> start_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> {ok, end_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
+  iex(4)> results = MateriaCommerce.Commerces.get_request_appendix!(1)
+  iex(5)> attrs = %{"request_number" => "1", "start_datetime" => start_datetime, "end_datetime" => end_datetime, "inserted_id" => 1}
+  iex(6)> {:ok, results} = MateriaCommerce.Commerces.update_request_appendix(results, attrs)
+  iex(7)> view = MateriaCommerceWeb.RequestAppendixView.render("show.json", %{request_appendix: results})
+  iex(8)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime));x = Map.put(x, :appendix_date, to_string(x.appendix_date));x = Map.put(x, :appendix_number, to_string(x.appendix_number));x = Map.put(x, :inserted, Map.delete(x.inserted, :id)); end) |> List.first
+  %{
+  appendix_category: "Category1",
+  appendix_date: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  appendix_description: "appendix_description",
+  appendix_name: "appendix_name",
+  appendix_number: "1",
+  appendix_status: 0,
+  end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
+  lock_version: 0,
+  request_key1: "key1",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_number: "1"
+  }
+  """
+  def update_request_appendix(%RequestAppendix{} = request_appendix, attrs) do
+    request_appendix
+    |> RequestAppendix.changeset(attrs)
+    |> @repo.update()
+  end
+
+  @doc """
+  Deletes a requestAppendix.
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> start_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> {ok, end_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
+  iex(4)> results = MateriaCommerce.Commerces.get_request_appendix!(1)
+  iex(6)> {:ok, results} = MateriaCommerce.Commerces.delete_request_appendix(results)
+  iex(7)> view = MateriaCommerceWeb.RequestAppendixView.render("show.json", %{request_appendix: results})
+  iex(8)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime));x = Map.put(x, :appendix_date, to_string(x.appendix_date));x = Map.put(x, :appendix_number, to_string(x.appendix_number));x = Map.put(x, :inserted, Map.delete(x.inserted, :id)); end) |> List.first
+  %{
+  appendix_category: "Category1",
+  appendix_date: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  appendix_description: "appendix_description",
+  appendix_name: "appendix_name",
+  appendix_number: "1",
+  appendix_status: 0,
+  end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
+  lock_version: 0,
+  request_key1: "key1",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_number: "PJ-01"
+  }
+  """
+  def delete_request_appendix(%RequestAppendix{} = request_appendix) do
+    @repo.delete(request_appendix)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking request_appendix changes.
+
+  iex(1)> attrs = %MateriaCommerce.Commerces.RequestAppendix{} |> Map.put(:request_number, "1") |> Map.put(:start_datetime, "1") |> Map.put(:end_datetime, "1") |> Map.put(:inserted_id, "1")
+  iex(2)> change_set = MateriaCommerce.Commerces.change_request_appendix(attrs)
+  iex(3)> change_set.valid?
+  true
+  """
+  def change_request_appendix(%RequestAppendix{} = request_appendix) do
+    RequestAppendix.changeset(request_appendix, %{})
+  end
+
+  @doc """
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> results = MateriaCommerce.Commerces.get_current_request_history(base_datetime, keywords)
+  iex(5)> view = MateriaCommerceWeb.RequestView.render("show.json", %{request: results})
+  iex(6)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); end) |> List.first
+  %{
+  accuracy: "accuracy",
+  description: "description",
+  end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  inserted: nil,
+  lock_version: 2,
+  note1: "note1",
+  note2: "note2",
+  note3: "note3",
+  note4: "note4",
+  request_appendices: [],
+  request_date1: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date2: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date3: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date4: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date5: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_date6: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+  request_key1: "key1",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_name: "History3",
+  request_number: "PJ-01",
+  quantity1: 0,
+  quantity2: 1,
+  quantity3: 2,
+  quantity4: 3,
+  quantity5: 4,
+  quantity6: 5,
+  status: 2,
+  user: nil
+  }
+  """
+  def get_current_request_history(base_datetime, keywords) do
+    requests = MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, Request, base_datetime, keywords)
+    if requests == [] do
+      nil
+    else
+      [request] = requests
+      request
+    end
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> results = MateriaCommerce.Commerces.get_recent_request_history(base_datetime, keywords)
+  iex(5)> view = results
+  iex(6)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); end) |> List.first
+  %{
+  accuracy: "accuracy",
+  description: "description",
+  end_datetime: "2999-12-31 23:59:59Z",
+  inserted_id: 1,
+  lock_version: 2,
+  note1: "note1",
+  note2: "note2",
+  note3: "note3",
+  note4: "note4",
+  request_date1: "2999-12-31 23:59:59Z",
+  request_date2: "2999-12-31 23:59:59Z",
+  request_date3: "2999-12-31 23:59:59Z",
+  request_date4: "2999-12-31 23:59:59Z",
+  request_date5: "2999-12-31 23:59:59Z",
+  request_date6: "2999-12-31 23:59:59Z",
+  request_key1: "key1",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_name: "History3",
+  request_number: "PJ-01",
+  quantity1: 0,
+  quantity2: 1,
+  quantity3: 2,
+  quantity4: 3,
+  quantity5: 4,
+  quantity6: 5,
+  status: 2,
+  user_id: 1
+  }
+  """
+  def get_recent_request_history(base_datetime, keywords) do
+    requests = MateriaUtils.Ecto.EctoUtil.list_recent_history(@repo, Request, base_datetime, keywords)
+    if requests == [] do
+      nil
+    else
+      [request] = requests
+      request
+    end
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(3)> attr = %{"request_number" => "PJ-01", "request_key1" => "key1_update", "lock_version" => 2}
+  iex(4)> {:ok, results} = MateriaCommerce.Commerces.create_new_request_history(%{}, base_datetime, keywords, attr, 1)
+  iex(5)> view = MateriaCommerceWeb.RequestView.render("show.json", %{request: results})
+  iex(6)> view = [view] |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); end) |> List.first
+  %{
+  accuracy: "accuracy",
+  description: "description",
+  end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  inserted: nil,
+  lock_version: 3,
+  note1: "note1",
+  note2: "note2",
+  note3: "note3",
+  note4: "note4",
+  request_appendices: [],
+  request_date1: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  request_date2: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  request_date3: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  request_date4: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  request_date5: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  request_date6: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+  request_key1: "key1_update",
+  request_key2: "key2",
+  request_key3: "key3",
+  request_key4: "key4",
+  request_name: "History3",
+  request_number: "PJ-01",
+  quantity1: 0,
+  quantity2: 1,
+  quantity3: 2,
+  quantity4: 3,
+  quantity5: 4,
+  quantity6: 5,
+  status: 2,
+  user: nil
+  }
+  """
+  def create_new_request_history(%{}, start_datetime, keywords, attr, user_id) do
+    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
+    recent = get_recent_request_history(start_datetime, keywords)
+    {i, _reason} = delete_future_request_histories(start_datetime, keywords)
+    request =
+      if recent == nil do
+        attr = attr
+               |> Map.put("start_datetime", start_datetime)
+               |> Map.put("end_datetime", end_datetime)
+               |> Map.put("inserted_id", user_id)
+        {:ok, request} = create_request(attr)
+      else
+        _ = cond do
+          !Map.has_key?(attr, "lock_version") ->
+            raise KeyError, message: "parameter have not lock_version"
+          attr["lock_version"] != recent.lock_version ->
+            raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+          true -> :ok
+        end
+
+        attr = Map.keys(attr)
+               |> Enum.reduce(
+                    recent,
+                    fn (key, acc) ->
+                      acc = acc
+                            |> Map.put(String.to_atom(key), attr[key])
+                    end
+                  )
+
+        attr = attr
+               |> Map.put(:lock_version, recent.lock_version + 1)
+               |> Map.put(:start_datetime, start_datetime)
+               |> Map.put(:end_datetime, end_datetime)
+               |> Map.put(:inserted_id, user_id)
+
+        {:ok, request} = create_request(attr)
+        recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
+        struct_request = struct(request, recent)
+        update_request(struct_request, %{end_datetime: recent_end_datetime})
+        {:ok, request}
+      end
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> {result, _} = MateriaCommerce.Commerces.delete_future_request_histories(base_datetime, keywords)
+  {2, nil}
+  """
+  def delete_future_request_histories(base_datetime, keywords) do
+    requests = MateriaUtils.Ecto.EctoUtil.delete_future_histories(@repo, Request, base_datetime, keywords)
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> results = MateriaCommerce.Commerces.get_current_request_appendix_history(base_datetime, keywords)
+  iex(5)> view = MateriaCommerceWeb.RequestAppendixView.render("index.json", %{request_appendices: results})
+  iex(6)> view |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime));x = Map.put(x, :appendix_date, to_string(x.appendix_date));x = Map.put(x, :appendix_number, to_string(x.appendix_number)); end)
+  [
+  %{
+    appendix_category: "Category4",
+    appendix_date: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    appendix_description: "appendix_description",
+    appendix_name: "appendix_name",
+    appendix_number: "5",
+    appendix_status: 4,
+    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    inserted: nil,
+    lock_version: 0,
+    request_key1: "key1",
+    request_key2: "key2",
+    request_key3: "key3",
+    request_key4: "key4",
+    request_number: "PJ-01"
+  },
+  %{
+    appendix_category: "Category1",
+    appendix_date: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    appendix_description: "appendix_description",
+    appendix_name: "appendix_name",
+    appendix_number: "4",
+    appendix_status: 3,
+    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    inserted: nil,
+    lock_version: 1,
+    request_key1: "key1",
+    request_key2: "key2",
+    request_key3: "key3",
+    request_key4: "key4",
+    request_number: "PJ-01"
+  }
+  ]
+  """
+  def get_current_request_appendix_history(base_datetime, keywords) do
+    MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, RequestAppendix, base_datetime, keywords)
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> results = MateriaCommerce.Commerces.get_recent_request_appendix_history(base_datetime, keywords)
+  iex(5)> view = results
+  iex(6)> view |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime));x = Map.put(x, :appendix_date, to_string(x.appendix_date));x = Map.put(x, :appendix_number, to_string(x.appendix_number)); end)
+  [
+  %{
+    appendix_category: "Category4",
+    appendix_date: "2999-12-31 23:59:59Z",
+    appendix_description: "appendix_description",
+    appendix_name: "appendix_name",
+    appendix_number: "5",
+    appendix_status: 4,
+    end_datetime: "2999-12-31 23:59:59Z",
+    inserted_id: 1,
+    lock_version: 0,
+    request_key1: "key1",
+    request_key2: "key2",
+    request_key3: "key3",
+    request_key4: "key4",
+    request_number: "PJ-01"
+  },
+  %{
+    appendix_category: "Category1",
+    appendix_date: "2999-12-31 23:59:59Z",
+    appendix_description: "appendix_description",
+    appendix_name: "appendix_name",
+    appendix_number: "4",
+    appendix_status: 3,
+    end_datetime: "2999-12-31 23:59:59Z",
+    inserted_id: 1,
+    lock_version: 1,
+    request_key1: "key1",
+    request_key2: "key2",
+    request_key3: "key3",
+    request_key4: "key4",
+    request_number: "PJ-01"
+  }
+  ]
+  """
+  def get_recent_request_appendix_history(base_datetime, keywords) do
+    MateriaUtils.Ecto.EctoUtil.list_recent_history(@repo, RequestAppendix, base_datetime, keywords)
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(3)> attr = [%{"request_number" => "PJ-01", "request_key1" => "key1_update", "lock_version" => 1, "id" => 4}]
+  iex(4)> {:ok, results} = MateriaCommerce.Commerces.create_new_request_appendix_history(%{}, base_datetime, keywords, attr, 1)
+  iex(5)> view = MateriaCommerceWeb.RequestAppendixView.render("index.json", %{request_appendices: results})
+  iex(6)> view |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime));x = Map.put(x, :appendix_date, to_string(x.appendix_date));x = Map.put(x, :appendix_number, to_string(x.appendix_number)); end)
+  [
+  %{
+    appendix_category: "Category1",
+    appendix_date: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+    appendix_description: "appendix_description",
+    appendix_name: "appendix_name",
+    appendix_number: "4",
+    appendix_status: 3,
+    end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
+    inserted: nil,
+    lock_version: 2,
+    request_key1: "key1_update",
+    request_key2: "key2",
+    request_key3: "key3",
+    request_key4: "key4",
+    request_number: "PJ-01"
+  }
+  ]
+  """
+  def create_new_request_appendix_history(%{}, start_datetime, keywords, attrs, user_id) do
+    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
+    recent_request_appendix = get_recent_request_appendix_history(start_datetime, keywords)
+    {i, _reason} = delete_future_request_appendix_histories(start_datetime, keywords)
+    request_appendix =
+      if recent_request_appendix == [] do
+        request_appendix = attrs
+                           |> Enum.map(
+                                fn attr ->
+                                  attr = attr
+                                         |> Map.put("start_datetime", start_datetime)
+                                         |> Map.put("end_datetime", end_datetime)
+                                         |> Map.put("inserted_id", user_id)
+                                  {:ok, request_appendix} = create_request_appendix(attr)
+                                  request_appendix
+                                end
+                              )
+        {:ok, request_appendix}
+      else
+        attrs
+        |> Enum.map(
+             fn attr ->
+               cond do
+                 Map.has_key?(attr, "id") and !Map.has_key?(attr, "lock_version") ->
+                   raise KeyError, message: "parameter have not lock_version"
+                 Map.has_key?(attr, "id") and !check_recent_request_appendix(recent_request_appendix, attr["id"], attr["lock_version"]) ->
+                   raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+                 true -> :ok
+               end
+             end
+           )
+
+        request_appendix = attrs
+                           |> Enum.map(
+                                fn attr ->
+                                  recent = check_recent_request_appendix(
+                                    recent_request_appendix,
+                                    attr["id"],
+                                    attr["lock_version"]
+                                  )
+                                  unless recent do
+                                    recent = Map.from_struct(%RequestAppendix{})
+                                  end
+                                  recent = Map.keys(attr)
+                                           |> Enum.reduce(
+                                                recent,
+                                                fn (key, acc) ->
+                                                  acc = acc
+                                                        |> Map.put(String.to_atom(key), attr[key])
+                                                end
+                                              )
+                                           |> Map.put(:lock_version, recent.lock_version + 1)
+                                           |> Map.put(:start_datetime, start_datetime)
+                                           |> Map.put(:end_datetime, end_datetime)
+                                           |> Map.put(:inserted_id, user_id)
+                                end
+                              )
+                           |> Enum.map(
+                                fn attr ->
+                                  {:ok, request_appendix} = create_request_appendix(attr)
+                                  request_appendix
+                                end
+                              )
+
+        recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
+        recent_request_appendix
+        |> Enum.map(
+             fn recent ->
+               struct_request_appendix = struct(RequestAppendix, recent)
+               update_request_appendix(struct_request_appendix, %{end_datetime: recent_end_datetime})
+             end
+           )
+        {:ok, request_appendix}
+      end
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> {result, _} = MateriaCommerce.Commerces.delete_future_request_appendix_histories(base_datetime, keywords)
+  {2, nil}
+  """
+  def delete_future_request_appendix_histories(base_datetime, keywords) do
+    MateriaUtils.Ecto.EctoUtil.delete_future_histories(@repo, RequestAppendix, base_datetime, keywords)
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> results = MateriaCommerce.Commerces.get_recent_request_appendix_history(base_datetime, keywords)
+  iex(5)> result = MateriaCommerce.Commerces.check_recent_request_appendix(results, 5, 4)
+  iex(6)> result == false
+  true
+  iex(7)> result = MateriaCommerce.Commerces.check_recent_request_appendix(results, 5, 0)
+  iex(8)> result == false
+  false
+  """
+  def check_recent_request_appendix(recent_request_appendix, id, lock_version) do
+    filter = Enum.filter(recent_request_appendix, fn x -> x.id == id end) |> List.first
+    cond do
+      filter != nil and filter.lock_version != lock_version -> false
+      filter == nil -> false
+      true -> filter
+    end
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> results = MateriaCommerce.Commerces.get_current_request(base_datetime, keywords)
+  iex(5)> view = MateriaCommerceWeb.RequestView.render("index.json", %{requests: results})
+  iex(6)> view |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.put(x, :request_date1, to_string(x.request_date1)); x = Map.put(x, :request_date2, to_string(x.request_date2)); x = Map.put(x, :request_date3, to_string(x.request_date3)); x = Map.put(x, :request_date4, to_string(x.request_date4)); x = Map.put(x, :request_date5, to_string(x.request_date5)); x = Map.put(x, :request_date6, to_string(x.request_date6)); end)
+  [
+  %{
+    accuracy: "accuracy",
+    description: "description",
+    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    inserted: nil,
+    lock_version: 2,
+    note1: "note1",
+    note2: "note2",
+    note3: "note3",
+    note4: "note4",
+    request_appendices: [],
+    request_date1: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    request_date2: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    request_date3: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    request_date4: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    request_date5: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    request_date6: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    request_key1: "key1",
+    request_key2: "key2",
+    request_key3: "key3",
+    request_key4: "key4",
+    request_name: "History3",
+    request_number: "PJ-01",
+    quantity1: 0,
+    quantity2: 1,
+    quantity3: 2,
+    quantity4: 3,
+    quantity5: 4,
+    quantity6: 5,
+    status: 2,
+    user: nil
+  }
+  ]
+  """
+  def get_current_request(base_datetime, keywords) do
+    MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, Request, base_datetime, keywords)
+  end
+
+  @doc """
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(3)> keywords = [{:request_number, "PJ-01"}]
+  iex(4)> results = MateriaCommerce.Commerces.get_current_request_appendices(base_datetime, keywords)
+  iex(5)> view = MateriaCommerceWeb.RequestAppendixView.render("index.json", %{request_appendices: results})
+  iex(6)> view |> Enum.map(fn x -> x = Map.delete(x, :id); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :start_datetime); x = Map.put(x, :end_datetime, to_string(x.end_datetime));x = Map.put(x, :appendix_date, to_string(x.appendix_date));x = Map.put(x, :appendix_number, to_string(x.appendix_number)); end)
+  [
+  %{
+    appendix_category: "Category4",
+    appendix_date: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    appendix_description: "appendix_description",
+    appendix_name: "appendix_name",
+    appendix_number: "5",
+    appendix_status: 4,
+    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    inserted: nil,
+    lock_version: 0,
+    request_key1: "key1",
+    request_key2: "key2",
+    request_key3: "key3",
+    request_key4: "key4",
+    request_number: "PJ-01"
+  },
+  %{
+    appendix_category: "Category1",
+    appendix_date: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    appendix_description: "appendix_description",
+    appendix_name: "appendix_name",
+    appendix_number: "4",
+    appendix_status: 3,
+    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
+    inserted: nil,
+    lock_version: 1,
+    request_key1: "key1",
+    request_key2: "key2",
+    request_key3: "key3",
+    request_key4: "key4",
+    request_number: "PJ-01"
+  }
+  ]
+  """
+  def get_current_request_appendices(base_datetime, keywords) do
+    MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, RequestAppendix, base_datetime, keywords)
+  end
 end
-
-

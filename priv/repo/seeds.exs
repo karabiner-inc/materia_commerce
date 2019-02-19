@@ -240,19 +240,18 @@ contract_details
 |> Enum.map(fn(contract) -> Commerces.create_contract_detail(contract) end)
 
 
-alias MateriaCommerce.Projects
-projects = "
-project_key1	project_key2	project_key3	project_key4	project_number	project_name	accuracy	project_date1	project_date2	project_date3	project_date4	project_date5	project_date6	quantity1	quantity2	quantity3	quantity4	quantity5	quantity6	description	note1	note2	note3	note4	start_datetime	end_datetime	status	lock_version	user_id	inserted_id
+request = "
+request_key1	request_key2	request_key3	request_key4	request_number	request_name	accuracy	request_date1	request_date2	request_date3	request_date4	request_date5	request_date6	quantity1	quantity2	quantity3	quantity4	quantity5	quantity6	description	note1	note2	note3	note4	start_datetime	end_datetime	status	lock_version	user_id	inserted_id
 key1	key2	key3	key4	PJ-01	History1	accuracy	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	0	1	2	3	4	5	description	note1	note2	note3	note4	2018-11-01 09:00:00	2018-12-01 08:59:59	0	0	1	1
 key1	key2	key3	key4	PJ-01	History2	accuracy	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	0	1	2	3	4	5	description	note1	note2	note3	note4	2018-12-01 09:00:00	2019-01-01 08:59:59	1	1	1	1
 key1	key2	key3	key4	PJ-01	History3	accuracy	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	0	1	2	3	4	5	description	note1	note2	note3	note4	2019-01-01 09:00:00	2999-12-31 23:59:59	2	2	1	1
 key1	key2	key3	key4	PJ-02	History1	accuracy	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	2999-12-31 23:59:59	0	1	2	3	4	5	description	note1	note2	note3	note4	2018-01-01 09:00:00	2999-12-31 23:59:59	3	0	1	1
 "
-TsvParser.parse_tsv_to_json(projects, "project_key1")
-|> Enum.map(fn j -> j |> Projects.create_project end)
+TsvParser.parse_tsv_to_json(request, "request_key1")
+|> Enum.map(fn j -> j |> Commerces.create_request end)
 
-project_appendices = "
-project_key1	project_key2	project_key3	project_key4	project_number	appendix_category	appendix_name	appendix_date	appendix_number	appendix_description	appendix_status	start_datetime	end_datetime	lock_version	inserted_id
+appendix = "
+request_key1	request_key2	request_key3	request_key4	request_number	appendix_category	appendix_name	appendix_date	appendix_number	appendix_description	appendix_status	start_datetime	end_datetime	lock_version	inserted_id
 key1	key2	key3	key4	PJ-01	Category1	appendix_name	2999-12-31 23:59:59	1	appendix_description	0	2018-11-01 09:00:00	2019-01-01 08:59:59	0	1
 key1	key2	key3	key4	PJ-01	Category2	appendix_name	2999-12-31 23:59:59	2	appendix_description	1	2018-11-01 09:00:00	2019-01-01 08:59:59	0	1
 key1	key2	key3	key4	PJ-01	Category3	appendix_name	2999-12-31 23:59:59	3	appendix_description	2	2018-11-01 09:00:00	2019-01-01 08:59:59	0	1
@@ -260,5 +259,5 @@ key1	key2	key3	key4	PJ-01	Category1	appendix_name	2999-12-31 23:59:59	4	appendix
 key1	key2	key3	key4	PJ-01	Category4	appendix_name	2999-12-31 23:59:59	5	appendix_description	4	2019-01-01 09:00:00	2999-12-31 23:59:59	0	1
 key1	key2	key3	key4	PJ-02	Category1	appendix_name	2999-12-31 23:59:59	6	appendix_description	5	2018-01-01 09:00:00	2999-12-31 23:59:59	0	1
 "
-TsvParser.parse_tsv_to_json(project_appendices, "project_key1")
-|> Enum.map(fn j -> j |> Projects.create_project_appendix end)
+TsvParser.parse_tsv_to_json(appendix, "request_key1")
+|> Enum.map(fn j -> j |> Commerces.create_request_appendix end)

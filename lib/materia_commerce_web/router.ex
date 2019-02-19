@@ -72,13 +72,13 @@ defmodule MateriaCommerceWeb.Router do
   scope "/api", MateriaCommerceWeb do
     pipe_through [ :api, :guardian_auth]
 
-    resources "/projects", ProjectController, except: [:new, :edit]
-    resources "/project_appendices", ProjectAppendixController, except: [:new, :edit]
+    resources "/requests", RequestController, except: [:new, :edit]
+    resources "/request_appendices", RequestAppendixController, except: [:new, :edit]
 
-    post "/search-projects", ProjectController, :search_current_projects
-    post "/search-project-appendices", ProjectAppendixController, :search_current_project_appendices
-    post "/current-projects", ProjectController, :current_projects
-    post "/current-project-appendices", ProjectAppendixController, :current_project_appendices
+    post "/search-requests", RequestController, :search_current_requests
+    post "/search-request-appendices", RequestAppendixController, :search_current_request_appendices
+    post "/current-requests", RequestController, :current_requests
+    post "/current-request-appendices", RequestAppendixController, :current_request_appendices
   end
 
   scope "/api", MateriaWeb do
