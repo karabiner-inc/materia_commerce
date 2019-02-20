@@ -671,6 +671,569 @@ defmodule MateriaCommerce.CommercesTest do
       assert {:ok, %ContractDetail{}} = Commerces.delete_contract_detail(contract_detail)
       assert_raise Ecto.NoResultsError, fn -> Commerces.get_contract_detail!(contract_detail.id) end
     end
+  end
 
+  describe "requests" do
+    alias MateriaCommerce.Commerces.Request
+
+    @valid_attrs %{accuracy: "some accuracy", description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", lock_version: 42, note1: "some note1", note2: "some note2", note3: "some note3", note4: "some note4", request_date1: "2010-04-17 14:00:00.000000Z", request_date2: "2010-04-17 14:00:00.000000Z", request_date3: "2010-04-17 14:00:00.000000Z", request_date4: "2010-04-17 14:00:00.000000Z", request_date5: "2010-04-17 14:00:00.000000Z", request_date6: "2010-04-17 14:00:00.000000Z", request_key1: "some request_key1", request_key2: "some request_key2", request_key3: "some request_key3", request_key4: "some request_key4", request_name: "some request_name", request_number: "some request_number", quantity1: 42, quantity2: 42, quantity3: 42, quantity4: 42, quantity5: 42, quantity6: 42, start_datetime: "2010-04-17 14:00:00.000000Z", status: 42, inserted_id: 1}
+    @update_attrs %{accuracy: "some updated accuracy", description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", lock_version: 43, note1: "some updated note1", note2: "some updated note2", note3: "some updated note3", note4: "some updated note4", request_date1: "2011-05-18 15:01:01.000000Z", request_date2: "2011-05-18 15:01:01.000000Z", request_date3: "2011-05-18 15:01:01.000000Z", request_date4: "2011-05-18 15:01:01.000000Z", request_date5: "2011-05-18 15:01:01.000000Z", request_date6: "2011-05-18 15:01:01.000000Z", request_key1: "some updated request_key1", request_key2: "some updated request_key2", request_key3: "some updated request_key3", request_key4: "some updated request_key4", request_name: "some updated request_name", request_number: "some updated request_number", quantity1: 43, quantity2: 43, quantity3: 43, quantity4: 43, quantity5: 43, quantity6: 43, start_datetime: "2011-05-18 15:01:01.000000Z", status: 43, inserted_id: 2}
+    @invalid_attrs %{accuracy: nil, description: nil, end_datetime: nil, lock_version: nil, note1: nil, note2: nil, note3: nil, note4: nil, request_date1: nil, request_date2: nil, request_date3: nil, request_date4: nil, request_date5: nil, request_date6: nil, request_key1: nil, request_key2: nil, request_key3: nil, request_key4: nil, request_name: nil, request_number: nil, quantity1: nil, quantity2: nil, quantity3: nil, quantity4: nil, quantity5: nil, quantity6: nil, start_datetime: nil, status: nil, inserted_id: nil}
+
+    def request_fixture(attrs \\ %{}) do
+      {:ok, request} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Commerces.create_request()
+
+      request
+    end
+
+    test "list_requests/0 returns all requests" do
+      request = request_fixture()
+      assert Commerces.list_requests()
+             |> Enum.filter(fn p -> p.id == request.id end)
+             |> Enum.map(
+                  fn x ->
+                    x
+                    |> Map.delete(:user)
+                    |> Map.delete(:inserted)
+                  end
+                )
+             |> List.first == request
+                              |> Map.delete(:user)
+                              |> Map.delete(:inserted)
+    end
+
+    test "get_request!/1 returns the request with given id" do
+      request = request_fixture()
+      assert Commerces.get_request!(request.id)
+             |> Map.delete(:inserted)
+             |> Map.delete(:user) == request
+                                     |> Map.delete(:inserted)
+                                     |> Map.delete(:user)
+    end
+
+    test "create_request/1 with valid data creates a request" do
+      assert {:ok, %Request{} = request} = Commerces.create_request(@valid_attrs)
+      assert request.accuracy == "some accuracy"
+      assert request.description == "some description"
+      assert request.end_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request.lock_version == 42
+      assert request.note1 == "some note1"
+      assert request.note2 == "some note2"
+      assert request.note3 == "some note3"
+      assert request.note4 == "some note4"
+      assert request.request_date1 == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request.request_date2 == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request.request_date3 == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request.request_date4 == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request.request_date5 == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request.request_date6 == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request.request_key1 == "some request_key1"
+      assert request.request_key2 == "some request_key2"
+      assert request.request_key3 == "some request_key3"
+      assert request.request_key4 == "some request_key4"
+      assert request.request_name == "some request_name"
+      assert request.request_number == "some request_number"
+      assert request.quantity1 == 42
+      assert request.quantity2 == 42
+      assert request.quantity3 == 42
+      assert request.quantity4 == 42
+      assert request.quantity5 == 42
+      assert request.quantity6 == 42
+      assert request.start_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request.status == 42
+    end
+
+    test "create_request/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Commerces.create_request(@invalid_attrs)
+    end
+
+    test "update_request/2 with valid data updates the request" do
+      request = request_fixture()
+      assert {:ok, request} = Commerces.update_request(request, @update_attrs)
+      assert %Request{} = request
+      assert request.accuracy == "some updated accuracy"
+      assert request.description == "some updated description"
+      assert request.end_datetime == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request.lock_version == 43
+      assert request.note1 == "some updated note1"
+      assert request.note2 == "some updated note2"
+      assert request.note3 == "some updated note3"
+      assert request.note4 == "some updated note4"
+      assert request.request_date1 == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request.request_date2 == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request.request_date3 == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request.request_date4 == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request.request_date5 == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request.request_date6 == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request.request_key1 == "some updated request_key1"
+      assert request.request_key2 == "some updated request_key2"
+      assert request.request_key3 == "some updated request_key3"
+      assert request.request_key4 == "some updated request_key4"
+      assert request.request_name == "some updated request_name"
+      assert request.request_number == "some updated request_number"
+      assert request.quantity1 == 43
+      assert request.quantity2 == 43
+      assert request.quantity3 == 43
+      assert request.quantity4 == 43
+      assert request.quantity5 == 43
+      assert request.quantity6 == 43
+      assert request.start_datetime == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request.status == 43
+    end
+
+    test "update_request/2 with invalid data returns error changeset" do
+      request = request_fixture()
+      assert {:error, %Ecto.Changeset{}} = Commerces.update_request(request, @invalid_attrs)
+      assert request
+             |> Map.delete(:inserted)
+             |> Map.delete(:user) == Commerces.get_request!(request.id)
+                                     |> Map.delete(:inserted)
+                                     |> Map.delete(:user)
+    end
+
+    test "delete_request/1 deletes the request" do
+      request = request_fixture()
+      assert {:ok, %Request{}} = Commerces.delete_request(request)
+      assert_raise Ecto.NoResultsError, fn -> Commerces.get_request!(request.id) end
+    end
+
+    test "change_request/1 returns a request changeset" do
+      request = request_fixture()
+      assert %Ecto.Changeset{} = Commerces.change_request(request)
+    end
+
+    test "get_current_request_history/2 " do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      result = MateriaCommerce.Commerces.get_current_request_history(base_datetime, keywords)
+      assert result.request_number == "PJ-01"
+      assert result.status == 1
+    end
+
+    test "delete_future_request_histories/2 delete status2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      {result, _} = MateriaCommerce.Commerces.delete_future_request_histories(base_datetime, keywords)
+      lists = MateriaCommerce.Commerces.list_requests()
+      assert result == 1
+      assert !Enum.any?(lists, fn(list)-> list.status == 2 end)
+    end
+
+    test "get_recent_request_history/2 no result" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      result = MateriaCommerce.Commerces.get_recent_request_history(base_datetime, keywords)
+      assert result == nil
+    end
+
+    test "get_recent_request_history/2 boundary values" do
+      keywords = [{:request_number, "PJ-01"}]
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
+      result = MateriaCommerce.Commerces.get_recent_request_history(base_datetime, keywords)
+      assert result.status == 0
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:00Z")
+      result = MateriaCommerce.Commerces.get_recent_request_history(base_datetime, keywords)
+      assert result.status == 0
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
+      result = MateriaCommerce.Commerces.get_recent_request_history(base_datetime, keywords)
+      assert result.status == 1
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
+      result = MateriaCommerce.Commerces.get_recent_request_history(base_datetime, keywords)
+      assert result.status == 1
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:01Z")
+      result = MateriaCommerce.Commerces.get_recent_request_history(base_datetime, keywords)
+      assert result.status == 2
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-02-01 09:00:00Z")
+      result = MateriaCommerce.Commerces.get_recent_request_history(base_datetime, keywords)
+      assert result.status == 2
+    end
+
+    test "create_new_request_history/5 error parameters lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      attr = %{
+        "request_number" => "PJ-01",
+        "status" => 4,
+      }
+      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_request_history(%{}, base_datetime, keywords, attr, 1) end)
+    end
+
+    test "create_new_request_history/5 error different lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      attr = %{
+        "request_number" => "PJ-01",
+        "status" => 4,
+        "lock_version" => 99,
+      }
+      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_request_history(%{}, base_datetime, keywords, attr, 1) end)
+    end
+
+    test "create_new_request_history/5 create data all delete" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2017-11-17 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      attr = %{
+        "request_number" => "PJ-01",
+        "status" => 4,
+        "lock_version" => 2,
+      }
+      {:ok, result} = MateriaCommerce.Commerces.create_new_request_history(%{}, base_datetime, keywords, attr, 1)
+      lists = MateriaCommerce.Commerces.list_requests() |> Enum.filter(fn(x) -> x.request_number == "PJ-01" end)
+      list = lists |> Enum.filter(fn(x) -> x.id == result.id end) |> Enum.at(0)
+      assert list.id == result.id
+      assert list.request_number == "PJ-01"
+      assert list.status == 4
+      assert list.start_datetime == DateTime.from_naive!(~N[2017-11-17 09:00:00.000000Z], "Etc/UTC")
+      assert list.end_datetime == DateTime.from_naive!(~N[2999-12-31 23:59:59.000000Z], "Etc/UTC")
+      assert Enum.count(lists) == 1
+    end
+
+    test "create_new_request_history/5 create latest history data" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-02 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      attr = %{
+        "request_number" => "PJ-01",
+        "status" => 4,
+        "lock_version" => 2,
+      }
+      {:ok, result} = MateriaCommerce.Commerces.create_new_request_history(%{}, base_datetime, keywords, attr, 1)
+      lists = MateriaCommerce.Commerces.list_requests() |> Enum.filter(fn(x) -> x.request_number == "PJ-01" end)
+      list = lists |> Enum.filter(fn(x) -> x.id == result.id end) |> Enum.at(0)
+      assert list.id == result.id
+      assert list.request_number == "PJ-01"
+      assert list.status == 4
+      assert list.start_datetime == DateTime.from_naive!(~N[2019-01-02 09:00:00.000000Z], "Etc/UTC")
+      assert list.end_datetime == DateTime.from_naive!(~N[2999-12-31 23:59:59.000000Z], "Etc/UTC")
+    end
+  end
+
+  describe "request_appendices" do
+    alias MateriaCommerce.Commerces.RequestAppendix
+
+    @valid_attrs %{appendix_category: "some appendix_category", appendix_date: "2010-04-17 14:00:00.000000Z", appendix_description: "some appendix_description", appendix_name: "some appendix_name", appendix_number: "120.5", appendix_status: 42, end_datetime: "2010-04-17 14:00:00.000000Z", lock_version: 42, request_key1: "some request_key1", request_key2: "some request_key2", request_key3: "some request_key3", request_key4: "some request_key4", request_number: "some request_number", start_datetime: "2010-04-17 14:00:00.000000Z", inserted_id: 1}
+    @update_attrs %{appendix_category: "some updated appendix_category", appendix_date: "2011-05-18 15:01:01.000000Z", appendix_description: "some updated appendix_description", appendix_name: "some updated appendix_name", appendix_number: "456.7", appendix_status: 43, end_datetime: "2011-05-18 15:01:01.000000Z", lock_version: 43, request_key1: "some updated request_key1", request_key2: "some updated request_key2", request_key3: "some updated request_key3", request_key4: "some updated request_key4", request_number: "some updated request_number", start_datetime: "2011-05-18 15:01:01.000000Z", inserted_id: 2}
+    @invalid_attrs %{appendix_category: nil, appendix_date: nil, appendix_description: nil, appendix_name: nil, appendix_number: nil, appendix_status: nil, end_datetime: nil, lock_version: nil, request_key1: nil, request_key2: nil, request_key3: nil, request_key4: nil, request_number: nil, start_datetime: nil, inserted_id: nil}
+
+    def request_appendix_fixture(attrs \\ %{}) do
+      {:ok, request_appendix} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Commerces.create_request_appendix()
+
+      request_appendix
+    end
+
+    test "list_request_appendices/0 returns all request_appendices" do
+      request_appendix = request_appendix_fixture()
+      assert Commerces.list_request_appendices()
+             |> Enum.filter(fn appendix -> appendix.id == request_appendix.id end)
+             |> List.first()
+             |> Map.delete(:inserted) == request_appendix
+                                         |> Map.delete(:inserted)
+    end
+
+    test "get_request_appendix!/1 returns the request_appendix with given id" do
+      request_appendix = request_appendix_fixture()
+      assert Commerces.get_request_appendix!(request_appendix.id)
+             |> Map.delete(:inserted) == request_appendix
+                                         |> Map.delete(:inserted)
+    end
+
+    test "create_request_appendix/1 with valid data creates a request_appendix" do
+      assert {:ok, %RequestAppendix{} = request_appendix} = Commerces.create_request_appendix(@valid_attrs)
+      assert request_appendix.appendix_category == "some appendix_category"
+      assert request_appendix.appendix_date == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request_appendix.appendix_description == "some appendix_description"
+      assert request_appendix.appendix_name == "some appendix_name"
+      assert request_appendix.appendix_number == Decimal.new("120.5")
+      assert request_appendix.appendix_status == 42
+      assert request_appendix.end_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+      assert request_appendix.lock_version == 42
+      assert request_appendix.request_key1 == "some request_key1"
+      assert request_appendix.request_key2 == "some request_key2"
+      assert request_appendix.request_key3 == "some request_key3"
+      assert request_appendix.request_key4 == "some request_key4"
+      assert request_appendix.request_number == "some request_number"
+      assert request_appendix.start_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
+    end
+
+    test "create_request_appendix/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Commerces.create_request_appendix(@invalid_attrs)
+    end
+
+    test "update_request_appendix/2 with valid data updates the request_appendix" do
+      request_appendix = request_appendix_fixture()
+      assert {:ok, request_appendix} = Commerces.update_request_appendix(request_appendix, @update_attrs)
+      assert %RequestAppendix{} = request_appendix
+      assert request_appendix.appendix_category == "some updated appendix_category"
+      assert request_appendix.appendix_date == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request_appendix.appendix_description == "some updated appendix_description"
+      assert request_appendix.appendix_name == "some updated appendix_name"
+      assert request_appendix.appendix_number == Decimal.new("456.7")
+      assert request_appendix.appendix_status == 43
+      assert request_appendix.end_datetime == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+      assert request_appendix.lock_version == 43
+      assert request_appendix.request_key1 == "some updated request_key1"
+      assert request_appendix.request_key2 == "some updated request_key2"
+      assert request_appendix.request_key3 == "some updated request_key3"
+      assert request_appendix.request_key4 == "some updated request_key4"
+      assert request_appendix.request_number == "some updated request_number"
+      assert request_appendix.start_datetime == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
+    end
+
+    test "update_request_appendix/2 with invalid data returns error changeset" do
+      request_appendix = request_appendix_fixture()
+      assert {:error, %Ecto.Changeset{}} = Commerces.update_request_appendix(request_appendix, @invalid_attrs)
+      assert request_appendix
+             |> Map.delete(:inserted) == Commerces.get_request_appendix!(request_appendix.id)
+                                         |> Map.delete(:inserted)
+    end
+
+    test "delete_request_appendix/1 deletes the request_appendix" do
+      request_appendix = request_appendix_fixture()
+      assert {:ok, %RequestAppendix{}} = Commerces.delete_request_appendix(request_appendix)
+      assert_raise Ecto.NoResultsError, fn -> Commerces.get_request_appendix!(request_appendix.id) end
+    end
+
+    test "change_request_appendix/1 returns a request_appendix changeset" do
+      request_appendix = request_appendix_fixture()
+      assert %Ecto.Changeset{} = Commerces.change_request_appendix(request_appendix)
+    end
+
+    test "get_current_request_appendix_history/2 get status2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      result = MateriaCommerce.Commerces.get_current_request_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 3
+
+      result
+      |> Enum.map(
+           fn x ->
+             assert x.request_number == "PJ-01"
+             cond do
+               x.appendix_category == "Category1" ->
+                 assert x.appendix_status == 0
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+               x.appendix_category == "Category2" ->
+                 assert x.appendix_status == 1
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+               x.appendix_category == "Category3" ->
+                 assert x.appendix_status == 2
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+             end
+           end
+         )
+    end
+
+    test "delete_future_request_appendix_histories/2 delete status3" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      {result, _} = MateriaCommerce.Commerces.delete_future_request_appendix_histories(base_datetime, keywords)
+      details = MateriaCommerce.Commerces.list_request_appendices() |> Enum.filter(fn x -> x.request_number == "PJ-01" end)
+      assert result == 2
+      assert Enum.count(details) == 3
+
+      details
+      |> Enum.map(
+           fn x ->
+             assert x.request_number == "PJ-01"
+             cond do
+               x.appendix_category == "Category1" ->
+                 assert x.appendix_status == 0
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+               x.appendix_category == "Category2" ->
+                 assert x.appendix_status == 1
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+               x.appendix_category == "Category3" ->
+                 assert x.appendix_status == 2
+                 assert x.start_datetime == DateTime.from_naive!(~N[2018-11-01 09:00:00.000000Z], "Etc/UTC")
+                 assert x.end_datetime == DateTime.from_naive!(~N[2019-01-01 08:59:59.000000Z], "Etc/UTC")
+             end
+           end
+         )
+    end
+
+    test "get_recent_request_appendix_history/2 no result" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      result = MateriaCommerce.Commerces.get_recent_request_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 0
+    end
+
+    test "get_recent_request_appendix_history/2 boundary values" do
+      keywords = [{:request_number, "PJ-01"}]
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:01Z")
+      result = MateriaCommerce.Commerces.get_recent_request_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 3
+      assert Enum.any?(result, fn x -> x.appendix_status == 0 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 1 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 2 end)
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
+      result = MateriaCommerce.Commerces.get_recent_request_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 3
+      assert Enum.any?(result, fn x -> x.appendix_status == 0 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 1 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 2 end)
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:01Z")
+      result = MateriaCommerce.Commerces.get_recent_request_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 2
+      assert Enum.any?(result, fn x -> x.appendix_status == 3 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 4 end)
+
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-02-01 09:00:00Z")
+      result = MateriaCommerce.Commerces.get_recent_request_appendix_history(base_datetime, keywords)
+      assert Enum.count(result) == 2
+      assert Enum.any?(result, fn x -> x.appendix_status == 3 end)
+      assert Enum.any?(result, fn x -> x.appendix_status == 4 end)
+    end
+
+    test "create_new_request_appendix_history/5 error parameters lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
+      keywords = [{:request_number, "PJ-01"}]
+      attrs = [
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category1",
+          "appendix_status" => "99",
+          "id" => 1,
+          "lock_version" => 0,
+        },
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category2",
+          "appendix_status" => "99",
+          "id" => 2,
+          #"lock_version" => 1,
+        },
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category5"
+        }
+      ]
+      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_request_appendix_history(%{}, base_datetime, keywords, attrs, 1) end)
+    end
+
+    test "create_new_request_appendix_history/5 error parameters error different lock_version" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-01 09:00:01Z")
+      keywords = [{:request_number, "PJ-01"}]
+      attrs = [
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category1",
+          "appendix_status" => "99",
+          "id" => 1,
+          "lock_version" => 0,
+        },
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category2",
+          "appendix_status" => "99",
+          "id" => 2,
+          "lock_version" => 99,
+        },
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category5"
+        }
+      ]
+      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_request_appendix_history(%{}, base_datetime, keywords, attrs, 1) end)
+    end
+
+    test "create_new_request_appendix_history/5 create data all delete" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2017-11-17 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      attrs = [
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category90",
+        },
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category91",
+        },
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category92",
+        }
+      ]
+      {:ok, result} = Commerces.create_new_request_appendix_history(%{}, base_datetime, keywords, attrs, 1)
+      assert Enum.count(result) == 3
+      result
+      |> Enum.map(
+           fn x ->
+             assert x.request_number == "PJ-01"
+             assert x.start_datetime == DateTime.from_naive!(~N[2017-11-17 09:00:00Z], "Etc/UTC")
+             assert x.end_datetime == DateTime.from_naive!(~N[2999-12-31 23:59:59Z], "Etc/UTC")
+           end
+         )
+
+      details = MateriaCommerce.Commerces.list_request_appendices()
+                |> Enum.filter(fn x -> x.request_number == "PJ-01" end)
+      assert Enum.count(details) == 3
+    end
+
+    test "create_new_request_appendix_history/5 create latest history data" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-02 09:00:00Z")
+      keywords = [{:request_number, "PJ-01"}]
+      attrs = [
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category1",
+          "appendix_status" => "90",
+          "id" => 4,
+          "lock_version" => 1,
+        },
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category4",
+          "appendix_status" => "91",
+          "id" => 5,
+          "lock_version" => 0,
+        },
+        %{
+          "request_number" => "PJ-01",
+          "appendix_category" => "Category5",
+          "appendix_status" => "92",
+        }
+      ]
+      {:ok, result} = MateriaCommerce.Commerces.create_new_request_appendix_history(%{}, base_datetime, keywords, attrs, 1)
+      assert Enum.count(result) == 3
+      result
+      |> Enum.map(
+           fn x ->
+             assert x.request_number == "PJ-01"
+             assert x.start_datetime == DateTime.from_naive!(~N[2019-01-02 09:00:00Z], "Etc/UTC")
+             assert x.end_datetime == DateTime.from_naive!(~N[2999-12-31 23:59:59Z], "Etc/UTC")
+             cond do
+               x.appendix_category == "Category1" ->
+                 assert x.appendix_status == 90
+               x.appendix_category == "Category4" ->
+                 assert x.appendix_status == 91
+               x.appendix_category == "Category5" ->
+                 assert x.appendix_status == 92
+             end
+           end
+         )
+      details = MateriaCommerce.Commerces.list_request_appendices()
+                |> Enum.filter(fn x -> x.request_number == "PJ-01" end)
+      assert Enum.count(details) == 8
+    end
   end
 end
