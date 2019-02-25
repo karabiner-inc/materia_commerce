@@ -20,6 +20,7 @@ defmodule MateriaCommerceWeb.RequestView do
       request_key2: request.request_key2,
       request_key3: request.request_key3,
       request_key4: request.request_key4,
+      request_key5: request.request_key5,
       request_number: request.request_number,
       request_name: request.request_name,
       accuracy: request.accuracy,

@@ -23,6 +23,7 @@ defmodule MateriaCommerceWeb.RequestAppendixView do
       request_key2: request_appendix.request_key2,
       request_key3: request_appendix.request_key3,
       request_key4: request_appendix.request_key4,
+      request_key5: request_appendix.request_key5,
       request_number: request_appendix.request_number,
       appendix_category: request_appendix.appendix_category,
       appendix_name: request_appendix.appendix_name,

@@ -28,6 +28,7 @@ defmodule MateriaCommerce.Commerces.Request do
     field :request_key2, :string
     field :request_key3, :string
     field :request_key4, :string
+    field :request_key5, :string
     field :request_name, :string
     field :request_number, :string
     field :start_datetime, :utc_datetime
@@ -42,7 +43,7 @@ defmodule MateriaCommerce.Commerces.Request do
   @doc false
   def changeset(request, attrs) do
     request
-    |> cast(attrs, [:request_key1, :request_key2, :request_key3, :request_key4, :request_number, :request_name, :accuracy, :request_date1, :request_date2, :request_date3, :request_date4, :request_date5, :request_date6, :quantity1, :quantity2, :quantity3, :quantity4, :quantity5, :quantity6, :description, :note1, :note2, :note3, :note4, :start_datetime, :end_datetime, :status, :lock_version, :user_id, :inserted_id])
+    |> cast(attrs, [:request_key1, :request_key2, :request_key3, :request_key4, :request_key5, :request_number, :request_name, :accuracy, :request_date1, :request_date2, :request_date3, :request_date4, :request_date5, :request_date6, :quantity1, :quantity2, :quantity3, :quantity4, :quantity5, :quantity6, :description, :note1, :note2, :note3, :note4, :start_datetime, :end_datetime, :status, :lock_version, :user_id, :inserted_id])
     |> validate_required([:request_number, :start_datetime, :end_datetime, :inserted_id])
   end
 end
