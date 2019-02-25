@@ -16,6 +16,7 @@ defmodule MateriaCommerce.Commerces.RequestAppendix do
     field :request_key2, :string
     field :request_key3, :string
     field :request_key4, :string
+    field :request_key5, :string
     field :request_number, :string
     field :start_datetime, :utc_datetime
 
@@ -27,7 +28,7 @@ defmodule MateriaCommerce.Commerces.RequestAppendix do
   @doc false
   def changeset(request_appendix, attrs) do
     request_appendix
-    |> cast(attrs, [:request_key1, :request_key2, :request_key3, :request_key4, :request_number, :appendix_category, :appendix_name, :appendix_date, :appendix_number, :appendix_description, :appendix_status, :start_datetime, :end_datetime, :lock_version, :inserted_id])
+    |> cast(attrs, [:request_key1, :request_key2, :request_key3, :request_key4, :request_key5, :request_number, :appendix_category, :appendix_name, :appendix_date, :appendix_number, :appendix_description, :appendix_status, :start_datetime, :end_datetime, :lock_version, :inserted_id])
     |> validate_required([:request_number, :start_datetime, :end_datetime, :inserted_id])
   end
 end

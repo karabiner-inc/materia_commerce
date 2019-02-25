@@ -7,6 +7,7 @@ defmodule MateriaCommerce.Repo.Migrations.CreateRequests do
       add :request_key2, :string
       add :request_key3, :string
       add :request_key4, :string
+      add :request_key5, :string
       add :request_number, :string
       add :request_name, :string
       add :accuracy, :string
@@ -41,6 +42,7 @@ defmodule MateriaCommerce.Repo.Migrations.CreateRequests do
     create index(:requests, [:request_key2])
     create index(:requests, [:request_key3])
     create index(:requests, [:request_key4])
+    create index(:requests, [:request_key5])
     create index(:requests, [:request_number])
     create index(:requests, [:status])
     create index(:requests, [:user_id])
