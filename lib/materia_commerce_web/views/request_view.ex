@@ -65,7 +65,7 @@ defmodule MateriaCommerceWeb.RequestView do
 
     result_map = cond do
       Map.has_key?(request, :request_appendices) and request.request_appendices != [] ->
-        Map.put(result_map, :request_appendices, ProjectAppendixView.render("index.json", %{request_appendices: request.request_appendices}))
+        Map.put(result_map, :request_appendices, RequestAppendixView.render("index.json", %{request_appendices: request.request_appendices}))
       true ->
         Map.put(result_map, :request_appendices, [])
     end
