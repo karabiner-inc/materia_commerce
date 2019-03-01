@@ -676,9 +676,9 @@ defmodule MateriaCommerce.CommercesTest do
   describe "requests" do
     alias MateriaCommerce.Commerces.Request
 
-    @valid_attrs %{accuracy: "some accuracy", description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", lock_version: 42, note1: "some note1", note2: "some note2", note3: "some note3", note4: "some note4", request_date1: "2010-04-17 14:00:00.000000Z", request_date2: "2010-04-17 14:00:00.000000Z", request_date3: "2010-04-17 14:00:00.000000Z", request_date4: "2010-04-17 14:00:00.000000Z", request_date5: "2010-04-17 14:00:00.000000Z", request_date6: "2010-04-17 14:00:00.000000Z", request_key1: "some request_key1", request_key2: "some request_key2", request_key3: "some request_key3", request_key4: "some request_key4", request_name: "some request_name", request_number: "some request_number", quantity1: 42, quantity2: 42, quantity3: 42, quantity4: 42, quantity5: 42, quantity6: 42, start_datetime: "2010-04-17 14:00:00.000000Z", status: 42, inserted_id: 1}
-    @update_attrs %{accuracy: "some updated accuracy", description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", lock_version: 43, note1: "some updated note1", note2: "some updated note2", note3: "some updated note3", note4: "some updated note4", request_date1: "2011-05-18 15:01:01.000000Z", request_date2: "2011-05-18 15:01:01.000000Z", request_date3: "2011-05-18 15:01:01.000000Z", request_date4: "2011-05-18 15:01:01.000000Z", request_date5: "2011-05-18 15:01:01.000000Z", request_date6: "2011-05-18 15:01:01.000000Z", request_key1: "some updated request_key1", request_key2: "some updated request_key2", request_key3: "some updated request_key3", request_key4: "some updated request_key4", request_name: "some updated request_name", request_number: "some updated request_number", quantity1: 43, quantity2: 43, quantity3: 43, quantity4: 43, quantity5: 43, quantity6: 43, start_datetime: "2011-05-18 15:01:01.000000Z", status: 43, inserted_id: 2}
-    @invalid_attrs %{accuracy: nil, description: nil, end_datetime: nil, lock_version: nil, note1: nil, note2: nil, note3: nil, note4: nil, request_date1: nil, request_date2: nil, request_date3: nil, request_date4: nil, request_date5: nil, request_date6: nil, request_key1: nil, request_key2: nil, request_key3: nil, request_key4: nil, request_name: nil, request_number: nil, quantity1: nil, quantity2: nil, quantity3: nil, quantity4: nil, quantity5: nil, quantity6: nil, start_datetime: nil, status: nil, inserted_id: nil}
+    @valid_attrs %{accuracy: "some accuracy", description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", lock_version: 42, note1: "some note1", note2: "some note2", note3: "some note3", note4: "some note4", request_date1: "2010-04-17 14:00:00.000000Z", request_date2: "2010-04-17 14:00:00.000000Z", request_date3: "2010-04-17 14:00:00.000000Z", request_date4: "2010-04-17 14:00:00.000000Z", request_date5: "2010-04-17 14:00:00.000000Z", request_date6: "2010-04-17 14:00:00.000000Z", request_key1: "some request_key1", request_key2: "some request_key2", request_key3: "some request_key3", request_key4: "some request_key4", request_key5: "some request_key5", request_name: "some request_name", request_number: "some request_number", quantity1: 42, quantity2: 42, quantity3: 42, quantity4: 42, quantity5: 42, quantity6: 42, start_datetime: "2010-04-17 14:00:00.000000Z", status: 42, inserted_id: 1}
+    @update_attrs %{accuracy: "some updated accuracy", description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", lock_version: 43, note1: "some updated note1", note2: "some updated note2", note3: "some updated note3", note4: "some updated note4", request_date1: "2011-05-18 15:01:01.000000Z", request_date2: "2011-05-18 15:01:01.000000Z", request_date3: "2011-05-18 15:01:01.000000Z", request_date4: "2011-05-18 15:01:01.000000Z", request_date5: "2011-05-18 15:01:01.000000Z", request_date6: "2011-05-18 15:01:01.000000Z", request_key1: "some updated request_key1", request_key2: "some updated request_key2", request_key3: "some updated request_key3", request_key4: "some updated request_key4", request_key5: "some updated request_key5", request_name: "some updated request_name", request_number: "some updated request_number", quantity1: 43, quantity2: 43, quantity3: 43, quantity4: 43, quantity5: 43, quantity6: 43, start_datetime: "2011-05-18 15:01:01.000000Z", status: 43, inserted_id: 2}
+    @invalid_attrs %{accuracy: nil, description: nil, end_datetime: nil, lock_version: nil, note1: nil, note2: nil, note3: nil, note4: nil, request_date1: nil, request_date2: nil, request_date3: nil, request_date4: nil, request_date5: nil, request_date6: nil, request_key1: nil, request_key2: nil, request_key3: nil, request_key4: nil, request_key5: nil, request_name: nil, request_number: nil, quantity1: nil, quantity2: nil, quantity3: nil, quantity4: nil, quantity5: nil, quantity6: nil, start_datetime: nil, status: nil, inserted_id: nil}
 
     def request_fixture(attrs \\ %{}) do
       {:ok, request} =
@@ -734,6 +734,7 @@ defmodule MateriaCommerce.CommercesTest do
       assert request.request_key2 == "some request_key2"
       assert request.request_key3 == "some request_key3"
       assert request.request_key4 == "some request_key4"
+      assert request.request_key5 == "some request_key5"
       assert request.request_name == "some request_name"
       assert request.request_number == "some request_number"
       assert request.quantity1 == 42
@@ -772,6 +773,7 @@ defmodule MateriaCommerce.CommercesTest do
       assert request.request_key2 == "some updated request_key2"
       assert request.request_key3 == "some updated request_key3"
       assert request.request_key4 == "some updated request_key4"
+      assert request.request_key5 == "some updated request_key5"
       assert request.request_name == "some updated request_name"
       assert request.request_number == "some updated request_number"
       assert request.quantity1 == 43
@@ -919,8 +921,8 @@ defmodule MateriaCommerce.CommercesTest do
   describe "request_appendices" do
     alias MateriaCommerce.Commerces.RequestAppendix
 
-    @valid_attrs %{appendix_category: "some appendix_category", appendix_date: "2010-04-17 14:00:00.000000Z", appendix_description: "some appendix_description", appendix_name: "some appendix_name", appendix_number: "120.5", appendix_status: 42, end_datetime: "2010-04-17 14:00:00.000000Z", lock_version: 42, request_key1: "some request_key1", request_key2: "some request_key2", request_key3: "some request_key3", request_key4: "some request_key4", request_number: "some request_number", start_datetime: "2010-04-17 14:00:00.000000Z", inserted_id: 1}
-    @update_attrs %{appendix_category: "some updated appendix_category", appendix_date: "2011-05-18 15:01:01.000000Z", appendix_description: "some updated appendix_description", appendix_name: "some updated appendix_name", appendix_number: "456.7", appendix_status: 43, end_datetime: "2011-05-18 15:01:01.000000Z", lock_version: 43, request_key1: "some updated request_key1", request_key2: "some updated request_key2", request_key3: "some updated request_key3", request_key4: "some updated request_key4", request_number: "some updated request_number", start_datetime: "2011-05-18 15:01:01.000000Z", inserted_id: 2}
+    @valid_attrs %{appendix_category: "some appendix_category", appendix_date: "2010-04-17 14:00:00.000000Z", appendix_description: "some appendix_description", appendix_name: "some appendix_name", appendix_number: "120.5", appendix_status: 42, end_datetime: "2010-04-17 14:00:00.000000Z", lock_version: 42, request_key1: "some request_key1", request_key2: "some request_key2", request_key3: "some request_key3", request_key4: "some request_key4", request_key5: "some request_key5", request_number: "some request_number", start_datetime: "2010-04-17 14:00:00.000000Z", inserted_id: 1}
+    @update_attrs %{appendix_category: "some updated appendix_category", appendix_date: "2011-05-18 15:01:01.000000Z", appendix_description: "some updated appendix_description", appendix_name: "some updated appendix_name", appendix_number: "456.7", appendix_status: 43, end_datetime: "2011-05-18 15:01:01.000000Z", lock_version: 43, request_key1: "some updated request_key1", request_key2: "some updated request_key2", request_key3: "some updated request_key3", request_key4: "some updated request_key4", request_key5: "some updated request_key5", request_number: "some updated request_number", start_datetime: "2011-05-18 15:01:01.000000Z", inserted_id: 2}
     @invalid_attrs %{appendix_category: nil, appendix_date: nil, appendix_description: nil, appendix_name: nil, appendix_number: nil, appendix_status: nil, end_datetime: nil, lock_version: nil, request_key1: nil, request_key2: nil, request_key3: nil, request_key4: nil, request_number: nil, start_datetime: nil, inserted_id: nil}
 
     def request_appendix_fixture(attrs \\ %{}) do
@@ -962,6 +964,7 @@ defmodule MateriaCommerce.CommercesTest do
       assert request_appendix.request_key2 == "some request_key2"
       assert request_appendix.request_key3 == "some request_key3"
       assert request_appendix.request_key4 == "some request_key4"
+      assert request_appendix.request_key5 == "some request_key5"
       assert request_appendix.request_number == "some request_number"
       assert request_appendix.start_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
     end
@@ -986,6 +989,7 @@ defmodule MateriaCommerce.CommercesTest do
       assert request_appendix.request_key2 == "some updated request_key2"
       assert request_appendix.request_key3 == "some updated request_key3"
       assert request_appendix.request_key4 == "some updated request_key4"
+      assert request_appendix.request_key5 == "some updated request_key5"
       assert request_appendix.request_number == "some updated request_number"
       assert request_appendix.start_datetime == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
     end

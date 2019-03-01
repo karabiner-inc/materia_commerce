@@ -7,6 +7,7 @@ defmodule MateriaCommerce.Repo.Migrations.CreateRequestAppendices do
       add :request_key2, :string
       add :request_key3, :string
       add :request_key4, :string
+      add :request_key5, :string
       add :request_number, :string
       add :appendix_category, :string
       add :appendix_name, :string
@@ -26,6 +27,7 @@ defmodule MateriaCommerce.Repo.Migrations.CreateRequestAppendices do
     create index(:request_appendices, [:request_key2])
     create index(:request_appendices, [:request_key3])
     create index(:request_appendices, [:request_key4])
+    create index(:request_appendices, [:request_key5])
     create index(:request_appendices, [:request_number])
     create index(:request_appendices, [:appendix_category])
     create index(:request_appendices, [:inserted_id])

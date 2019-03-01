@@ -4,8 +4,8 @@ defmodule MateriaCommerceWeb.RequestAppendixControllerTest do
   alias MateriaCommerce.Commerces
   alias MateriaCommerce.Commerces.RequestAppendix
 
-  @create_attrs %{appendix_category: "some appendix_category", appendix_date: "2010-04-17 14:00:00.000000Z", appendix_description: "some appendix_description", appendix_name: "some appendix_name", appendix_number: "120.5", appendix_status: 42, end_datetime: "2010-04-17 14:00:00.000000Z", lock_version: 42, request_key1: "some request_key1", request_key2: "some request_key2", request_key3: "some request_key3", request_key4: "some request_key4", request_number: "some request_number", start_datetime: "2010-04-17 14:00:00.000000Z", inserted_id: 1}
-  @update_attrs %{appendix_category: "some updated appendix_category", appendix_date: "2011-05-18 15:01:01.000000Z", appendix_description: "some updated appendix_description", appendix_name: "some updated appendix_name", appendix_number: "456.7", appendix_status: 43, end_datetime: "2011-05-18 15:01:01.000000Z", lock_version: 43, request_key1: "some updated request_key1", request_key2: "some updated request_key2", request_key3: "some updated request_key3", request_key4: "some updated request_key4", request_number: "some updated request_number", start_datetime: "2011-05-18 15:01:01.000000Z", inserted_id: 1}
+  @create_attrs %{appendix_category: "some appendix_category", appendix_date: "2010-04-17 14:00:00.000000Z", appendix_description: "some appendix_description", appendix_name: "some appendix_name", appendix_number: "120.5", appendix_status: 42, end_datetime: "2010-04-17 14:00:00.000000Z", lock_version: 42, request_key1: "some request_key1", request_key2: "some request_key2", request_key3: "some request_key3", request_key4: "some request_key4", request_key5: "some request_key5", request_number: "some request_number", start_datetime: "2010-04-17 14:00:00.000000Z", inserted_id: 1}
+  @update_attrs %{appendix_category: "some updated appendix_category", appendix_date: "2011-05-18 15:01:01.000000Z", appendix_description: "some updated appendix_description", appendix_name: "some updated appendix_name", appendix_number: "456.7", appendix_status: 43, end_datetime: "2011-05-18 15:01:01.000000Z", lock_version: 43, request_key1: "some updated request_key1", request_key2: "some updated request_key2", request_key3: "some updated request_key3", request_key4: "some updated request_key4", request_key5: "some updated request_key5", request_number: "some updated request_number", start_datetime: "2011-05-18 15:01:01.000000Z", inserted_id: 1}
   @invalid_attrs %{appendix_category: nil, appendix_date: nil, appendix_description: nil, appendix_name: nil, appendix_number: nil, appendix_status: nil, end_datetime: nil, lock_version: nil, request_key1: nil, request_key2: nil, request_key3: nil, request_key4: nil, request_number: nil, start_datetime: nil}
   @admin_user_attrs %{
     "name" => "hogehoge",
@@ -56,6 +56,7 @@ defmodule MateriaCommerceWeb.RequestAppendixControllerTest do
                "request_key2" => "some request_key2",
                "request_key3" => "some request_key3",
                "request_key4" => "some request_key4",
+               "request_key5" => "some request_key5",
                "request_number" => "some request_number",
                "start_datetime" => "2010-04-17T23:00:00.000000+09:00",
                "inserted" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => [], "phone_number" => nil, "role" => "admin", "status" => 1}
@@ -92,6 +93,7 @@ defmodule MateriaCommerceWeb.RequestAppendixControllerTest do
                "request_key2" => "some updated request_key2",
                "request_key3" => "some updated request_key3",
                "request_key4" => "some updated request_key4",
+               "request_key5" => "some updated request_key5",
                "request_number" => "some updated request_number",
                "start_datetime" => "2011-05-19T00:01:01.000000+09:00",
                "inserted" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => [], "phone_number" => nil, "role" => "admin", "status" => 1}
