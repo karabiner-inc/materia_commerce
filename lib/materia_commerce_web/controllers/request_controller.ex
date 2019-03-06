@@ -41,31 +41,15 @@ defmodule MateriaCommerceWeb.RequestController do
     end
   end
 
-  def search_current_requests(conn, %{"key_words" => key_words}) do
-    now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    requests = Commerces.get_current_request(now, key_words)
+  def search_current_requests(conn, params) do
+    requests = Commerces.get_current_request(params)
     render(conn, "index.json", requests: requests)
   end
 
-  def current_requests(conn, %{"key_words" => key_words, "params" => params}) do
+  def current_requests(conn, params) do
     user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
+    key_words = [{:request_number, params["request_number"]}]
     MateriaWeb.ControllerBase.transaction_flow(conn, :request, Commerces, :create_new_request_history, [now, key_words, params, user_id])
   end
 end

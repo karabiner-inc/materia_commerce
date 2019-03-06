@@ -40,30 +40,14 @@ defmodule MateriaCommerceWeb.ContractController do
     end
   end
 
-  def search_current_contracts(conn, %{"key_words" => key_words}) do
-    now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    contracts = Commerces.get_current_contracts(now, key_words)
+  def search_current_contracts(conn, params) do
+    contracts = Commerces.get_current_contracts(params)
     render(conn, "index.json", contracts: contracts)
   end
 
-  def current_contracts(conn, %{"key_words" => key_words, "params" => params}) do
+  def current_contracts(conn, params) do
     now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
+    key_words = [{:contract_no, params["contract_no"]}]
     MateriaWeb.ControllerBase.transaction_flow(conn, :contract, Commerces, :create_new_contract_history, [now, key_words, params])
   end
 end

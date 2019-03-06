@@ -41,30 +41,14 @@ defmodule MateriaCommerceWeb.TaxController do
     end
   end
 
-  def search_current_taxes(conn, %{"key_words" => key_words}) do
-    now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    taxes = Products.get_current_tax(now, key_words)
+  def search_current_taxes(conn, params) do
+    taxes = Products.get_current_tax(params)
     render(conn, "index.json", taxes: taxes)
   end
 
-  def current_taxes(conn, %{"key_words" => key_words, "params" => params}) do
+  def current_taxes(conn, params) do
     now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
+    key_words = [{:tax_category, params["tax_category"]}]
     MateriaWeb.ControllerBase.transaction_flow(conn, :tax, Products, :create_new_tax_history, [now, key_words, params])
   end
 end

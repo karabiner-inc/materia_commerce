@@ -41,31 +41,16 @@ defmodule MateriaCommerceWeb.RequestAppendixController do
     end
   end
 
-  def search_current_request_appendices(conn, %{"key_words" => key_words}) do
-    now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    request_appendices = Commerces.get_current_request_appendices(now, key_words)
+  def search_current_request_appendices(conn, params) do
+    request_appendices = Commerces.get_current_request_appendices(params)
     render(conn, "index.json", request_appendices: request_appendices)
   end
 
-  def current_request_appendices(conn, %{"key_words" => key_words, "params" => params}) do
+  def current_request_appendices(conn, params) do
     user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    MateriaWeb.ControllerBase.transaction_flow(conn, :request_appendices, Commerces, :create_new_request_appendix_history, [now, key_words, params, user_id])
+    key_words = [{:request_number, params["request_number"]}]
+    request_appendices = params["request_appendices"]
+    MateriaWeb.ControllerBase.transaction_flow(conn, :request_appendices, Commerces, :create_new_request_appendix_history, [now, key_words, request_appendices, user_id])
   end
 end

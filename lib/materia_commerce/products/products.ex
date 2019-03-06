@@ -801,21 +801,13 @@ defmodule MateriaCommerce.Products do
   }
   }
   """
-  def get_current_products(base_datetime, key_word_list) do
-
+  def get_current_products(params) do
+    base_datetime = CalendarUtil.now()
     tax = MateriaCommerce.Products.Tax
           |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
     price = MateriaCommerce.Products.Price
             |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
-    item = MateriaCommerce.Products.Item
-           |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
-
-    # AddPk
-    item = [key_word_list]
-          |> Enum.reduce(item, fn(key_word, acc) ->
-      acc
-      |> where(^key_word)
-    end)
+    item = MateriaUtils.Ecto.EctoUtil.query_current_history(@repo, MateriaCommerce.Products.Item, base_datetime, [], params)
 
     item
     |> join(:left, [i], p in subquery(price), item_code: i.item_code)
@@ -851,8 +843,9 @@ defmodule MateriaCommerce.Products do
   iex(3)> current_price.unit_price
   Decimal.new(200)
   """
-  def get_current_price(base_datetime, key_word_list) do
-    MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, MateriaCommerce.Products.Price, base_datetime, key_word_list)
+  def get_current_price(params) do
+    base_datetime = CalendarUtil.now()
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, MateriaCommerce.Products.Price, base_datetime, [], params)
   end
 
   @doc """
@@ -863,7 +856,8 @@ defmodule MateriaCommerce.Products do
   iex(3)> current_tax.name
   "test2 tax"
   """
-  def get_current_tax(base_datetime, key_word_list) do
-    taxes = MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, MateriaCommerce.Products.Tax, base_datetime, key_word_list)
+  def get_current_tax(params) do
+    base_datetime = CalendarUtil.now()
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, MateriaCommerce.Products.Tax, base_datetime, [], params)
   end
 end

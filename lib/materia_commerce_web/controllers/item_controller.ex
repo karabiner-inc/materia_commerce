@@ -41,30 +41,14 @@ defmodule MateriaCommerceWeb.ItemController do
     end
   end
 
-  def search_current_items(conn, %{"key_words" => key_words}) do
-    now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    items = Products.get_current_products(now, key_words)
+  def search_current_items(conn, params) do
+    items = Products.get_current_products(params)
     render(conn, "index.json", items: items)
   end
 
-  def current_items(conn, %{"key_words" => key_words, "params" => params}) do
+  def current_items(conn, params) do
     now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
+    key_words = [{:item_code, params["item_code"]}]
     MateriaWeb.ControllerBase.transaction_flow(conn, :item, Products, :create_new_item_history, [now, key_words, params])
   end
 end

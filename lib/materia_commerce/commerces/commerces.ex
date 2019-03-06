@@ -1508,24 +1508,13 @@ defmodule MateriaCommerce.Commerces do
   }
   ]
   """
-  def get_current_contracts(base_datetime, key_word_list) do
+  def get_current_contracts(params) do
     Logger.debug("*-----  #{__MODULE__}.get_current_commerces -----*")
+    base_datetime = CalendarUtil.now()
     contract_detail = MateriaCommerce.Commerces.ContractDetail
                       |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
 
-    contract = MateriaCommerce.Commerces.Contract
-               |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
-
-    # AddPk
-    contract = [key_word_list]
-               |> Enum.reduce(
-                    contract,
-                    fn (key_word, acc) ->
-                      acc
-                      |> where(^key_word)
-                    end
-                  )
-
+    contract = MateriaUtils.Ecto.EctoUtil.query_current_history(@repo, MateriaCommerce.Commerces.Contract, base_datetime, [], params)
     results = contract
               |> join(:left, [c], cd in subquery(contract_detail), contract_no: c.contract_no)
               |> select([c, cd], %{contract: c, contract_details: cd})
@@ -1549,6 +1538,12 @@ defmodule MateriaCommerce.Commerces do
                      |> Map.put(:contract_details, contract_details)
                    end
                  )
+  end
+
+  def get_current_contract_details(params) do
+    Logger.debug("*-----  #{__MODULE__}.get_current_contract_details -----*")
+    base_datetime = CalendarUtil.now()
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, MateriaCommerce.Commerces.ContractDetail, base_datetime, [], params)
   end
 
   @doc """
@@ -2519,8 +2514,9 @@ defmodule MateriaCommerce.Commerces do
   }
   ]
   """
-  def get_current_request(base_datetime, keywords) do
-    MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, Request, base_datetime, keywords)
+  def get_current_request(params) do
+    base_datetime = CalendarUtil.now()
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, Request, base_datetime, [], params)
   end
 
   @doc """
@@ -2567,7 +2563,8 @@ defmodule MateriaCommerce.Commerces do
   }
   ]
   """
-  def get_current_request_appendices(base_datetime, keywords) do
-    MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, RequestAppendix, base_datetime, keywords)
+  def get_current_request_appendices(params) do
+    base_datetime = CalendarUtil.now()
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, RequestAppendix, base_datetime, [], params)
   end
 end
