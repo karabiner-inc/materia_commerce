@@ -801,8 +801,7 @@ defmodule MateriaCommerce.Products do
   }
   }
   """
-  def get_current_products(params) do
-    base_datetime = CalendarUtil.now()
+  def get_current_products(base_datetime, params) do
     tax = MateriaCommerce.Products.Tax
           |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
     price = MateriaCommerce.Products.Price
@@ -843,8 +842,7 @@ defmodule MateriaCommerce.Products do
   iex(3)> current_price.unit_price
   Decimal.new(200)
   """
-  def get_current_price(params) do
-    base_datetime = CalendarUtil.now()
+  def get_current_price(base_datetime, params) do
     MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, MateriaCommerce.Products.Price, base_datetime, [], params)
   end
 
@@ -856,8 +854,7 @@ defmodule MateriaCommerce.Products do
   iex(3)> current_tax.name
   "test2 tax"
   """
-  def get_current_tax(params) do
-    base_datetime = CalendarUtil.now()
+  def get_current_tax(base_datetime, params) do
     MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, MateriaCommerce.Products.Tax, base_datetime, [], params)
   end
 end

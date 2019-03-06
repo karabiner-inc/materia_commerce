@@ -41,7 +41,8 @@ defmodule MateriaCommerceWeb.PriceController do
   end
 
   def search_current_prices(conn, params) do
-    prices = Products.get_current_price(params)
+    base_datetime = CalendarUtil.now()
+    prices = Products.get_current_price(base_datetime, params)
     render(conn, "index.json", prices: prices)
   end
 

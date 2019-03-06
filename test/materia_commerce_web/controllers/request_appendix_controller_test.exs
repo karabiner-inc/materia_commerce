@@ -121,7 +121,10 @@ defmodule MateriaCommerceWeb.RequestAppendixControllerTest do
   describe "current request_appendix" do
     test "search", %{conn: conn} do
       conn = post conn, request_appendix_path(conn, :search_current_request_appendices),
-                  key_words: [%{"request_number" => "PJ-01"}]
+                  %{
+                    "and" => [%{"request_number" => "PJ-01"}],
+                    "or" => []
+                  }
       json_response(conn, 200)
       |> Enum.map(
            fn request_appendix ->
@@ -143,25 +146,30 @@ defmodule MateriaCommerceWeb.RequestAppendixControllerTest do
 
     test "new history", %{conn: conn} do
       create_conn = post conn, request_appendix_path(conn, :current_request_appendices),
-                  key_words: [%{"request_number" => "PJ-01"}],
-                  params: [
-                    %{
-                      "request_number" => "PJ-01",
-                      "appendix_category" => "Category5",
-                      "appendix_number" => "7",
-                      "appendix_status" => 6,
-                    },
-                    %{
-                      "request_number" => "PJ-01",
-                      "appendix_category" => "Category4",
-                      "appendix_number" => "8",
-                      "appendix_status" => 7,
-                      "id" => 5,
-                      "lock_version" => 0,
-                    }
-                  ]
+                         %{
+                           "request_number" => "PJ-01",
+                           "request_appendices" => [
+                             %{
+                               "request_number" => "PJ-01",
+                               "appendix_category" => "Category5",
+                               "appendix_number" => "7",
+                               "appendix_status" => 6,
+                             },
+                             %{
+                               "request_number" => "PJ-01",
+                               "appendix_category" => "Category4",
+                               "appendix_number" => "8",
+                               "appendix_status" => 7,
+                               "id" => 5,
+                               "lock_version" => 0,
+                             }
+                           ]
+                         }
       conn = post conn, request_appendix_path(conn, :search_current_request_appendices),
-                  key_words: [%{"request_number" => "PJ-01"}]
+                  %{
+                    "and" => [%{"request_number" => "PJ-01"}],
+                    "or" => []
+                  }
 
       json_response(conn, 200)
       |> Enum.map(

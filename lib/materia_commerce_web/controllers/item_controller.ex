@@ -42,7 +42,8 @@ defmodule MateriaCommerceWeb.ItemController do
   end
 
   def search_current_items(conn, params) do
-    items = Products.get_current_products(params)
+    base_datetime = CalendarUtil.now()
+    items = Products.get_current_products(base_datetime, params)
     render(conn, "index.json", items: items)
   end
 

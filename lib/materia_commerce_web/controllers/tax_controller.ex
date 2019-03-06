@@ -42,7 +42,8 @@ defmodule MateriaCommerceWeb.TaxController do
   end
 
   def search_current_taxes(conn, params) do
-    taxes = Products.get_current_tax(params)
+    base_datetime = CalendarUtil.now()
+    taxes = Products.get_current_tax(base_datetime, params)
     render(conn, "index.json", taxes: taxes)
   end
 

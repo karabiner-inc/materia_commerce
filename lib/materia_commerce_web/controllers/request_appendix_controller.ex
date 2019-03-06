@@ -42,7 +42,8 @@ defmodule MateriaCommerceWeb.RequestAppendixController do
   end
 
   def search_current_request_appendices(conn, params) do
-    request_appendices = Commerces.get_current_request_appendices(params)
+    base_datetime = CalendarUtil.now()
+    request_appendices = Commerces.get_current_request_appendices(base_datetime, params)
     render(conn, "index.json", request_appendices: request_appendices)
   end
 

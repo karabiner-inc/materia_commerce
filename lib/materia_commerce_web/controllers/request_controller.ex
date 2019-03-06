@@ -42,7 +42,8 @@ defmodule MateriaCommerceWeb.RequestController do
   end
 
   def search_current_requests(conn, params) do
-    requests = Commerces.get_current_request(params)
+    base_datetime = CalendarUtil.now()
+    requests = Commerces.get_current_request(base_datetime, params)
     render(conn, "index.json", requests: requests)
   end
 

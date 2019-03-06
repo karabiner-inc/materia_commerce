@@ -376,7 +376,8 @@ defmodule MateriaCommerce.ProductsTest do
     test "get_current_products/2" do
       {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
       key_word_list = [{:item_code, "ICZ1000"}]
-      current_product = MateriaCommerce.Products.get_current_products(base_datetime, key_word_list)
+      params = %{"and"=> [%{"item_code" => "ICZ1000"}], "or" => []}
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
       assert Enum.count(current_product) == 1
       current_product = current_product |> List.first()
       assert Map.has_key?(current_product, :price)
@@ -384,7 +385,6 @@ defmodule MateriaCommerce.ProductsTest do
 
       current_price = Products.get_current_price_history(base_datetime, key_word_list)
       current_tax = Products.get_current_tax_history(base_datetime, [{:tax_category, current_product.tax_category}])
-
       assert current_product.price == current_price
       assert current_product.tax == current_tax
     end
