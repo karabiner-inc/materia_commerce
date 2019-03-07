@@ -47,6 +47,7 @@ name	category1	category2	category3	category4	item_code	model_number	jan_code	thu
 炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	0	Blue	高級炊飯器	2018-11-01 09:00:00	2018-12-16 08:59:59	一般消費税
 炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	高級炊飯器	2018-12-17 09:00:00	2019-12-31 08:59:59	一般消費税
 炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	超高級炊飯器	2020-01-01 09:00:00	2999-12-31 08:59:59	一般消費税
+炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1001	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	超高級炊飯器	2018-11-01 09:00:00	2999-12-31 08:59:59	一般消費税
 "
 jsons = TsvParser.parse_tsv_to_json(items, "name")
 
@@ -94,6 +95,13 @@ taxes = [
     tax_category: "一般消費税",
     tax_rate: 100,
   },
+  %{
+    name: "tax category3",
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "2999-12-31 23:59:59",
+    tax_category: "category3",
+    tax_rate: 1,
+  },
 ]
 
 taxes
@@ -127,6 +135,13 @@ prices = [
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
     item_code: "ICZ1001",
+    unit_price: 1000,
+  },
+  %{
+    description: "price item_code3",
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "2999-12-31 23:59:59",
+    item_code: "ICZ1002",
     unit_price: 1000,
   },
 ]
@@ -169,6 +184,16 @@ contracts = [
   },
   %{
     contract_no: "1111-1111-1111",
+    settlement: "9999-9999-9999",
+    shipping_fee: 200,
+    tax_amount: 80,
+    total_amount: 1280,
+    status: 0,
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "2999-12-31 23:59:59",
+  },
+  %{
+    contract_no: "2222-2222-2222",
     settlement: "9999-9999-9999",
     shipping_fee: 200,
     tax_amount: 80,
@@ -228,6 +253,14 @@ contract_details = [
   },
   %{
     contract_no: "1111-1111-1111",
+    amount: 1,
+    price: 100,
+    category1: "Single Detail",
+    start_datetime: "2018-01-01 09:00:00",
+    end_datetime: "2999-12-31 23:59:59",
+  },
+  %{
+    contract_no: "2222-2222-2222",
     amount: 1,
     price: 100,
     category1: "Single Detail",
