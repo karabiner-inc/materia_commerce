@@ -40,30 +40,15 @@ defmodule MateriaCommerceWeb.PriceController do
     end
   end
 
-  def search_current_prices(conn, %{"key_words" => key_words}) do
-    now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    prices = Products.get_current_price(now, key_words)
+  def search_current_prices(conn, params) do
+    base_datetime = CalendarUtil.now()
+    prices = Products.get_current_price(base_datetime, params)
     render(conn, "index.json", prices: prices)
   end
 
-  def current_prices(conn, %{"key_words" => key_words, "params" => params}) do
+  def current_prices(conn, params) do
     now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
+    key_words = [{:item_code, params["item_code"]}]
     MateriaWeb.ControllerBase.transaction_flow(conn, :price, Products, :create_new_price_history, [now, key_words, params])
   end
 end

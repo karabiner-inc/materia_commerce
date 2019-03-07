@@ -72,9 +72,8 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"item_code": "ICZ1000"}
-  ]
+  "and": [{"item_code": "ICZ1000"}],
+  "or": []
 }
 
 ### :search_current_items
@@ -83,8 +82,16 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": []
+  "and": [],
+  "or": [{"model_number": "Z1000"}]
 }
+
+### :search_current_items
+POST   {{url}}/api/search-items HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{}
 
 ### :current_contracts
 POST   {{url}}/api/current-items     HTTP/1.1
@@ -92,15 +99,10 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"item_code": "ICZ1000"}
-  ],
-  "params": {
     "item_code": "ICZ1000",
     "category1": "電化製品",
     "name": "炊飯器Z1000!!",
     "lock_version": 0
-  }
 }
 
 ###############################################
@@ -160,9 +162,8 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"tax_category": "category2"}
-  ]
+  "and": [{"tax_category": "category2"}],
+  "or": []
 }
 
 ### :search_current_taxes
@@ -171,8 +172,16 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": []
+  "and": [],
+  "or": [{"tax_rate": "1"}]
 }
+
+### :search_current_taxes
+POST   {{url}}/api/search-taxes     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{}
 
 ### :current_taxes
 POST   {{url}}/api/current-taxes     HTTP/1.1
@@ -180,14 +189,9 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"tax_category": "category1"}
-  ],
-  "params": {
     "tax_category": "category1",
     "tax_rate": 200,
     "lock_version": 0
-  }
 }
 
 ###############################################
@@ -245,9 +249,8 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"item_code": "ICZ1001"}
-  ]
+  "and": [{"item_code": "ICZ1001"}],
+  "or": []
 }
 
 ### :search_current_prices
@@ -256,8 +259,16 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": []
+  "and": [],
+  "or": [{"unit_price": "1000"}]
 }
+
+### :search_current_prices
+POST   {{url}}/api/search-prices HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{}
 
 ### :current_prices
 POST   {{url}}/api/current-prices     HTTP/1.1
@@ -265,15 +276,10 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"item_code": "ICZ1000"}
-  ],
-  "params": {
     "item_code": "ICZ1000",
     "unit_price": 0,
     "description": "description",
     "lock_version": 0
-  }
 }
 
 ###############################################
@@ -329,9 +335,8 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"contract_no": "1111-1111-1111"}
-  ]
+  "and": [{"contract_no": "1111-1111-1111"}],
+  "or": []
 }
 
 ### :search_current_contracts
@@ -340,8 +345,16 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": []
+  "and": [],
+  "or": [{"settlement": "9999-9999-9999"}]
 }
+
+### :search_current_contracts
+POST   {{url}}/api/search-contracts     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{}
 
 ### :current_contracts
 POST   {{url}}/api/current-contracts     HTTP/1.1
@@ -349,14 +362,9 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"contract_no": "1111-1111-1111"}
-  ],
-  "params": {
     "contract_no": "1111-1111-1111",
     "settlement": "8888-8888-8888",
     "lock_version": 0
-  }
 }
 
 ###############################################
@@ -412,9 +420,8 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"contract_no": "1111-1111-1111"}
-  ]
+  "and": [{"contract_no": "1111-1111-1111"}],
+  "or": []
 }
 
 ### :search_current_contract_details
@@ -423,8 +430,16 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": []
+  "and": [],
+  "or": [{"price": "100"}]
 }
+
+### :search_current_contract_details
+POST   {{url}}/api/search-contract-details     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{}
 
 ### :current_contract_details
 POST   {{url}}/api/current-contract-details     HTTP/1.1
@@ -432,10 +447,9 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"contract_no": "1111-1111-1111"}
-  ],
-  "params": [
+  "contract_no": "1111-1111-1111",
+  "contract_details":
+  [
     {
       "contract_no": "1111-1111-1111",
       "contract_name": "Update",
@@ -508,9 +522,8 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"request_number": "PJ-01"}
-  ]
+  "and": [{"request_number": "PJ-01"}],
+  "or": []
 }
 
 ### :search_current_requests
@@ -519,8 +532,16 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": []
+  "and": [],
+  "or": [{"request_key1": "key1"}]
 }
+
+### :search_current_requests
+POST   {{url}}/api/search-requests     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{}
 
 ### :current_requests
 POST   {{url}}/api/current-requests     HTTP/1.1
@@ -528,15 +549,10 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"request_number": "PJ-01"}
-  ],
-  "params": {
     "request_number": "PJ-01",
     "status": "99",
     "user_id": "1",
     "lock_version": 2
-  }
 }
 
 ###############################################
@@ -596,9 +612,8 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"request_number": "PJ-01"}
-  ]
+  "and": [{"request_number": "PJ-01"}],
+  "or": []
 }
 
 ### :search_current_request_appendices
@@ -607,8 +622,16 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": []
+  "and": [{"request_number": "PJ-01"}],
+  "or": [{"appendix_category": "Category1"}, {"appendix_category": "Category4"}]
 }
+
+### :search_current_request_appendices
+POST   {{url}}/api/search-request-appendices     HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{}
 
 ### :current_contracts
 POST   {{url}}/api/current-request-appendices     HTTP/1.1
@@ -616,10 +639,9 @@ Content-Type: application/json
 Authorization: Bearer {{access_token}}
 
 {
-  "key_words": [
-    {"request_number": "PJ-01"}
-  ],
-  "params": [
+  "request_number": "PJ-01",
+  "request_appendices":
+  [
     {
       "request_number": "PJ-01",
       "appendix_category": "Category4",
@@ -632,5 +654,4 @@ Authorization: Bearer {{access_token}}
     }
   ]
 }
-
 ###

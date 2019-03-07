@@ -149,7 +149,10 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
   describe "current request" do
     test "search", %{conn: conn} do
       conn = post conn, request_path(conn, :search_current_requests),
-                  key_words: [%{"request_number" => "PJ-01"}]
+                  %{
+                    "and" => [%{"request_number" => "PJ-01"}],
+                    "or" => []
+                  }
       request = json_response(conn, 200)
                 |> List.first
       assert request["request_number"] == "PJ-01"
@@ -160,15 +163,17 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
 
     test "new history", %{conn: conn} do
       create_conn = post conn, request_path(conn, :current_requests),
-                  key_words: [%{"request_number" => "PJ-01"}],
-                  params: %{
-                    "request_number" => "PJ-01",
-                    "status" => 4,
-                    "lock_version" => 2,
-                  }
+                         %{
+                           "request_number" => "PJ-01",
+                           "status" => 4,
+                           "lock_version" => 2,
+                         }
 
       conn = post conn, request_path(conn, :search_current_requests),
-                  key_words: [%{"request_number" => "PJ-01"}]
+                  %{
+                    "and" => [%{"request_number" => "PJ-01"}],
+                    "or" => []
+                  }
       request = json_response(conn, 200)
                 |> List.first
       assert request["request_number"] == "PJ-01"

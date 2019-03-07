@@ -41,30 +41,16 @@ defmodule MateriaCommerceWeb.ContractDetailController do
     end
   end
 
-  def search_current_contract_details(conn, %{"key_words" => key_words}) do
-    now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    contract_details = Commerces.get_current_contract_detail_history(now, key_words)
+  def search_current_contract_details(conn, params) do
+    base_datetime = CalendarUtil.now()
+    contract_details = Commerces.get_current_contract_details(base_datetime, params)
     render(conn, "index.json", contract_details: contract_details)
   end
 
-  def current_contract_details(conn, %{"key_words" => key_words, "params" => params}) do
+  def current_contract_details(conn, params) do
     now = CalendarUtil.now()
-    key_words = key_words
-                |> Enum.reduce([],
-                     fn (key_word, acc) ->
-                       key = Map.keys(key_word)
-                             |> List.first
-                       acc ++ [{String.to_atom(key), Map.get(key_word, key)}]
-                     end
-                   )
-    MateriaWeb.ControllerBase.transaction_flow(conn, :contract_details, Commerces, :create_new_contract_detail_history, [now, key_words, params])
+    key_words = [{:contract_no, params["contract_no"]}]
+    contract_details = params["contract_details"]
+    MateriaWeb.ControllerBase.transaction_flow(conn, :contract_details, Commerces, :create_new_contract_detail_history, [now, key_words, contract_details])
   end
 end
