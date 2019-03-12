@@ -47,8 +47,9 @@ defmodule MateriaCommerceWeb.ContractController do
   end
 
   def current_contracts(conn, params) do
+    user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
     key_words = [{:contract_no, params["contract_no"]}]
-    MateriaWeb.ControllerBase.transaction_flow(conn, :contract, Commerces, :create_new_contract_history, [now, key_words, params])
+    MateriaWeb.ControllerBase.transaction_flow(conn, :contract, Commerces, :create_new_contract_history, [now, key_words, params, user_id])
   end
 end

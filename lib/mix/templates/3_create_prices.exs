@@ -11,10 +11,12 @@ defmodule MateriaCommerce.Repo.Migrations.CreatePrices do
       add :start_datetime, :utc_datetime
       add :end_datetime, :utc_datetime
       add :lock_version, :bigint
+      add :inserted_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end
 
     create index(:prices, [:item_code])
+    create index(:prices, [:inserted_id])
   end
 end

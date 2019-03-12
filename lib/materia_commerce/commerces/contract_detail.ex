@@ -37,20 +37,22 @@ defmodule MateriaCommerce.Commerces.ContractDetail do
     field :weight3, :string
     field :weight4, :string
 
+    belongs_to :inserted, Materia.Accounts.User
+
     timestamps()
   end
 
   @doc false
   def changeset(contract_detail, attrs) do
     contract_detail
-    |> cast(attrs, [:contract_name, :contract_no, :amount, :price, :purchase_amount, :merchandise_cost, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :start_datetime, :end_datetime, :lock_version])
-    |> validate_required([:contract_no, :start_datetime, :end_datetime, :lock_version])
+    |> cast(attrs, [:contract_name, :contract_no, :amount, :price, :purchase_amount, :merchandise_cost, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :start_datetime, :end_datetime, :lock_version, :inserted_id])
+    |> validate_required([:contract_no, :start_datetime, :end_datetime, :lock_version, :inserted_id])
   end
 
   @doc false
   def update_changeset(contract_detail, attrs) do
     contract_detail
-    |> cast(attrs, [:contract_name, :contract_no, :amount, :price, :purchase_amount, :merchandise_cost, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :start_datetime, :end_datetime, :lock_version])
-    |> validate_required([:contract_no, :lock_version])
+    |> cast(attrs, [:contract_name, :contract_no, :amount, :price, :purchase_amount, :merchandise_cost, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :delivery_area, :manufacturer, :color, :tax_category, :start_datetime, :end_datetime, :lock_version, :inserted_id])
+    |> validate_required([:contract_no, :lock_version, :inserted_id])
   end
 end

@@ -21,6 +21,7 @@ defmodule MateriaCommerce.Products do
   """
   def list_items do
     @repo.all(Item)
+    |> @repo.preload([:inserted])
   end
 
   @doc """
@@ -38,6 +39,7 @@ defmodule MateriaCommerce.Products do
   """
   def get_item!(id) do
     @repo.get!(Item, id)
+    |> @repo.preload([:inserted])
   end
 
   @doc """
@@ -190,7 +192,7 @@ defmodule MateriaCommerce.Products do
   iex(18)> item.end_datetime
   #DateTime<2019-12-17 08:59:59Z>
   """
-  def create_new_item_history(%{}, start_datetime, key_word_list, attr) do
+  def create_new_item_history(%{}, start_datetime, key_word_list, attr, user_id) do
 
    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
 
@@ -202,8 +204,9 @@ defmodule MateriaCommerce.Products do
     if recent_item == nil do
       # 新規登録
       attr = attr
-      |> Map.put("start_datetime", start_datetime)
-      |> Map.put("end_datetime", end_datetime)
+             |> Map.put("start_datetime", start_datetime)
+             |> Map.put("end_datetime", end_datetime)
+             |> Map.put("inserted_id", user_id)
       attr =
       #if Map.has_key?(attr, "end_datetime") do
       #  attr
@@ -225,9 +228,10 @@ defmodule MateriaCommerce.Products do
       end)
 
       attr = attr
-      |> Map.put(:lock_version, recent_item.lock_version + 1)
-      |> Map.put(:start_datetime, start_datetime)
-      |> Map.put(:end_datetime, end_datetime)
+             |> Map.put(:lock_version, recent_item.lock_version + 1)
+             |> Map.put(:start_datetime, start_datetime)
+             |> Map.put(:end_datetime, end_datetime)
+             |> Map.put(:inserted_id, user_id)
       #if !Map.has_key?(attr, :end_datetime) do
       #  attr = Map.put(attr, :end_datetime, end_datetime)
       #end
@@ -256,6 +260,7 @@ defmodule MateriaCommerce.Products do
   """
   def list_taxes do
     @repo.all(Tax)
+    |> @repo.preload([:inserted])
   end
 
   @doc """
@@ -273,6 +278,7 @@ defmodule MateriaCommerce.Products do
 
   """
   def get_tax!(id), do: @repo.get!(Tax, id)
+                        |> @repo.preload([:inserted])
 
   @doc """
   主キーを想定したパラメータで現在のTax情報を取得する
@@ -362,7 +368,7 @@ defmodule MateriaCommerce.Products do
   iex(18)> tax.end_datetime
   #DateTime<2019-12-17 08:59:59Z>
   """
-  def create_new_tax_history(%{}, start_datetime, key_word_list, attr) do
+  def create_new_tax_history(%{}, start_datetime, key_word_list, attr, user_id) do
 
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
  
@@ -374,8 +380,9 @@ defmodule MateriaCommerce.Products do
      if recent_tax == nil do
        # 新規登録
        attr = attr
-       |> Map.put("start_datetime", start_datetime)
-       |> Map.put("end_datetime", end_datetime)
+              |> Map.put("start_datetime", start_datetime)
+              |> Map.put("end_datetime", end_datetime)
+              |> Map.put("inserted_id", user_id)
        attr =
        #if Map.has_key?(attr, "end_datetime") do
        #  attr
@@ -399,9 +406,10 @@ defmodule MateriaCommerce.Products do
        end)
  
        attr = attr
-       |> Map.put(:lock_version, recent_tax.lock_version + 1)
-       |> Map.put(:start_datetime, start_datetime)
-       |> Map.put(:end_datetime, end_datetime)
+              |> Map.put(:lock_version, recent_tax.lock_version + 1)
+              |> Map.put(:start_datetime, start_datetime)
+              |> Map.put(:end_datetime, end_datetime)
+              |> Map.put(:inserted_id, user_id)
        #if !Map.has_key?(attr, :end_datetime) do
        #  attr = Map.put(attr, :end_datetime, end_datetime)
        #end
@@ -493,6 +501,7 @@ defmodule MateriaCommerce.Products do
   """
   def list_prices do
     @repo.all(Price)
+    |> @repo.preload([:inserted])
   end
 
   @doc """
@@ -510,6 +519,7 @@ defmodule MateriaCommerce.Products do
 
   """
   def get_price!(id), do: @repo.get!(Price, id)
+                          |> @repo.preload([:inserted])
 
 
   @doc """
@@ -610,7 +620,7 @@ defmodule MateriaCommerce.Products do
   iex(24)> recent.end_datetime
   #DateTime<2019-12-17 08:59:59Z>
   """
-  def create_new_price_history(%{}, start_datetime, key_word_list, attr) do
+  def create_new_price_history(%{}, start_datetime, key_word_list, attr, user_id) do
 
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
 
@@ -624,6 +634,7 @@ defmodule MateriaCommerce.Products do
         attr = attr
                |> Map.put("start_datetime", start_datetime)
                |> Map.put("end_datetime", end_datetime)
+               |> Map.put("inserted_id", user_id)
         attr =
           #if Map.has_key?(attr, "end_datetime") do
           #  attr
@@ -650,6 +661,7 @@ defmodule MateriaCommerce.Products do
                |> Map.put(:lock_version, recent_price.lock_version + 1)
                |> Map.put(:start_datetime, start_datetime)
                |> Map.put(:end_datetime, end_datetime)
+               |> Map.put(:inserted_id, user_id)
         #if !Map.has_key?(attr, :end_datetime) do
         #  attr = Map.put(attr, :end_datetime, end_datetime)
         #end

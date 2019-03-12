@@ -48,8 +48,9 @@ defmodule MateriaCommerceWeb.ItemController do
   end
 
   def current_items(conn, params) do
+    user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
     key_words = [{:item_code, params["item_code"]}]
-    MateriaWeb.ControllerBase.transaction_flow(conn, :item, Products, :create_new_item_history, [now, key_words, params])
+    MateriaWeb.ControllerBase.transaction_flow(conn, :item, Products, :create_new_item_history, [now, key_words, params, user_id])
   end
 end
