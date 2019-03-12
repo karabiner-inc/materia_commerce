@@ -7,15 +7,23 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
   @create_attrs %{end_datetime: "2010-04-17 14:00:00.000000Z", name: "some name", start_datetime: "2010-04-17 14:00:00.000000Z", tax_category: "some tax_category", tax_rate: "120.5", inserted_id: 1,}
   @update_attrs %{end_datetime: "2011-05-18 15:01:01.000000Z", name: "some updated name", start_datetime: "2011-05-18 15:01:01.000000Z", tax_category: "some updated tax_category", tax_rate: "456.7", inserted_id: 1,}
   @invalid_attrs %{end_datetime: nil, name: nil, start_datetime: nil, tax_category: nil, tax_rate: nil, inserted_id: nil}
-
+  @admin_user_attrs %{
+    "name" => "hogehoge",
+    "email" => "hogehoge@example.com",
+    "password" => "hogehoge",
+    "role" => "admin",
+  }
   def fixture(:tax) do
     {:ok, tax} = Products.create_tax(@create_attrs)
     tax
   end
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
     Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+    conn = put_req_header(conn, "accept", "application/json")
+    token_conn = post conn, authenticator_path(conn, :sign_in), @admin_user_attrs
+    %{"access_token" => token } = json_response(token_conn, 201)
+    {:ok, conn: conn = put_req_header(conn, "authorization", "Bearer " <> token)}
   end
 
   describe "index" do
@@ -27,8 +35,8 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
 
   describe "create tax" do
     test "renders tax when data is valid", %{conn: conn} do
-      conn = post conn, tax_path(conn, :create), @create_attrs
-      assert %{"id" => id} = json_response(conn, 201)
+      result_conn = post conn, tax_path(conn, :create), @create_attrs
+      assert %{"id" => id} = json_response(result_conn, 201)
 
       conn = get conn, tax_path(conn, :show, id)
       assert json_response(conn, 200)
@@ -69,8 +77,8 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
     setup [:create_tax]
 
     test "renders tax when data is valid", %{conn: conn, tax: %Tax{id: id} = tax} do
-      conn = put conn, tax_path(conn, :update, tax), @update_attrs
-      assert %{"id" => ^id} = json_response(conn, 200)
+      result_conn = put conn, tax_path(conn, :update, tax), @update_attrs
+      assert %{"id" => ^id} = json_response(result_conn, 200)
 
       conn = get conn, tax_path(conn, :show, id)
       assert json_response(conn, 200)
@@ -111,8 +119,8 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
     setup [:create_tax]
 
     test "deletes chosen tax", %{conn: conn, tax: tax} do
-      conn = delete conn, tax_path(conn, :delete, tax)
-      assert response(conn, 204)
+      result_conn = delete conn, tax_path(conn, :delete, tax)
+      assert response(result_conn, 204)
       assert_error_sent 404, fn ->
         get conn, tax_path(conn, :show, tax)
       end
