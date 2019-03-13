@@ -48,35 +48,29 @@ defmodule MateriaCommerceWeb.Router do
   end
 
   scope "/api", MateriaCommerceWeb do
-    pipe_through :api
+    pipe_through [ :api, :guardian_auth]
 
     resources "/items", ItemController, except: [:new, :edit]
     resources "/taxes", TaxController, except: [:new, :edit]
     resources "/prices", PriceController, except: [:new, :edit]
     resources "/contracts", ContractController, except: [:new, :edit]
     resources "/contract_details", ContractDetailController, except: [:new, :edit]
+    resources "/requests", RequestController, except: [:new, :edit]
+    resources "/request_appendices", RequestAppendixController, except: [:new, :edit]
 
     post "/search-items", ItemController, :search_current_items
     post "/search-taxes", TaxController, :search_current_taxes
     post "/search-prices", PriceController, :search_current_prices
+    post "/search-contracts", ContractController, :search_current_contracts
+    post "/search-contract-details", ContractDetailController, :search_current_contract_details
+    post "/search-requests", RequestController, :search_current_requests
+    post "/search-request-appendices", RequestAppendixController, :search_current_request_appendices
+
     post "/current-items", ItemController, :current_items
     post "/current-taxes", TaxController, :current_taxes
     post "/current-prices", PriceController, :current_prices
-
-    post "/search-contracts", ContractController, :search_current_contracts
-    post "/search-contract-details", ContractDetailController, :search_current_contract_details
     post "/current-contracts", ContractController, :current_contracts
     post "/current-contract-details", ContractDetailController, :current_contract_details
-  end
-
-  scope "/api", MateriaCommerceWeb do
-    pipe_through [ :api, :guardian_auth]
-
-    resources "/requests", RequestController, except: [:new, :edit]
-    resources "/request_appendices", RequestAppendixController, except: [:new, :edit]
-
-    post "/search-requests", RequestController, :search_current_requests
-    post "/search-request-appendices", RequestAppendixController, :search_current_request_appendices
     post "/current-requests", RequestController, :current_requests
     post "/current-request-appendices", RequestAppendixController, :current_request_appendices
   end

@@ -21,116 +21,47 @@ defmodule MateriaCommerce.Commerces do
   iex(1)> list_contracts = MateriaCommerce.Commerces.list_contracts
   iex(2)> view = MateriaCommerceWeb.ContractView.render("index.json", %{contracts: list_contracts}) |> Enum.map(fn x -> Map.delete(x, :id) end)
   iex(3)> view = view |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end)
-  [
+  iex(4)> view |> List.first
   %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_no: "0000-0000-0000",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "100.01",
-    start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 1,
-    tax_amount: "80",
-    total_amount: "1180.01",
-    contract_details: [],
+  billing_address: nil,
+  buyer_id: nil,
+  contract_details: [],
+  contract_no: "0000-0000-0000",
+  contracted_date: "",
+  delivery_address: nil,
+  delivery_end_datetime: "",
+  delivery_start_datetime: "",
+  end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
+  expiration_date: "",
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
   },
-  %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_no: "0000-0000-0000",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "110.01",
-    start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 2,
-    tax_amount: "80",
-    total_amount: "1190.01",
-    contract_details: [],
-  },
-  %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_no: "0000-0000-0000",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "2019-02-01 17:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "200",
-    start_datetime: "2019-01-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 3,
-    tax_amount: "80",
-    total_amount: "1280",
-    contract_details: [],
-  },
-  %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_no: "1111-1111-1111",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "200",
-    start_datetime: "2018-01-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 0,
-    tax_amount: "80",
-    total_amount: "1280",
-    contract_details: [],
-  },
-  %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_details: [],
-    contract_no: "2222-2222-2222",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "200",
-    start_datetime: "2018-01-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 0,
-    tax_amount: "80",
-    total_amount: "1280"
+  lock_version: 0,
+  seller_id: nil,
+  sender_address: nil,
+  settlement: "9999-9999-9999",
+  shipping_fee: "100.01",
+  start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
+  status: 1,
+  tax_amount: "80",
+  total_amount: "1180.01"
   }
-  ]
   """
   def list_contracts do
     @repo.all(Contract)
+    |> @repo.preload([:inserted])
   end
 
   @doc """
@@ -155,6 +86,21 @@ defmodule MateriaCommerce.Commerces do
   end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
   expiration_date: "",
   id: 1,
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
   lock_version: 0,
   seller_id: nil,
   sender_address: nil,
@@ -163,17 +109,18 @@ defmodule MateriaCommerce.Commerces do
   start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
   status: 1,
   tax_amount: "80",
-  total_amount: "1180.01",
+  total_amount: "1180.01"
   }
   """
   def get_contract!(id), do: @repo.get!(Contract, id)
+                             |> @repo.preload([:inserted])
 
   @doc """
   Creates a contract.
 
   ## Examples
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
-  iex(1)> attrs = %{"contract_no" => "TEST","settlement" => "TEST","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => 0,"start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59"}
+  iex(1)> attrs = %{"contract_no" => "TEST","settlement" => "TEST","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => 0,"start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59", "inserted_id" => 1}
   iex(2)> {:ok, contract} = MateriaCommerce.Commerces.create_contract(attrs)
   iex(3)> view = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
   iex(4)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
@@ -197,6 +144,7 @@ defmodule MateriaCommerce.Commerces do
   status: 0,
   tax_amount: "99",
   total_amount: "9999",
+  inserted: nil,
   }
   """
   def create_contract(attrs \\ %{}) do
@@ -234,7 +182,22 @@ defmodule MateriaCommerce.Commerces do
   status: 1,
   tax_amount: "80",
   total_amount: "1180.01",
-  contract_details: []
+  contract_details: [],
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
   }
   """
   def update_contract(%Contract{} = contract, attrs) do
@@ -285,7 +248,8 @@ defmodule MateriaCommerce.Commerces do
   start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
   status: 2,
   tax_amount: "80",
-  total_amount: "1190.01"
+  total_amount: "1190.01",
+  inserted: nil,
   }
   """
   def get_current_contract_history(base_datetime, key_word_list) do
@@ -310,92 +274,8 @@ defmodule MateriaCommerce.Commerces do
   iex(4)> list_contracts = MateriaCommerce.Commerces.list_contracts
   iex(5)> view = MateriaCommerceWeb.ContractView.render("index.json", %{contracts: list_contracts}) |> Enum.map(fn x -> Map.delete(x, :id) end)
   iex(6)> view = view |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end)
-  [
-  %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_details: [],
-    contract_no: "0000-0000-0000",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "100.01",
-    start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 1,
-    tax_amount: "80",
-    total_amount: "1180.01"
-  },
-  %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_details: [],
-    contract_no: "0000-0000-0000",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "110.01",
-    start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 2,
-    tax_amount: "80",
-    total_amount: "1190.01"
-  },
-  %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_details: [],
-    contract_no: "1111-1111-1111",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "200",
-    start_datetime: "2018-01-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 0,
-    tax_amount: "80",
-    total_amount: "1280"
-  },
-  %{
-    billing_address: nil,
-    buyer_id: nil,
-    contract_details: [],
-    contract_no: "2222-2222-2222",
-    contracted_date: "",
-    delivery_address: nil,
-    delivery_end_datetime: "",
-    delivery_start_datetime: "",
-    end_datetime: "3000-01-01 08:59:59.000000+09:00 JST Asia/Tokyo",
-    expiration_date: "",
-    lock_version: 0,
-    seller_id: nil,
-    sender_address: nil,
-    settlement: "9999-9999-9999",
-    shipping_fee: "200",
-    start_datetime: "2018-01-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-    status: 0,
-    tax_amount: "80",
-    total_amount: "1280"
-  }
-  ]
+  iex(7)> view |> Enum.count()
+  4
   """
   def delete_future_contract_histories(base_datetime, key_word_list) do
     Logger.debug("*-----  #{__MODULE__}.delete_future_contract_histories -----*")
@@ -428,7 +308,8 @@ defmodule MateriaCommerce.Commerces do
   start_datetime: "2018-12-01 09:00:00Z",
   status: 2,
   tax_amount: "80",
-  total_amount: "1190.01"
+  total_amount: "1190.01",
+  inserted_id: 1,
   }
   """
   def get_recent_contract_history(base_datetime, key_word_list) do
@@ -461,6 +342,7 @@ defmodule MateriaCommerce.Commerces do
   delivery_start_datetime: "",
   end_datetime: "2019-01-01 08:59:59Z",
   expiration_date: "",
+  inserted_id: 1,
   lock_version: 0,
   seller_id: nil,
   sender_address: nil,
@@ -472,7 +354,7 @@ defmodule MateriaCommerce.Commerces do
   total_amount: "1190.01"
   }
   iex(5)> attrs = %{"contract_no" => "0000-0000-0000","settlement" => "9999-9999-9999","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => 0, "lock_version" => recent.lock_version}
-  iex(6)> {:ok, contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, key_word_list, attrs)
+  iex(6)> {:ok, contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, key_word_list, attrs, 1)
   iex(7)> contract = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
   iex(8)> contract = [contract] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
@@ -486,6 +368,7 @@ defmodule MateriaCommerce.Commerces do
   delivery_start_datetime: "",
   end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
   expiration_date: "",
+  inserted: nil,
   lock_version: 1,
   seller_id: nil,
   sender_address: nil,
@@ -509,6 +392,7 @@ defmodule MateriaCommerce.Commerces do
   delivery_start_datetime: "",
   end_datetime: "2999-12-31 23:59:59Z",
   expiration_date: "",
+  inserted_id: 1,
   lock_version: 1,
   seller_id: nil,
   sender_address: nil,
@@ -520,7 +404,7 @@ defmodule MateriaCommerce.Commerces do
   total_amount: "9999"
   }
   iex(12)> attrs = %{"contract_no" => "0000-0000-0000","settlement" => "8888-8888-8888","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => 0, "lock_version" => recent.lock_version}
-  iex(13)> {:ok, contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, next_start_date, key_word_list, attrs)
+  iex(13)> {:ok, contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, next_start_date, key_word_list, attrs, 1)
   iex(14)> contract = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
   iex(15)> contract = [contract] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
@@ -534,6 +418,7 @@ defmodule MateriaCommerce.Commerces do
   delivery_start_datetime: "",
   end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
   expiration_date: "",
+  inserted: nil,
   lock_version: 2,
   seller_id: nil,
   sender_address: nil,
@@ -556,6 +441,7 @@ defmodule MateriaCommerce.Commerces do
   delivery_start_datetime: "",
   end_datetime: "2019-12-17 08:59:59Z",
   expiration_date: "",
+  inserted_id: 1,
   lock_version: 1,
   seller_id: nil,
   sender_address: nil,
@@ -567,7 +453,7 @@ defmodule MateriaCommerce.Commerces do
   total_amount: "9999"
   }
   """
-  def create_new_contract_history(%{}, start_datetime, key_word_list, attr) do
+  def create_new_contract_history(%{}, start_datetime, key_word_list, attr, user_id) do
     Logger.debug("*-----  #{__MODULE__}.create_new_contract_history -----*")
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
     recent_contract = get_recent_contract_history(start_datetime, key_word_list)
@@ -580,6 +466,7 @@ defmodule MateriaCommerce.Commerces do
         attr = attr
                |> Map.put("start_datetime", start_datetime)
                |> Map.put("end_datetime", end_datetime)
+               |> Map.put("inserted_id", user_id)
         attr =
           {:ok, contract} = create_contract(attr)
       else
@@ -601,6 +488,7 @@ defmodule MateriaCommerce.Commerces do
                |> Map.put(:lock_version, recent_contract.lock_version + 1)
                |> Map.put(:start_datetime, start_datetime)
                |> Map.put(:end_datetime, end_datetime)
+               |> Map.put(:inserted_id, user_id)
         {:ok, contract} = create_contract(attr)
         # 直近の履歴のend_datetimeを更新する
         recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
@@ -622,6 +510,7 @@ defmodule MateriaCommerce.Commerces do
   """
   def list_contract_details do
     @repo.all(ContractDetail)
+    |> @repo.preload([:inserted])
   end
 
   @doc """
@@ -635,48 +524,64 @@ defmodule MateriaCommerce.Commerces do
   iex(2)> view = MateriaCommerceWeb.ContractDetailView.render("show.json", %{contract_detail: contract_detail})
   iex(3)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end) |> List.first
   %{
-  amount: 1,
-  category1: "Single Detail",
-  category2: nil,
-  category3: nil,
-  category4: nil,
-  color: nil,
-  contract_name: nil,
+  size2: nil,
+  tax_category: nil,
   contract_no: "0000-0000-0000",
-  delivery_area: nil,
-  description: nil,
+  size4: nil,
   end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
-  image_url: nil,
-  item_code: nil,
-  jan_code: nil,
-  lock_version: 0,
+  category3: nil,
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
   manufacturer: nil,
   merchandise_cost: "",
+  image_url: nil,
+  category2: nil,
+  weight3: nil,
+  description: nil,
   model_number: nil,
+  lock_version: 0,
+  color: nil,
+  weight1: nil,
+  contract_name: nil,
+  delivery_area: nil,
+  purchase_amount: "",
+  weight4: nil,
+  category1: "Single Detail",
+  item_code: nil,
+  weight2: nil,
+  start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
+  jan_code: nil,
+  thumbnail: nil,
+  amount: 1,
   name: nil,
   price: "100",
-  purchase_amount: "",
   size1: nil,
-  size2: nil,
   size3: nil,
-  size4: nil,
-  start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
-  tax_category: nil,
-  thumbnail: nil,
-  weight1: nil,
-  weight2: nil,
-  weight3: nil,
-  weight4: nil
+  category4: nil
   }
   """
   def get_contract_detail!(id), do: @repo.get!(ContractDetail, id)
+                                    |> @repo.preload([:inserted])
 
   @doc """
   Creates a contract_detail.
 
   ## Examples
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
-  iex(1)> attr = %{"contract_name" => "TEST1", "contract_no" => "0000-0000-0000", "start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59"}
+  iex(1)> attr = %{"contract_name" => "TEST1", "contract_no" => "0000-0000-0000", "start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59", "inserted_id" => 1}
   iex(2)> {:ok, contract_detail} = MateriaCommerce.Commerces.create_contract_detail(attr)
   iex(3)> view = MateriaCommerceWeb.ContractDetailView.render("show.json", %{contract_detail: contract_detail})
   iex(4)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end) |> List.first
@@ -712,7 +617,8 @@ defmodule MateriaCommerce.Commerces do
   weight1: nil,
   weight2: nil,
   weight3: nil,
-  weight4: nil
+  weight4: nil,
+  inserted: nil,
   }
   """
   def create_contract_detail(attrs \\ %{}) do
@@ -763,7 +669,22 @@ defmodule MateriaCommerce.Commerces do
   weight1: nil,
   weight2: nil,
   weight3: nil,
-  weight4: nil
+  weight4: nil,
+  inserted: %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: [],
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  },
   }
   """
   def update_contract_detail(%ContractDetail{} = contract_detail, attrs) do
@@ -826,76 +747,77 @@ defmodule MateriaCommerce.Commerces do
   iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
   iex(2)> key_word_list = [{:contract_no, "0000-0000-0000"}]
   iex(3)> contract_details = MateriaCommerce.Commerces.get_recent_contract_detail_history(base_datetime, key_word_list)
-  iex(4)> view = MateriaCommerceWeb.ContractDetailView.render("index.json", %{contract_details: contract_details})
-  iex(5)> view = view |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end)
+  iex(4)> view = contract_details |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end)
   [
   %{
-    amount: 3,
-    category1: "Multiple Details:2 With Item",
-    category2: nil,
-    category3: nil,
-    category4: nil,
-    color: nil,
-    contract_name: nil,
+    size2: nil,
+    tax_category: nil,
     contract_no: "0000-0000-0000",
-    delivery_area: nil,
-    description: nil,
-    end_datetime: "2019-01-01 17:59:59+09:00 JST Asia/Tokyo",
-    image_url: nil,
-    item_code: "ICZ1000",
-    jan_code: nil,
-    lock_version: 0,
+    size4: nil,
+    end_datetime: "2019-01-01 08:59:59Z",
+    category3: nil,
     manufacturer: nil,
     merchandise_cost: "",
+    image_url: nil,
+    category2: nil,
+    weight3: nil,
+    description: nil,
     model_number: nil,
+    lock_version: 0,
+    color: nil,
+    weight1: nil,
+    contract_name: nil,
+    delivery_area: nil,
+    purchase_amount: "",
+    weight4: nil,
+    category1: "Multiple Details:2 With Item",
+    item_code: "ICZ1000",
+    weight2: nil,
+    start_datetime: "2018-12-01 09:00:00Z",
+    inserted_id: 1,
+    jan_code: nil,
+    thumbnail: nil,
+    amount: 3,
     name: nil,
     price: "300",
-    purchase_amount: "",
     size1: nil,
-    size2: nil,
     size3: nil,
-    size4: nil,
-    start_datetime: "2018-12-01 18:00:00+09:00 JST Asia/Tokyo",
-    tax_category: nil,
-    thumbnail: nil,
-    weight1: nil,
-    weight2: nil,
-    weight3: nil,
-    weight4: nil
+    category4: nil
   },
   %{
-    amount: 2,
-    category1: "Multiple Details:1",
-    category2: nil,
-    category3: nil,
-    category4: nil,
-    color: nil,
-    contract_name: nil,
+    size2: nil,
+    tax_category: nil,
     contract_no: "0000-0000-0000",
-    delivery_area: nil,
-    description: nil,
-    end_datetime: "2019-01-01 17:59:59+09:00 JST Asia/Tokyo",
-    image_url: nil,
-    item_code: nil,
-    jan_code: nil,
-    lock_version: 0,
+    size4: nil,
+    end_datetime: "2019-01-01 08:59:59Z",
+    category3: nil,
     manufacturer: nil,
     merchandise_cost: "",
+    image_url: nil,
+    category2: nil,
+    weight3: nil,
+    description: nil,
     model_number: nil,
+    lock_version: 0,
+    color: nil,
+    weight1: nil,
+    contract_name: nil,
+    delivery_area: nil,
+    purchase_amount: "",
+    weight4: nil,
+    category1: "Multiple Details:1",
+    item_code: nil,
+    weight2: nil,
+    start_datetime: "2018-12-01 09:00:00Z",
+    inserted_id: 1,
+    jan_code: nil,
+    thumbnail: nil,
+    amount: 2,
     name: nil,
     price: "200",
-    purchase_amount: "",
     size1: nil,
-    size2: nil,
     size3: nil,
-    size4: nil,
-    start_datetime: "2018-12-01 18:00:00+09:00 JST Asia/Tokyo",
-    tax_category: nil,
-    thumbnail: nil,
-    weight1: nil,
-    weight2: nil,
-    weight3: nil,
-    weight4: nil
+    category4: nil
   }
   ]
   """
@@ -915,184 +837,189 @@ defmodule MateriaCommerce.Commerces do
   iex(4)> recent = recent |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end)
   [
   %{
-    amount: 3,
-    category1: "Multiple Details:2 With Item",
-    category2: nil,
-    category3: nil,
-    category4: nil,
-    color: nil,
-    contract_name: nil,
+    size2: nil,
+    tax_category: nil,
     contract_no: "0000-0000-0000",
-    delivery_area: nil,
-    description: nil,
+    size4: nil,
     end_datetime: "2019-01-01 08:59:59Z",
-    image_url: nil,
-    item_code: "ICZ1000",
-    jan_code: nil,
-    lock_version: 0,
+    category3: nil,
     manufacturer: nil,
     merchandise_cost: "",
+    image_url: nil,
+    category2: nil,
+    weight3: nil,
+    description: nil,
     model_number: nil,
+    lock_version: 0,
+    color: nil,
+    weight1: nil,
+    contract_name: nil,
+    delivery_area: nil,
+    purchase_amount: "",
+    weight4: nil,
+    category1: "Multiple Details:2 With Item",
+    item_code: "ICZ1000",
+    weight2: nil,
+    start_datetime: "2018-12-01 09:00:00Z",
+    inserted_id: 1,
+    jan_code: nil,
+    thumbnail: nil,
+    amount: 3,
     name: nil,
     price: "300",
-    purchase_amount: "",
     size1: nil,
-    size2: nil,
     size3: nil,
-    size4: nil,
-    start_datetime: "2018-12-01 09:00:00Z",
-    tax_category: nil,
-    thumbnail: nil,
-    weight1: nil,
-    weight2: nil,
-    weight3: nil,
-    weight4: nil
+    category4: nil
   },
   %{
-    amount: 2,
-    category1: "Multiple Details:1",
-    category2: nil,
-    category3: nil,
-    category4: nil,
-    color: nil,
-    contract_name: nil,
+    size2: nil,
+    tax_category: nil,
     contract_no: "0000-0000-0000",
-    delivery_area: nil,
-    description: nil,
+    size4: nil,
     end_datetime: "2019-01-01 08:59:59Z",
-    image_url: nil,
-    item_code: nil,
-    jan_code: nil,
-    lock_version: 0,
+    category3: nil,
     manufacturer: nil,
     merchandise_cost: "",
+    image_url: nil,
+    category2: nil,
+    weight3: nil,
+    description: nil,
     model_number: nil,
+    lock_version: 0,
+    color: nil,
+    weight1: nil,
+    contract_name: nil,
+    delivery_area: nil,
+    purchase_amount: "",
+    weight4: nil,
+    category1: "Multiple Details:1",
+    item_code: nil,
+    weight2: nil,
+    start_datetime: "2018-12-01 09:00:00Z",
+    inserted_id: 1,
+    jan_code: nil,
+    thumbnail: nil,
+    amount: 2,
     name: nil,
     price: "200",
-    purchase_amount: "",
     size1: nil,
-    size2: nil,
     size3: nil,
-    size4: nil,
-    start_datetime: "2018-12-01 09:00:00Z",
-    tax_category: nil,
-    thumbnail: nil,
-    weight1: nil,
-    weight2: nil,
-    weight3: nil,
-    weight4: nil
+    category4: nil
   }
   ]
   iex(5)> attrs = [%{"contract_no" => "0000-0000-0000","contract_name" => "TEST2","id" => 2,"lock_version" => 0,"price" => 2000,},%{"contract_no" => "0000-0000-0000","contract_name" => "TEST3","id" => 3,"lock_version" => 0,"price" => 3000,},%{"contract_no" => "0000-0000-0000","contract_name" => "TEST1","amount" => 1,"price" => 1000,}]
-  iex(6)> {:ok, contract_details} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, key_word_list, attrs)
+  iex(6)> {:ok, contract_details} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, key_word_list, attrs, 1)
   iex(7)> view = MateriaCommerceWeb.ContractDetailView.render("index.json", %{contract_details: contract_details})
   iex(8)> view = view |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end)
   [
-  %{
-    amount: 2,
-    category1: "Multiple Details:1",
-    category2: nil,
-    category3: nil,
-    category4: nil,
-    color: nil,
-    contract_name: "TEST2",
+    %{
+    size2: nil,
+    tax_category: nil,
     contract_no: "0000-0000-0000",
-    delivery_area: nil,
-    description: nil,
+    size4: nil,
     end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
-    image_url: nil,
-    item_code: nil,
-    jan_code: nil,
-    lock_version: 1,
+    category3: nil,
+    inserted: nil,
     manufacturer: nil,
     merchandise_cost: "",
+    image_url: nil,
+    category2: nil,
+    weight3: nil,
+    description: nil,
     model_number: nil,
+    lock_version: 1,
+    color: nil,
+    weight1: nil,
+    contract_name: "TEST2",
+    delivery_area: nil,
+    purchase_amount: "",
+    weight4: nil,
+    category1: "Multiple Details:1",
+    item_code: nil,
+    weight2: nil,
+    start_datetime: "2018-12-17 18:00:00+09:00 JST Asia/Tokyo",
+    jan_code: nil,
+    thumbnail: nil,
+    amount: 2,
     name: nil,
     price: "2000",
-    purchase_amount: "",
     size1: nil,
-    size2: nil,
     size3: nil,
-    size4: nil,
-    start_datetime: "2018-12-17 18:00:00+09:00 JST Asia/Tokyo",
-    tax_category: nil,
-    thumbnail: nil,
-    weight1: nil,
-    weight2: nil,
-    weight3: nil,
-    weight4: nil
+    category4: nil
   },
   %{
-    amount: 3,
-    category1: "Multiple Details:2 With Item",
-    category2: nil,
-    category3: nil,
-    category4: nil,
-    color: nil,
-    contract_name: "TEST3",
+    size2: nil,
+    tax_category: nil,
     contract_no: "0000-0000-0000",
-    delivery_area: nil,
-    description: nil,
+    size4: nil,
     end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
-    image_url: nil,
-    item_code: "ICZ1000",
-    jan_code: nil,
-    lock_version: 1,
+    category3: nil,
+    inserted: nil,
     manufacturer: nil,
     merchandise_cost: "",
+    image_url: nil,
+    category2: nil,
+    weight3: nil,
+    description: nil,
     model_number: nil,
+    lock_version: 1,
+    color: nil,
+    weight1: nil,
+    contract_name: "TEST3",
+    delivery_area: nil,
+    purchase_amount: "",
+    weight4: nil,
+    category1: "Multiple Details:2 With Item",
+    item_code: "ICZ1000",
+    weight2: nil,
+    start_datetime: "2018-12-17 18:00:00+09:00 JST Asia/Tokyo",
+    jan_code: nil,
+    thumbnail: nil,
+    amount: 3,
     name: nil,
     price: "3000",
-    purchase_amount: "",
     size1: nil,
-    size2: nil,
     size3: nil,
-    size4: nil,
-    start_datetime: "2018-12-17 18:00:00+09:00 JST Asia/Tokyo",
-    tax_category: nil,
-    thumbnail: nil,
-    weight1: nil,
-    weight2: nil,
-    weight3: nil,
-    weight4: nil
+    category4: nil
   },
   %{
-    amount: 1,
-    category1: nil,
-    category2: nil,
-    category3: nil,
-    category4: nil,
-    color: nil,
-    contract_name: "TEST1",
+    size2: nil,
+    tax_category: nil,
     contract_no: "0000-0000-0000",
-    delivery_area: nil,
-    description: nil,
+    size4: nil,
     end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
-    image_url: nil,
-    item_code: nil,
-    jan_code: nil,
-    lock_version: 1,
+    category3: nil,
+    inserted: nil,
     manufacturer: nil,
     merchandise_cost: "",
+    image_url: nil,
+    category2: nil,
+    weight3: nil,
+    description: nil,
     model_number: nil,
+    lock_version: 1,
+    color: nil,
+    weight1: nil,
+    contract_name: "TEST1",
+    delivery_area: nil,
+    purchase_amount: "",
+    weight4: nil,
+    category1: nil,
+    item_code: nil,
+    weight2: nil,
+    start_datetime: "2018-12-17 18:00:00+09:00 JST Asia/Tokyo",
+    jan_code: nil,
+    thumbnail: nil,
+    amount: 1,
     name: nil,
     price: "1000",
-    purchase_amount: "",
     size1: nil,
-    size2: nil,
     size3: nil,
-    size4: nil,
-    start_datetime: "2018-12-17 18:00:00+09:00 JST Asia/Tokyo",
-    tax_category: nil,
-    thumbnail: nil,
-    weight1: nil,
-    weight2: nil,
-    weight3: nil,
-    weight4: nil
+    category4: nil
   }
   ]
   """
-  def create_new_contract_detail_history(%{}, start_datetime, key_word_list, attrs) do
+  def create_new_contract_detail_history(%{}, start_datetime, key_word_list, attrs, user_id) do
     Logger.debug("*-----  #{__MODULE__}.create_new_contract_detail_history -----*")
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
     recent_contract_detail = get_recent_contract_detail_history(start_datetime, key_word_list)
@@ -1109,6 +1036,7 @@ defmodule MateriaCommerce.Commerces do
                                  attr = attr
                                         |> Map.put("start_datetime", start_datetime)
                                         |> Map.put("end_datetime", end_datetime)
+                                        |> Map.put("inserted_id", user_id)
                                  {:ok, contract_detail} = create_contract_detail(attr)
                                  contract_detail
                                end
@@ -1153,6 +1081,7 @@ defmodule MateriaCommerce.Commerces do
                                           |> Map.put(:lock_version, recent.lock_version + 1)
                                           |> Map.put(:start_datetime, start_datetime)
                                           |> Map.put(:end_datetime, end_datetime)
+                                          |> Map.put(:inserted_id, user_id)
                                end
                              )
                           |> Enum.map(
@@ -1192,8 +1121,7 @@ defmodule MateriaCommerce.Commerces do
   iex(6)> result = MateriaCommerce.Commerces.check_recent_contract_detail(contract_details, 3, 1)
   false
   iex(7)> result = MateriaCommerce.Commerces.check_recent_contract_detail(contract_details, 3, 0)
-  iex(8)>view = MateriaCommerceWeb.ContractDetailView.render("show.json", %{contract_detail: result})
-  iex(9)>view = [view] |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end) |> List.first
+  iex(8)> view = [result] |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end) |> List.first
   %{
   amount: 3,
   category1: "Multiple Details:2 With Item",
@@ -1205,7 +1133,7 @@ defmodule MateriaCommerce.Commerces do
   contract_no: "0000-0000-0000",
   delivery_area: nil,
   description: nil,
-  end_datetime: "2019-01-01 17:59:59+09:00 JST Asia/Tokyo",
+  end_datetime: "2019-01-01 08:59:59Z",
   image_url: nil,
   item_code: "ICZ1000",
   jan_code: nil,
@@ -1220,13 +1148,14 @@ defmodule MateriaCommerce.Commerces do
   size2: nil,
   size3: nil,
   size4: nil,
-  start_datetime: "2018-12-01 18:00:00+09:00 JST Asia/Tokyo",
+  start_datetime: "2018-12-01 09:00:00Z",
   tax_category: nil,
   thumbnail: nil,
   weight1: nil,
   weight2: nil,
   weight3: nil,
-  weight4: nil
+  weight4: nil,
+  inserted_id: 1,
   }
   """
   def check_recent_contract_detail(recent_contract_detail, id, lock_version) do
@@ -1286,7 +1215,8 @@ defmodule MateriaCommerce.Commerces do
         weight1: nil,
         weight2: nil,
         weight3: nil,
-        weight4: nil
+        weight4: nil,
+        inserted: nil,
       },
       %{
         amount: "2",
@@ -1320,7 +1250,8 @@ defmodule MateriaCommerce.Commerces do
         weight1: nil,
         weight2: nil,
         weight3: nil,
-        weight4: nil
+        weight4: nil,
+        inserted: nil,
       }
     ],
     contract_no: "0000-0000-0000",
@@ -1338,7 +1269,8 @@ defmodule MateriaCommerce.Commerces do
     start_datetime: "2018-12-01 18:00:00.000000+09:00 JST Asia/Tokyo",
     status: 2,
     tax_amount: "80",
-    total_amount: "1190.01"
+    total_amount: "1190.01",
+    inserted: nil,
   }
   ]
   """
@@ -1415,7 +1347,8 @@ defmodule MateriaCommerce.Commerces do
     weight1: nil,
     weight2: nil,
     weight3: nil,
-    weight4: nil
+    weight4: nil,
+    inserted: nil,
   },
   %{
     amount: 2,
@@ -1449,7 +1382,8 @@ defmodule MateriaCommerce.Commerces do
     weight1: nil,
     weight2: nil,
     weight3: nil,
-    weight4: nil
+    weight4: nil,
+    inserted: nil,
   }
   ]
   """

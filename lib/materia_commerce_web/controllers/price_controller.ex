@@ -47,8 +47,9 @@ defmodule MateriaCommerceWeb.PriceController do
   end
 
   def current_prices(conn, params) do
+    user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
     key_words = [{:item_code, params["item_code"]}]
-    MateriaWeb.ControllerBase.transaction_flow(conn, :price, Products, :create_new_price_history, [now, key_words, params])
+    MateriaWeb.ControllerBase.transaction_flow(conn, :price, Products, :create_new_price_history, [now, key_words, params, user_id])
   end
 end

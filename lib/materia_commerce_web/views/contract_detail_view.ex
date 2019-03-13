@@ -1,6 +1,7 @@
 defmodule MateriaCommerceWeb.ContractDetailView do
   use MateriaCommerceWeb, :view
   alias MateriaCommerceWeb.ContractDetailView
+  alias MateriaWeb.UserView
   alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{contract_details: contract_details}) do
@@ -16,7 +17,7 @@ defmodule MateriaCommerceWeb.ContractDetailView do
   end
 
   def render("contract_detail.json", %{contract_detail: contract_detail}) do
-    %{
+    result_map = %{
       id: contract_detail.id,
       contract_name: contract_detail.contract_name,
       contract_no: contract_detail.contract_no,
@@ -53,5 +54,12 @@ defmodule MateriaCommerceWeb.ContractDetailView do
       inserted_at: CalendarUtil.convert_time_utc2local(contract_detail.inserted_at),
       updated_at: CalendarUtil.convert_time_utc2local(contract_detail.updated_at)
     }
+
+    result_map = cond do
+      Ecto.assoc_loaded?(contract_detail.inserted) and contract_detail.inserted != nil ->
+        Map.put(result_map, :inserted, UserView.render("user.json", %{user: contract_detail.inserted}))
+      true ->
+        Map.put(result_map, :inserted, nil)
+    end
   end
 end

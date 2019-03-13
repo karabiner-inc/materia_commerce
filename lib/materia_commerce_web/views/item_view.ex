@@ -3,6 +3,7 @@ defmodule MateriaCommerceWeb.ItemView do
   alias MateriaCommerceWeb.ItemView
   alias MateriaCommerceWeb.PriceView
   alias MateriaCommerceWeb.TaxView
+  alias MateriaWeb.UserView
   alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{items: items}) do
@@ -57,6 +58,13 @@ defmodule MateriaCommerceWeb.ItemView do
       Map.put(result_map, :tax, TaxView.render("show.json", %{tax: item.tax}))
     else
       Map.put(result_map, :tax, nil)
+    end
+
+    result_map = cond do
+      Ecto.assoc_loaded?(item.inserted) and item.inserted != nil ->
+        Map.put(result_map, :inserted, UserView.render("user.json", %{user: item.inserted}))
+      true ->
+        Map.put(result_map, :inserted, nil)
     end
   end
 end

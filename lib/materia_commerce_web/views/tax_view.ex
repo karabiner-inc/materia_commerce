@@ -1,6 +1,7 @@
 defmodule MateriaCommerceWeb.TaxView do
   use MateriaCommerceWeb, :view
   alias MateriaCommerceWeb.TaxView
+  alias MateriaWeb.UserView
   alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{taxes: taxes}) do
@@ -12,7 +13,7 @@ defmodule MateriaCommerceWeb.TaxView do
   end
 
   def render("tax.json", %{tax: tax}) do
-    %{
+    result_map = %{
       id: tax.id,
       name: tax.name,
       tax_category: tax.tax_category,
@@ -23,5 +24,12 @@ defmodule MateriaCommerceWeb.TaxView do
       inserted_at: CalendarUtil.convert_time_utc2local(tax.inserted_at),
       updated_at: CalendarUtil.convert_time_utc2local(tax.updated_at)
     }
+
+    result_map = cond do
+      Ecto.assoc_loaded?(tax.inserted) and tax.inserted != nil ->
+        Map.put(result_map, :inserted, UserView.render("user.json", %{user: tax.inserted}))
+      true ->
+        Map.put(result_map, :inserted, nil)
+    end
   end
 end

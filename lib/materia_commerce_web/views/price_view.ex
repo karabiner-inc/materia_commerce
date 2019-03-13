@@ -1,6 +1,7 @@
 defmodule MateriaCommerceWeb.PriceView do
   use MateriaCommerceWeb, :view
   alias MateriaCommerceWeb.PriceView
+  alias MateriaWeb.UserView
   alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{prices: prices}) do
@@ -12,7 +13,7 @@ defmodule MateriaCommerceWeb.PriceView do
   end
 
   def render("price.json", %{price: price}) do
-    %{
+    result_map = %{
       id: price.id,
       item_code: price.item_code,
       description: price.description,
@@ -25,5 +26,12 @@ defmodule MateriaCommerceWeb.PriceView do
       inserted_at: CalendarUtil.convert_time_utc2local(price.inserted_at),
       updated_at: CalendarUtil.convert_time_utc2local(price.updated_at)
     }
+
+    result_map = cond do
+      Ecto.assoc_loaded?(price.inserted) and price.inserted != nil ->
+        Map.put(result_map, :inserted, UserView.render("user.json", %{user: price.inserted}))
+      true ->
+        Map.put(result_map, :inserted, nil)
+    end
   end
 end

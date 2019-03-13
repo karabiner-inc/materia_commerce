@@ -42,7 +42,8 @@ Authorization: Bearer {{access_token}}
   "name": "ItemNameTest",
   "item_code": "ItemCode",
   "start_datetime": "1999-12-31 23:59:59Z",
-  "end_datetime": "2999-12-31 23:59:59Z"
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": 1
 }
 
 > {%
@@ -131,7 +132,8 @@ Authorization: Bearer {{access_token}}
   "tax_category": "TaxCategory1",
   "tax_rate": 0.5,
   "start_datetime": "1999-12-31 23:59:59Z",
-  "end_datetime": "2999-12-31 23:59:59Z"
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": 1
 }
 
 > {%
@@ -219,7 +221,8 @@ Authorization: Bearer {{access_token}}
   "item_code": "ItemCode",
   "unit_price": 10.5,
   "start_datetime": "1999-12-31 23:59:59Z",
-  "end_datetime": "2999-12-31 23:59:59Z"
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": 1
 }
 
 > {%
@@ -306,7 +309,8 @@ Authorization: Bearer {{access_token}}
 {
   "contract_no": "Contract-Number",
   "start_datetime": "1999-12-31 23:59:59Z",
-  "end_datetime": "2999-12-31 23:59:59Z"
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": 1
 }
 
 > {%
@@ -391,7 +395,8 @@ Authorization: Bearer {{access_token}}
 {
   "contract_no": "Contract-Number",
   "start_datetime": "1999-12-31 23:59:59Z",
-  "end_datetime": "2999-12-31 23:59:59Z"
+  "end_datetime": "2999-12-31 23:59:59Z",
+  "inserted_id": 1
 }
 
 > {%
