@@ -2,13 +2,14 @@ defmodule MateriaCommerce.ProductsTest do
   use MateriaCommerce.DataCase
 
   alias MateriaCommerce.Products
+  @repo Application.get_env(:materia, :repo)
 
   describe "taxes" do
     alias MateriaCommerce.Products.Tax
 
-    @valid_attrs %{end_datetime: "2010-04-17 14:00:00.000000Z", name: "some name", start_datetime: "2010-04-17 14:00:00.000000Z", tax_category: "some tax_category", tax_rate: "120.5"}
-    @update_attrs %{end_datetime: "2011-05-18 15:01:01.000000Z", name: "some updated name", start_datetime: "2011-05-18 15:01:01.000000Z", tax_category: "some updated tax_category", tax_rate: "456.7"}
-    @invalid_attrs %{end_datetime: nil, lock_version: nil, name: nil, start_datetime: nil, tax_category: nil, tax_rate: nil}
+    @valid_attrs %{end_datetime: "2010-04-17 14:00:00.000000Z", name: "some name", start_datetime: "2010-04-17 14:00:00.000000Z", tax_category: "some tax_category", tax_rate: "120.5", inserted_id: 1}
+    @update_attrs %{end_datetime: "2011-05-18 15:01:01.000000Z", name: "some updated name", start_datetime: "2011-05-18 15:01:01.000000Z", tax_category: "some updated tax_category", tax_rate: "456.7", inserted_id: 1}
+    @invalid_attrs %{end_datetime: nil, lock_version: nil, name: nil, start_datetime: nil, tax_category: nil, tax_rate: nil, inserted_id: nil}
 
     def tax_fixture(attrs \\ %{}) do
       {:ok, tax} =
@@ -19,12 +20,12 @@ defmodule MateriaCommerce.ProductsTest do
     end
 
     test "list_taxes/0 returns all taxes" do
-      tax = tax_fixture()
+      tax = tax_fixture() |> @repo.preload(:inserted)
       assert Products.list_taxes() |> Enum.any?(fn(x) -> x == tax end)
     end
 
     test "get_tax!/1 returns the tax with given id" do
-      tax = tax_fixture()
+      tax = tax_fixture() |> @repo.preload(:inserted)
       assert Products.get_tax!(tax.id) == tax
     end
 
@@ -95,7 +96,7 @@ defmodule MateriaCommerce.ProductsTest do
         "tax_category"=> "category1",
         "tax_rate"=> 0.3,
       }
-      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr) end)
+      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr, 1) end)
     end
 
     test "create_new_tax_history/4 error different lock_version" do
@@ -106,7 +107,7 @@ defmodule MateriaCommerce.ProductsTest do
         "lock_version" => 99,
         "tax_rate"=> 0.3,
       }
-      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr) end)
+      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr, 1) end)
     end
 
     test "create_new_tax_history/4 create data" do
@@ -118,7 +119,7 @@ defmodule MateriaCommerce.ProductsTest do
         "tax_category"=> "category1",
         "tax_rate"=> 0.3,
       }
-      {:ok, create_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      {:ok, create_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr, 1)
       taxes = Products.list_taxes() |> Enum.filter(fn(x) -> x.tax_category == "category1" end)
       tax = taxes |> Enum.filter(fn(x) -> x.id == create_tax.id end) |> Enum.at(0)
       assert tax.id == create_tax.id
@@ -137,7 +138,7 @@ defmodule MateriaCommerce.ProductsTest do
         "tax_category"=> "category1",
         "tax_rate"=> 0.4,
       }
-      {:ok, update_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr)
+      {:ok, update_tax} = Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr, 1)
       taxes = Products.list_taxes() |> Enum.filter(fn(x) -> x.tax_category == "category1" end)
       tax = taxes |> Enum.filter(fn(x) -> x.id == update_tax.id end) |>  Enum.at(0)
       assert tax.id == update_tax.id
@@ -162,13 +163,13 @@ defmodule MateriaCommerce.ProductsTest do
     end
 
     test "update_tax/2 with invalid data returns error changeset" do
-      tax = tax_fixture()
+      tax = tax_fixture() |> @repo.preload(:inserted)
       assert {:error, %Ecto.Changeset{}} = Products.update_tax(tax, @invalid_attrs)
       assert tax == Products.get_tax!(tax.id)
     end
 
     test "delete_tax/1 deletes the tax" do
-      tax = tax_fixture()
+      tax = tax_fixture() |> @repo.preload(:inserted)
       assert {:ok, %Tax{}} = Products.delete_tax(tax)
       assert_raise Ecto.NoResultsError, fn -> Products.get_tax!(tax.id) end
     end
@@ -182,9 +183,9 @@ defmodule MateriaCommerce.ProductsTest do
   describe "prices" do
     alias MateriaCommerce.Products.Price
 
-    @valid_attrs %{description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", item_code: "some item_code", merchandise_cost: "120.5", purchase_amount: "120.5", start_datetime: "2010-04-17 14:00:00.000000Z", unit_price: "120.5"}
-    @update_attrs %{description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", item_code: "some updated item_code", merchandise_cost: "456.7", purchase_amount: "456.7", start_datetime: "2011-05-18 15:01:01.000000Z", unit_price: "456.7"}
-    @invalid_attrs %{description: nil, end_datetime: nil, item_code: nil, lock_version: nil, merchandise_cost: nil, purchase_amount: nil, start_datetime: nil, unit_price: nil}
+    @valid_attrs %{description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", item_code: "some item_code", merchandise_cost: "120.5", purchase_amount: "120.5", start_datetime: "2010-04-17 14:00:00.000000Z", unit_price: "120.5", inserted_id: 1}
+    @update_attrs %{description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", item_code: "some updated item_code", merchandise_cost: "456.7", purchase_amount: "456.7", start_datetime: "2011-05-18 15:01:01.000000Z", unit_price: "456.7", inserted_id: 1}
+    @invalid_attrs %{description: nil, end_datetime: nil, item_code: nil, lock_version: nil, merchandise_cost: nil, purchase_amount: nil, start_datetime: nil, unit_price: nil, inserted_id: nil}
 
     def price_fixture(attrs \\ %{}) do
       {:ok, price} =
@@ -201,7 +202,7 @@ defmodule MateriaCommerce.ProductsTest do
     end
 
     test "get_price!/1 returns the price with given id" do
-      price = price_fixture()
+      price = price_fixture() |> @repo.preload(:inserted)
       assert Products.get_price!(price.id) == price
     end
 
@@ -255,7 +256,7 @@ defmodule MateriaCommerce.ProductsTest do
         "item_code"=> "ICZ1000",
         "unit_price"=> 150,
       }
-      assert_raise(KeyError, fn -> Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr) end)
+      assert_raise(KeyError, fn -> Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr, 1) end)
     end
 
     test "create_new_price_history/4 error different lock_version" do
@@ -266,7 +267,7 @@ defmodule MateriaCommerce.ProductsTest do
         "unit_price"=> 150,
         "lock_version" => 99,
       }
-      assert_raise(KeyError, fn -> Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr) end)
+      assert_raise(KeyError, fn -> Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr, 1) end)
     end
 
     test "create_new_price_history/4 create data" do
@@ -278,7 +279,7 @@ defmodule MateriaCommerce.ProductsTest do
         "unit_price"=> 150,
         "lock_version"=> 0,
       }
-      {:ok, create_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr)
+      {:ok, create_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr, 1)
       prices = Products.list_prices() |> Enum.filter(fn(x) -> x.item_code == "ICZ1000" end)
       price = prices |> Enum.filter(fn(x) -> x.id == create_price.id end) |> Enum.at(0)
       assert price.id == create_price.id
@@ -297,7 +298,7 @@ defmodule MateriaCommerce.ProductsTest do
         "unit_price"=> 480,
         "lock_version"=> 0,
       }
-      {:ok, update_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr)
+      {:ok, update_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr, 1)
       prices = Products.list_prices() |> Enum.filter(fn(x) -> x.item_code == "ICZ1000" end)
       price = prices |> Enum.filter(fn(x) -> x.id == update_price.id end) |> Enum.at(0)
       assert price.id == update_price.id
@@ -315,7 +316,7 @@ defmodule MateriaCommerce.ProductsTest do
         "unit_price"=> 580,
         "lock_version"=> 0,
       }
-      {:ok, create_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr)
+      {:ok, create_price} = Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr, 1)
       prices = Products.list_prices() |> Enum.filter(fn(x) -> x.item_code == "ICZ1000" end)
       price = prices |> Enum.filter(fn(x) -> x.id == create_price.id end) |> Enum.at(0)
       assert price.id == create_price.id
@@ -355,13 +356,13 @@ defmodule MateriaCommerce.ProductsTest do
     end
 
     test "update_price/2 with invalid data returns error changeset" do
-      price = price_fixture()
+      price = price_fixture() |> @repo.preload(:inserted)
       assert {:error, %Ecto.Changeset{}} = Products.update_price(price, @invalid_attrs)
       assert price == Products.get_price!(price.id)
     end
 
     test "delete_price/1 deletes the price" do
-      price = price_fixture()
+      price = price_fixture() |> @repo.preload(:inserted)
       assert {:ok, %Price{}} = Products.delete_price(price)
       assert_raise Ecto.NoResultsError, fn -> Products.get_price!(price.id) end
     end

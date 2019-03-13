@@ -30,9 +30,12 @@ defmodule MateriaCommerce.Repo.Migrations.CreateItems do
       add :tax_category, :string
       add :status, :integer
       add :lock_version, :integer
+      add :inserted_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end
 
+    create index(:items, [:item_code])
+    create index(:items, [:inserted_id])
   end
 end

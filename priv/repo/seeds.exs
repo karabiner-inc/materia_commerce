@@ -43,11 +43,11 @@ Mails.create_mail_template(%{ mail_template_type: "password_reset_completed", su
 alias MateriaCommerce.Products
 
 items = "
-name	category1	category2	category3	category4	item_code	model_number	jan_code	thumbnail	image_url	size1	size2	size3	size4	weight1	weight2	weight3	weight4	delivery_area	manufacturer	status	color	description	start_datetime	end_datetime	tax_category
-炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	0	Blue	高級炊飯器	2018-11-01 09:00:00	2018-12-16 08:59:59	一般消費税
-炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	高級炊飯器	2018-12-17 09:00:00	2019-12-31 08:59:59	一般消費税
-炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	超高級炊飯器	2020-01-01 09:00:00	2999-12-31 08:59:59	一般消費税
-炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1001	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	超高級炊飯器	2018-11-01 09:00:00	2999-12-31 08:59:59	一般消費税
+name	category1	category2	category3	category4	item_code	model_number	jan_code	thumbnail	image_url	size1	size2	size3	size4	weight1	weight2	weight3	weight4	delivery_area	manufacturer	status	color	description	start_datetime	end_datetime	tax_category	inserted_id
+炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	0	Blue	高級炊飯器	2018-11-01 09:00:00	2018-12-16 08:59:59	一般消費税	1
+炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	高級炊飯器	2018-12-17 09:00:00	2019-12-31 08:59:59	一般消費税	1
+炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1000	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	超高級炊飯器	2020-01-01 09:00:00	2999-12-31 08:59:59	一般消費税	1
+炊飯器Z1000	電化製品	調理器具	炊飯器	2020年モデル	ICZ1001	Z1000	123456789123	hogehoge	http://z1000.com/img.png	H30cm	W40cm	D40cm	外装 60cm×60cm×50cm	本体重量 1.2kg	梱包重量 1.5kg	最大重量 2.0kg	最小重量 1.0kg	離島のぞく	松芝電気	1	Blue	超高級炊飯器	2018-11-01 09:00:00	2999-12-31 08:59:59	一般消費税	1
 "
 jsons = TsvParser.parse_tsv_to_json(items, "name")
 
@@ -66,6 +66,7 @@ taxes = [
     end_datetime: "2018-12-01 08:59:59",
     tax_category: "category1",
     tax_rate: 0.5,
+    inserted_id: 1,
   },
   %{
     name: "test2 tax",
@@ -73,6 +74,7 @@ taxes = [
     end_datetime: "2019-01-01 08:59:59",
     tax_category: "category1",
     tax_rate: 0.5,
+    inserted_id: 1,
   },
   %{
     name: "test3 tax",
@@ -80,6 +82,7 @@ taxes = [
     end_datetime: "2019-02-01 08:59:59",
     tax_category: "category1",
     tax_rate: 0.5,
+    inserted_id: 1,
   },
   %{
     name: "tax category2",
@@ -87,6 +90,7 @@ taxes = [
     end_datetime: "2999-12-31 23:59:59",
     tax_category: "category2",
     tax_rate: 1,
+    inserted_id: 1,
   },
   %{
     name: "一般消費税",
@@ -94,6 +98,7 @@ taxes = [
     end_datetime: "2999-12-31 23:59:59",
     tax_category: "一般消費税",
     tax_rate: 100,
+    inserted_id: 1,
   },
   %{
     name: "tax category3",
@@ -101,6 +106,7 @@ taxes = [
     end_datetime: "2999-12-31 23:59:59",
     tax_category: "category3",
     tax_rate: 1,
+    inserted_id: 1,
   },
 ]
 
@@ -115,6 +121,7 @@ prices = [
     end_datetime: "2018-12-01 08:59:59",
     item_code: "ICZ1000",
     unit_price: 100,
+    inserted_id: 1,
   },
   %{
     description: "test2 price",
@@ -122,6 +129,7 @@ prices = [
     end_datetime: "2019-01-01 08:59:59",
     item_code: "ICZ1000",
     unit_price: 200,
+    inserted_id: 1,
   },
   %{
     description: "test3 price",
@@ -129,6 +137,7 @@ prices = [
     end_datetime: "2019-02-01 08:59:59",
     item_code: "ICZ1000",
     unit_price: 300,
+    inserted_id: 1,
   },
   %{
     description: "price item_code2",
@@ -136,6 +145,7 @@ prices = [
     end_datetime: "2999-12-31 23:59:59",
     item_code: "ICZ1001",
     unit_price: 1000,
+    inserted_id: 1,
   },
   %{
     description: "price item_code3",
@@ -143,6 +153,7 @@ prices = [
     end_datetime: "2999-12-31 23:59:59",
     item_code: "ICZ1002",
     unit_price: 1000,
+    inserted_id: 1,
   },
 ]
 
@@ -161,6 +172,7 @@ contracts = [
     status: 1,
     start_datetime: "2018-11-01 09:00:00",
     end_datetime: "2018-12-01 08:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -171,6 +183,7 @@ contracts = [
     status: 2,
     start_datetime: "2018-12-01 09:00:00",
     end_datetime: "2019-01-01 08:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -181,6 +194,7 @@ contracts = [
     status: 3,
     start_datetime: "2019-01-01 09:00:00",
     end_datetime: "2019-02-01 08:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "1111-1111-1111",
@@ -191,6 +205,7 @@ contracts = [
     status: 0,
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "2222-2222-2222",
@@ -201,6 +216,7 @@ contracts = [
     status: 0,
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
+    inserted_id: 1,
   },
 ]
 
@@ -216,6 +232,7 @@ contract_details = [
     category1: "Single Detail",
     start_datetime: "2018-11-01 09:00:00",
     end_datetime: "2018-12-01 08:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -224,6 +241,7 @@ contract_details = [
     category1: "Multiple Details:1",
     start_datetime: "2018-12-01 09:00:00",
     end_datetime: "2019-01-01 08:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -233,6 +251,7 @@ contract_details = [
     category1: "Multiple Details:2 With Item",
     start_datetime: "2018-12-01 09:00:00",
     end_datetime: "2019-01-01 08:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -240,7 +259,8 @@ contract_details = [
     price: 400,
     category1: "Multiple Details:1",
     start_datetime: "2019-01-01 09:00:00",
-    end_datetime: "2019-02-01 08:59:59"
+    end_datetime: "2019-02-01 08:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -249,7 +269,8 @@ contract_details = [
     item_code: "ICZ1000",
     category1: "Multiple Details:2 With Item",
     start_datetime: "2019-01-01 09:00:00",
-    end_datetime: "2019-02-01 08:59:59"
+    end_datetime: "2019-02-01 08:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "1111-1111-1111",
@@ -258,6 +279,7 @@ contract_details = [
     category1: "Single Detail",
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
+    inserted_id: 1,
   },
   %{
     contract_no: "2222-2222-2222",
@@ -266,6 +288,7 @@ contract_details = [
     category1: "Single Detail",
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
+    inserted_id: 1,
   },
 ]
 

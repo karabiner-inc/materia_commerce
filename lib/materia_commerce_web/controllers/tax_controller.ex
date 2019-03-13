@@ -48,8 +48,9 @@ defmodule MateriaCommerceWeb.TaxController do
   end
 
   def current_taxes(conn, params) do
+    user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
     key_words = [{:tax_category, params["tax_category"]}]
-    MateriaWeb.ControllerBase.transaction_flow(conn, :tax, Products, :create_new_tax_history, [now, key_words, params])
+    MateriaWeb.ControllerBase.transaction_flow(conn, :tax, Products, :create_new_tax_history, [now, key_words, params, user_id])
   end
 end

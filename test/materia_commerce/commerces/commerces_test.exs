@@ -4,12 +4,14 @@ defmodule MateriaCommerce.CommercesTest do
   doctest MateriaCommerce.Commerces
   alias MateriaCommerce.Commerces
 
+  @repo Application.get_env(:materia, :repo)
+
   describe "contracts" do
     alias MateriaCommerce.Commerces.Contract
 
-    @valid_attrs %{billing_address: 42, buyer_id: 42, contract_no: "some contract_no", contracted_date: "2010-04-17 14:00:00.000000Z", delivery_address: 42, delivery_end_datetime: "2010-04-17 14:00:00.000000Z", delivery_start_datetime: "2010-04-17 14:00:00.000000Z", end_datetime: "2010-04-17 14:00:00.000000Z", expiration_date: "2010-04-17 14:00:00.000000Z", lock_version: 42, seller_id: 42, sender_address: 42, settlement: "some settlement", shipping_fee: "120.5", start_datetime: "2010-04-17 14:00:00.000000Z", status: 0, tax_amount: "120.5", total_amount: "120.5"}
-    @update_attrs %{billing_address: 43, buyer_id: 43, contract_no: "some updated contract_no", contracted_date: "2011-05-18 15:01:01.000000Z", delivery_address: 43, delivery_end_datetime: "2011-05-18 15:01:01.000000Z", delivery_start_datetime: "2011-05-18 15:01:01.000000Z", end_datetime: "2011-05-18 15:01:01.000000Z", expiration_date: "2011-05-18 15:01:01.000000Z", lock_version: 43, seller_id: 43, sender_address: 43, settlement: "some updated settlement", shipping_fee: "456.7", start_datetime: "2011-05-18 15:01:01.000000Z", status: 1, tax_amount: "456.7", total_amount: "456.7"}
-    @invalid_attrs %{billing_address: nil, buyer_id: nil, contract_no: nil, contracted_date: nil, delivery_address: nil, delivery_end_datetime: nil, delivery_start_datetime: nil, end_datetime: nil, expiration_date: nil, lock_version: nil, seller_id: nil, sender_address: nil, settlement: nil, shipping_fee: nil, start_datetime: nil, status: nil, tax_amount: nil, total_amount: nil}
+    @valid_attrs %{billing_address: 42, buyer_id: 42, contract_no: "some contract_no", contracted_date: "2010-04-17 14:00:00.000000Z", delivery_address: 42, delivery_end_datetime: "2010-04-17 14:00:00.000000Z", delivery_start_datetime: "2010-04-17 14:00:00.000000Z", end_datetime: "2010-04-17 14:00:00.000000Z", expiration_date: "2010-04-17 14:00:00.000000Z", lock_version: 42, seller_id: 42, sender_address: 42, settlement: "some settlement", shipping_fee: "120.5", start_datetime: "2010-04-17 14:00:00.000000Z", status: 0, tax_amount: "120.5", total_amount: "120.5", inserted_id: 1}
+    @update_attrs %{billing_address: 43, buyer_id: 43, contract_no: "some updated contract_no", contracted_date: "2011-05-18 15:01:01.000000Z", delivery_address: 43, delivery_end_datetime: "2011-05-18 15:01:01.000000Z", delivery_start_datetime: "2011-05-18 15:01:01.000000Z", end_datetime: "2011-05-18 15:01:01.000000Z", expiration_date: "2011-05-18 15:01:01.000000Z", lock_version: 43, seller_id: 43, sender_address: 43, settlement: "some updated settlement", shipping_fee: "456.7", start_datetime: "2011-05-18 15:01:01.000000Z", status: 1, tax_amount: "456.7", total_amount: "456.7", inserted_id: 1}
+    @invalid_attrs %{billing_address: nil, buyer_id: nil, contract_no: nil, contracted_date: nil, delivery_address: nil, delivery_end_datetime: nil, delivery_start_datetime: nil, end_datetime: nil, expiration_date: nil, lock_version: nil, seller_id: nil, sender_address: nil, settlement: nil, shipping_fee: nil, start_datetime: nil, status: nil, tax_amount: nil, total_amount: nil, inserted_id: nil}
 
     def contract_fixture(attrs \\ %{}) do
       {:ok, contract} =
@@ -21,12 +23,12 @@ defmodule MateriaCommerce.CommercesTest do
     end
 
     test "list_contracts/0 returns all contracts" do
-      contract = contract_fixture()
+      contract = contract_fixture() |> @repo.preload(:inserted)
       assert Commerces.list_contracts() |> Enum.any?(fn(x) -> x == contract end)
     end
 
     test "get_contract!/1 returns the contract with given id" do
-      contract = contract_fixture()
+      contract = contract_fixture() |> @repo.preload(:inserted)
       assert Commerces.get_contract!(contract.id) == contract
     end
 
@@ -90,7 +92,7 @@ defmodule MateriaCommerce.CommercesTest do
         "total_amount" => 9999,
         "status" => 4,
       }
-      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr) end)
+      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr, 1) end)
     end
 
     test "create_new_contract_history/4 error different lock_version" do
@@ -103,7 +105,7 @@ defmodule MateriaCommerce.CommercesTest do
         "status" => 4,
         "lock_version" => 99,
       }
-      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr) end)
+      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr, 1) end)
     end
 
     test "create_new_contract_history/4 create data all delete" do
@@ -116,7 +118,7 @@ defmodule MateriaCommerce.CommercesTest do
         "status" => 4,
         "lock_version" => 0,
       }
-      {:ok, create_contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr)
+      {:ok, create_contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr, 1)
       contracts = MateriaCommerce.Commerces.list_contracts() |> Enum.filter(fn(x) -> x.contract_no == "0000-0000-0000" end)
       contract = contracts |> Enum.filter(fn(x) -> x.id == create_contract.id end) |> Enum.at(0)
       assert contract.id == create_contract.id
@@ -138,7 +140,7 @@ defmodule MateriaCommerce.CommercesTest do
         "status" => 4,
         "lock_version" => 0,
       }
-      {:ok, create_contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr)
+      {:ok, create_contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr, 1)
       contracts = MateriaCommerce.Commerces.list_contracts() |> Enum.filter(fn(x) -> x.contract_no == "0000-0000-0000" end)
       contract = contracts |> Enum.filter(fn(x) -> x.id == create_contract.id end) |> Enum.at(0)
       assert contract.id == create_contract.id
@@ -159,7 +161,7 @@ defmodule MateriaCommerce.CommercesTest do
         "status" => 4,
         "lock_version" => 0,
       }
-      {:ok, create_contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr)
+      {:ok, create_contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr, 1)
       contracts = MateriaCommerce.Commerces.list_contracts() |> Enum.filter(fn(x) -> x.contract_no == "0000-0000-0000" end)
       contract = contracts |> Enum.filter(fn(x) -> x.id == create_contract.id end) |> Enum.at(0)
       assert contract.id == create_contract.id
@@ -221,13 +223,13 @@ defmodule MateriaCommerce.CommercesTest do
     end
 
      test "update_contract/2 with invalid data returns error changeset" do
-       contract = contract_fixture()
+       contract = contract_fixture() |> @repo.preload(:inserted)
        assert {:error, %Ecto.Changeset{}} = Commerces.update_contract(contract, @invalid_attrs)
        assert contract == Commerces.get_contract!(contract.id)
      end
 
     test "delete_contract/1 deletes the contract" do
-      contract = contract_fixture()
+      contract = contract_fixture() |> @repo.preload(:inserted)
       assert {:ok, %Contract{}} = Commerces.delete_contract(contract)
       assert_raise Ecto.NoResultsError, fn -> Commerces.get_contract!(contract.id) end
     end
@@ -236,9 +238,9 @@ defmodule MateriaCommerce.CommercesTest do
   describe "contract_details" do
     alias MateriaCommerce.Commerces.ContractDetail
 
-    @valid_attrs %{amount: 42, category1: "some category1", category2: "some category2", category3: "some category3", category4: "some category4", color: "some color", contract_name: "some contract_name", contract_no: "some contract_no", delivery_area: "some delivery_area", description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", image_url: "some image_url", item_code: "some item_code", jan_code: "some jan_code", lock_version: 42, manufacturer: "some manufacturer", merchandise_cost: "120.5", model_number: "some model_number", name: "some name", price: "120.5", purchase_amount: "120.5", size1: "some size1", size2: "some size2", size3: "some size3", size4: "some size4", start_datetime: "2010-04-17 14:00:00.000000Z", tax_category: "some tax_category", thumbnail: "some thumbnail", weight1: "some weight1", weight2: "some weight2", weight3: "some weight3", weight4: "some weight4"}
-    @update_attrs %{amount: 43, category1: "some updated category1", category2: "some updated category2", category3: "some updated category3", category4: "some updated category4", color: "some updated color", contract_name: "some updated contract_name", contract_no: "some updated contract_no", delivery_area: "some updated delivery_area", description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", image_url: "some updated image_url", item_code: "some updated item_code", jan_code: "some updated jan_code", lock_version: 43, manufacturer: "some updated manufacturer", merchandise_cost: "456.7", model_number: "some updated model_number", name: "some updated name", price: "456.7", purchase_amount: "456.7", size1: "some updated size1", size2: "some updated size2", size3: "some updated size3", size4: "some updated size4", start_datetime: "2011-05-18 15:01:01.000000Z", tax_category: "some updated tax_category", thumbnail: "some updated thumbnail", weight1: "some updated weight1", weight2: "some updated weight2", weight3: "some updated weight3", weight4: "some updated weight4"}
-    @invalid_attrs %{amount: nil, category1: nil, category2: nil, category3: nil, category4: nil, color: nil, contract_name: nil, contract_no: nil, delivery_area: nil, description: nil, end_datetime: nil, image_url: nil, item_code: nil, jan_code: nil, lock_version: nil, manufacturer: nil, merchandise_cost: nil, model_number: nil, name: nil, price: nil, purchase_amount: nil, size1: nil, size2: nil, size3: nil, size4: nil, start_datetime: nil, tax_category: nil, thumbnail: nil, weight1: nil, weight2: nil, weight3: nil, weight4: nil}
+    @valid_attrs %{amount: 42, category1: "some category1", category2: "some category2", category3: "some category3", category4: "some category4", color: "some color", contract_name: "some contract_name", contract_no: "some contract_no", delivery_area: "some delivery_area", description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", image_url: "some image_url", item_code: "some item_code", jan_code: "some jan_code", lock_version: 42, manufacturer: "some manufacturer", merchandise_cost: "120.5", model_number: "some model_number", name: "some name", price: "120.5", purchase_amount: "120.5", size1: "some size1", size2: "some size2", size3: "some size3", size4: "some size4", start_datetime: "2010-04-17 14:00:00.000000Z", tax_category: "some tax_category", thumbnail: "some thumbnail", weight1: "some weight1", weight2: "some weight2", weight3: "some weight3", weight4: "some weight4", inserted_id: 1}
+    @update_attrs %{amount: 43, category1: "some updated category1", category2: "some updated category2", category3: "some updated category3", category4: "some updated category4", color: "some updated color", contract_name: "some updated contract_name", contract_no: "some updated contract_no", delivery_area: "some updated delivery_area", description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", image_url: "some updated image_url", item_code: "some updated item_code", jan_code: "some updated jan_code", lock_version: 43, manufacturer: "some updated manufacturer", merchandise_cost: "456.7", model_number: "some updated model_number", name: "some updated name", price: "456.7", purchase_amount: "456.7", size1: "some updated size1", size2: "some updated size2", size3: "some updated size3", size4: "some updated size4", start_datetime: "2011-05-18 15:01:01.000000Z", tax_category: "some updated tax_category", thumbnail: "some updated thumbnail", weight1: "some updated weight1", weight2: "some updated weight2", weight3: "some updated weight3", weight4: "some updated weight4", inserted_id: 1}
+    @invalid_attrs %{amount: nil, category1: nil, category2: nil, category3: nil, category4: nil, color: nil, contract_name: nil, contract_no: nil, delivery_area: nil, description: nil, end_datetime: nil, image_url: nil, item_code: nil, jan_code: nil, lock_version: nil, manufacturer: nil, merchandise_cost: nil, model_number: nil, name: nil, price: nil, purchase_amount: nil, size1: nil, size2: nil, size3: nil, size4: nil, start_datetime: nil, tax_category: nil, thumbnail: nil, weight1: nil, weight2: nil, weight3: nil, weight4: nil, inserted_id: nil}
 
     def contract_detail_fixture(attrs \\ %{}) do
       {:ok, contract_detail} =
@@ -255,7 +257,7 @@ defmodule MateriaCommerce.CommercesTest do
     end
 
     test "get_contract_detail!/1 returns the contract_detail with given id" do
-      contract_detail = contract_detail_fixture()
+      contract_detail = contract_detail_fixture() |> @repo.preload(:inserted)
       assert Commerces.get_contract_detail!(contract_detail.id) == contract_detail
     end
 
@@ -393,7 +395,7 @@ defmodule MateriaCommerce.CommercesTest do
           "contract_name" => "TEST1"
         }
       ]
-      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs) end)
+      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs, 1) end)
     end
 
     test "create_new_contract_detail_history/4 error different lock_version" do
@@ -417,7 +419,7 @@ defmodule MateriaCommerce.CommercesTest do
           "contract_name" => "TEST1"
         }
       ]
-      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs) end)
+      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs, 1) end)
     end
 
     test "create_new_contract_detail_history/4 create data all delete" do
@@ -437,7 +439,7 @@ defmodule MateriaCommerce.CommercesTest do
           "contract_name" => "TEST1"
         }
       ]
-      {:ok, result} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs)
+      {:ok, result} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs, 1)
       assert Enum.count(result) == 3
       result
       |> Enum.map(
@@ -478,7 +480,7 @@ defmodule MateriaCommerce.CommercesTest do
           "price" => 1000,
         }
       ]
-      {:ok, result} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs)
+      {:ok, result} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs, 1)
       assert Enum.count(result) == 3
       result
       |> Enum.map(
@@ -526,7 +528,7 @@ defmodule MateriaCommerce.CommercesTest do
           "price" => 1000,
         }
       ]
-      {:ok, result} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs)
+      {:ok, result} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs, 1)
       assert Enum.count(result) == 3
       result
       |> Enum.map(
@@ -661,13 +663,13 @@ defmodule MateriaCommerce.CommercesTest do
     end
 
     test "update_contract_detail/2 with invalid data returns error changeset" do
-      contract_detail = contract_detail_fixture()
+      contract_detail = contract_detail_fixture() |> @repo.preload(:inserted)
       assert {:error, %Ecto.Changeset{}} = Commerces.update_contract_detail(contract_detail, @invalid_attrs)
       assert contract_detail == Commerces.get_contract_detail!(contract_detail.id)
     end
 
     test "delete_contract_detail/1 deletes the contract_detail" do
-      contract_detail = contract_detail_fixture()
+      contract_detail = contract_detail_fixture() |> @repo.preload(:inserted)
       assert {:ok, %ContractDetail{}} = Commerces.delete_contract_detail(contract_detail)
       assert_raise Ecto.NoResultsError, fn -> Commerces.get_contract_detail!(contract_detail.id) end
     end

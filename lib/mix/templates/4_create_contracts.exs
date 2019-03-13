@@ -21,9 +21,12 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContracts do
       add :start_datetime, :utc_datetime
       add :end_datetime, :utc_datetime
       add :lock_version, :bigint
+      add :inserted_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end
 
+    create index(:contracts, [:contract_no])
+    create index(:contracts, [:inserted_id])
   end
 end
