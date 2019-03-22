@@ -474,7 +474,7 @@ defmodule MateriaCommerce.Commerces do
         # 楽観排他チェック
         _ = cond do
           !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-          attr["lock_version"] != recent_contract.lock_version -> raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+          attr["lock_version"] != recent_contract.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
           true -> :ok
         end
 
@@ -1053,7 +1053,7 @@ defmodule MateriaCommerce.Commerces do
                  Map.has_key?(attr, "id") and !Map.has_key?(attr, "lock_version") ->
                    raise KeyError, message: "parameter have not lock_version"
                  Map.has_key?(attr, "id") and !check_recent_contract_detail(recent_contract_detail, attr["id"], attr["lock_version"]) ->
-                   raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+                   raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
                  true -> :ok
                end
              end
@@ -2047,7 +2047,7 @@ defmodule MateriaCommerce.Commerces do
           !Map.has_key?(attr, "lock_version") ->
             raise KeyError, message: "parameter have not lock_version"
           attr["lock_version"] != recent.lock_version ->
-            raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+            raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
           true -> :ok
         end
 
@@ -2235,7 +2235,7 @@ defmodule MateriaCommerce.Commerces do
                  Map.has_key?(attr, "id") and !Map.has_key?(attr, "lock_version") ->
                    raise KeyError, message: "parameter have not lock_version"
                  Map.has_key?(attr, "id") and !check_recent_request_appendix(recent_request_appendix, attr["id"], attr["lock_version"]) ->
-                   raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+                   raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
                  true -> :ok
                end
              end
