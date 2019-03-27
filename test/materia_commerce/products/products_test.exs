@@ -107,7 +107,7 @@ defmodule MateriaCommerce.ProductsTest do
         "lock_version" => 99,
         "tax_rate"=> 0.3,
       }
-      assert_raise(KeyError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr, 1) end)
+      assert_raise(Ecto.StaleEntryError, fn -> Products.create_new_tax_history(%{}, base_datetime, [{:tax_category, "category1"}], attr, 1) end)
     end
 
     test "create_new_tax_history/4 create data" do
@@ -267,7 +267,7 @@ defmodule MateriaCommerce.ProductsTest do
         "unit_price"=> 150,
         "lock_version" => 99,
       }
-      assert_raise(KeyError, fn -> Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr, 1) end)
+      assert_raise(Ecto.StaleEntryError, fn -> Products.create_new_price_history(%{}, base_datetime, [{:item_code, "ICZ1000"}], attr, 1) end)
     end
 
     test "create_new_price_history/4 create data" do
