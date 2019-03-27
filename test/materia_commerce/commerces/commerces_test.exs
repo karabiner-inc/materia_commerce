@@ -105,7 +105,7 @@ defmodule MateriaCommerce.CommercesTest do
         "status" => 4,
         "lock_version" => 99,
       }
-      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr, 1) end)
+      assert_raise(Ecto.StaleEntryError, fn -> MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, keywords, attr, 1) end)
     end
 
     test "create_new_contract_history/4 create data all delete" do
@@ -419,7 +419,7 @@ defmodule MateriaCommerce.CommercesTest do
           "contract_name" => "TEST1"
         }
       ]
-      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs, 1) end)
+      assert_raise(Ecto.StaleEntryError, fn -> MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, keywords, attrs, 1) end)
     end
 
     test "create_new_contract_detail_history/4 create data all delete" do
@@ -879,7 +879,7 @@ defmodule MateriaCommerce.CommercesTest do
         "status" => 4,
         "lock_version" => 99,
       }
-      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_request_history(%{}, base_datetime, keywords, attr, 1) end)
+      assert_raise(Ecto.StaleEntryError, fn -> MateriaCommerce.Commerces.create_new_request_history(%{}, base_datetime, keywords, attr, 1) end)
     end
 
     test "create_new_request_history/5 create data all delete" do
@@ -1159,7 +1159,7 @@ defmodule MateriaCommerce.CommercesTest do
           "appendix_category" => "Category5"
         }
       ]
-      assert_raise(KeyError, fn -> MateriaCommerce.Commerces.create_new_request_appendix_history(%{}, base_datetime, keywords, attrs, 1) end)
+      assert_raise(Ecto.StaleEntryError, fn -> MateriaCommerce.Commerces.create_new_request_appendix_history(%{}, base_datetime, keywords, attrs, 1) end)
     end
 
     test "create_new_request_appendix_history/5 create data all delete" do

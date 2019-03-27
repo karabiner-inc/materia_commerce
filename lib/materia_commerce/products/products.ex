@@ -217,8 +217,10 @@ defmodule MateriaCommerce.Products do
     else
       # 2回目以降のヒストリー登録の場合
       # 楽観排他チェック
-      if !Map.has_key?(attr, "lock_version") || attr["lock_version"] != recent_item.lock_version do
-        raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+      _ = cond do
+        !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
+        attr["lock_version"] != recent_item.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
+        true -> :ok
       end
 
       attr = Map.keys(attr)
@@ -395,7 +397,7 @@ defmodule MateriaCommerce.Products do
        # 楽観排他チェック
        _ = cond do
         !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-        attr["lock_version"] != recent_tax.lock_version -> raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+        attr["lock_version"] != recent_tax.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
         true -> :ok
        end
  
@@ -647,7 +649,7 @@ defmodule MateriaCommerce.Products do
         # 楽観排他チェック
         _ = cond do
           !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-          attr["lock_version"] != recent_price.lock_version -> raise Ecto.StaleEntryError, message: "attempted to update a stale entry"
+          attr["lock_version"] != recent_price.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
           true -> :ok
         end
 
