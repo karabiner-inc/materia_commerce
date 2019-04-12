@@ -63,6 +63,7 @@ defmodule MateriaCommerceWeb.Router do
     post "/search-prices", PriceController, :search_current_prices
     post "/search-contracts", ContractController, :search_current_contracts
     post "/search-contract-details", ContractDetailController, :search_current_contract_details
+    post "/search-my-contracts", ContractController, :search_my_current_contracts
     post "/search-requests", RequestController, :search_current_requests
     post "/search-request-appendices", RequestAppendixController, :search_current_request_appendices
 
@@ -70,6 +71,7 @@ defmodule MateriaCommerceWeb.Router do
     post "/current-taxes", TaxController, :current_taxes
     post "/current-prices", PriceController, :current_prices
     post "/current-contracts", ContractController, :current_contracts
+    post "/create-my-contract-history", ContractController, :create_my_new_contract_history
     post "/current-contract-details", ContractDetailController, :current_contract_details
     post "/current-requests", RequestController, :current_requests
     post "/current-request-appendices", RequestAppendixController, :current_request_appendices

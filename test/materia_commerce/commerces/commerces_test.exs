@@ -22,9 +22,8 @@ defmodule MateriaCommerce.CommercesTest do
       contract
     end
 
-    test "list_contracts/0 returns all contracts" do
-      contract = contract_fixture() |> @repo.preload(:inserted)
-      assert Commerces.list_contracts() |> Enum.any?(fn(x) -> x == contract end)
+    test "search_my_current_contracts/2" do
+      {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
     end
 
     test "get_contract!/1 returns the contract with given id" do

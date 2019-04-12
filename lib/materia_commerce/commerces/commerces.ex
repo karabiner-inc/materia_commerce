@@ -11,6 +11,8 @@ defmodule MateriaCommerce.Commerces do
   alias MateriaCommerce.Commerces.RequestAppendix
   alias MateriaUtils.Calendar.CalendarUtil
 
+  alias Materia.Errors.BusinessError
+
   @repo Application.get_env(:materia, :repo)
 
   @doc """
@@ -24,7 +26,7 @@ defmodule MateriaCommerce.Commerces do
   iex(4)> view |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 2,
   contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
@@ -49,7 +51,7 @@ defmodule MateriaCommerce.Commerces do
     status: 1
   },
   lock_version: 0,
-  seller_id: nil,
+  seller_id: 1,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "100.01",
@@ -76,7 +78,7 @@ defmodule MateriaCommerce.Commerces do
   iex(3)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 2,
   contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
@@ -102,7 +104,7 @@ defmodule MateriaCommerce.Commerces do
     status: 1
   },
   lock_version: 0,
-  seller_id: nil,
+  seller_id: 1,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "100.01",
@@ -165,7 +167,7 @@ defmodule MateriaCommerce.Commerces do
   iex(5)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 2,
   contract_no: "TEST-UPDATE",
   contracted_date: "",
   delivery_address: nil,
@@ -174,7 +176,7 @@ defmodule MateriaCommerce.Commerces do
   end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
   expiration_date: "",
   lock_version: 0,
-  seller_id: nil,
+  seller_id: 1,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "100.01",
@@ -231,7 +233,7 @@ defmodule MateriaCommerce.Commerces do
   iex(5)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 1,
   contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
@@ -241,7 +243,7 @@ defmodule MateriaCommerce.Commerces do
   end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
   expiration_date: "",
   lock_version: 0,
-  seller_id: nil,
+  seller_id: 2,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "110.01",
@@ -292,7 +294,7 @@ defmodule MateriaCommerce.Commerces do
   iex(4)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 1,
   contract_no: "0000-0000-0000",
   contracted_date: "",
   delivery_address: nil,
@@ -301,7 +303,7 @@ defmodule MateriaCommerce.Commerces do
   end_datetime: "2019-01-01 08:59:59Z",
   expiration_date: "",
   lock_version: 0,
-  seller_id: nil,
+  seller_id: 2,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "110.01",
@@ -334,7 +336,7 @@ defmodule MateriaCommerce.Commerces do
   iex(4)> recent = [recent] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 1,
   contract_no: "0000-0000-0000",
   contracted_date: "",
   delivery_address: nil,
@@ -344,7 +346,7 @@ defmodule MateriaCommerce.Commerces do
   expiration_date: "",
   inserted_id: 1,
   lock_version: 0,
-  seller_id: nil,
+  seller_id: 2,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "110.01",
@@ -359,7 +361,7 @@ defmodule MateriaCommerce.Commerces do
   iex(8)> contract = [contract] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 1,
   contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
@@ -370,7 +372,7 @@ defmodule MateriaCommerce.Commerces do
   expiration_date: "",
   inserted: nil,
   lock_version: 1,
-  seller_id: nil,
+  seller_id: 2,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "9999",
@@ -384,7 +386,7 @@ defmodule MateriaCommerce.Commerces do
   iex(11)> recent = [recent] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 1,
   contract_no: "0000-0000-0000",
   contracted_date: "",
   delivery_address: nil,
@@ -394,7 +396,7 @@ defmodule MateriaCommerce.Commerces do
   expiration_date: "",
   inserted_id: 1,
   lock_version: 1,
-  seller_id: nil,
+  seller_id: 2,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "9999",
@@ -409,7 +411,7 @@ defmodule MateriaCommerce.Commerces do
   iex(15)> contract = [contract] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 1,
   contract_details: [],
   contract_no: "0000-0000-0000",
   contracted_date: "",
@@ -420,7 +422,7 @@ defmodule MateriaCommerce.Commerces do
   expiration_date: "",
   inserted: nil,
   lock_version: 2,
-  seller_id: nil,
+  seller_id: 2,
   sender_address: nil,
   settlement: "8888-8888-8888",
   shipping_fee: "9999",
@@ -433,7 +435,7 @@ defmodule MateriaCommerce.Commerces do
   iex(24)> recent = [recent] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
   %{
   billing_address: nil,
-  buyer_id: nil,
+  buyer_id: 1,
   contract_no: "0000-0000-0000",
   contracted_date: "",
   delivery_address: nil,
@@ -443,7 +445,7 @@ defmodule MateriaCommerce.Commerces do
   expiration_date: "",
   inserted_id: 1,
   lock_version: 1,
-  seller_id: nil,
+  seller_id: 2,
   sender_address: nil,
   settlement: "9999-9999-9999",
   shipping_fee: "9999",
@@ -496,6 +498,34 @@ defmodule MateriaCommerce.Commerces do
         update_contract(struct_contract, %{end_datetime: recent_end_datetime})
         {:ok, contract}
       end
+  end
+
+  @doc """
+  新規のContract情報履歴を登録する
+  buyer_idまたはseller_idのいずれかに自身のuser_idが指定されていない場合はエラー
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(1)> attrs = %{"contract_no" => "0000-0000-0001","settlement" => "8888-8888-8888","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999}
+  iex(1)> {:ok, contract} = MateriaCommerce.Commerces.create_my_new_contract_history(%{}, base_datetime, attrs, 1)
+  ** (Materia.Errors.BusinessError) At least either buyer_id or seller_id should be your user_id. user_id:1 buyer_id: seller_id:
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(1)> attrs = %{"contract_no" => "0000-0000-0001","settlement" => "8888-8888-8888","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999, "buyer_id" => 1}
+  iex(1)> {:ok, contract} = MateriaCommerce.Commerces.create_my_new_contract_history(%{}, base_datetime, attrs, 1)
+  iex(1)> contract.contract_no
+  "0000-0000-0001"
+
+  """
+  def create_my_new_contract_history(%{}, start_datetime, attr, user_id) do
+    Logger.debug("*-----  #{__MODULE__}.create_my_new_contract_history user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{attr["seller_id"]}")
+    key_words = [{:contract_no, attr["contract_no"]}]
+
+    if attr["buyer_id"] == user_id || attr["seller_id"] == user_id do
+      create_new_contract_history(%{}, start_datetime, key_words, attr, user_id)
+      else
+        raise BusinessError, message: "At least either buyer_id or seller_id should be your user_id. user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{attr["seller_id"]}"
+    end
   end
 
   @doc """
@@ -1181,7 +1211,7 @@ defmodule MateriaCommerce.Commerces do
   [
   %{
     billing_address: nil,
-    buyer_id: nil,
+    buyer_id: 1,
     contract_details: [
       %{
         amount: "3",
@@ -1262,7 +1292,7 @@ defmodule MateriaCommerce.Commerces do
     end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
     expiration_date: nil,
     lock_version: 0,
-    seller_id: nil,
+    seller_id: 2,
     sender_address: nil,
     settlement: "9999-9999-9999",
     shipping_fee: "110.01",
@@ -1303,6 +1333,41 @@ defmodule MateriaCommerce.Commerces do
                      |> Map.put(:contract_details, contract_details)
                    end
                  )
+  end
+
+  @doc """
+  指定されたパラメータで検索者自身が関係する契約を検索する
+  or条件にbuyer_idまたは、seller_idの指定がある場合も無視して強制的に自身のuser_idが指定される
+
+  iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
+  iex(1)> {:ok, base_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
+  iex(1)> key_word_list = %{"and" => [%{"contract_no" => "0000-0000-0000"}]}
+  iex(1)> contracts = MateriaCommerce.Commerces.search_my_current_contracts(1, base_datetime, key_word_list)
+  iex(1)> length(contracts)
+  1
+  iex(1)> contracts = MateriaCommerce.Commerces.search_my_current_contracts(1, base_datetime, %{})
+  iex(1)> length(contracts)
+  1
+  iex(1)>  key_word_list = %{"or" => [%{"buyer_id" => 9}]}
+  iex(1)> contracts = MateriaCommerce.Commerces.search_my_current_contracts(1, base_datetime, key_word_list)
+  iex(1)> Enum.at(contracts,0).buyer_id
+  1
+
+  """
+  def search_my_current_contracts(user_id, base_datetime, params) do
+    or_param = params["or"]
+    rejected_or_params =
+    if or_param != nil do
+      rejected_or_params = or_param
+      |> Enum.reject(fn(param) -> param["buyer_id"] != nil end)
+      |> Enum.reject(fn(param) -> param["seller_id"] != nil end)
+      IO.inspect(rejected_or_params)
+      rejected_or_params
+    else
+      []
+    end
+    replaced_params = Map.put(params, "or", rejected_or_params ++ [%{"buyer_id" => user_id}, %{"seller_id" => user_id}])
+    _contracts = get_current_contracts(base_datetime, replaced_params)
   end
 
   @doc """
