@@ -76,7 +76,9 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                  "phone_number" => nil,
                  "role" => "admin",
                  "status" => 1
-               }
+               },
+               "buyer" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => [], "phone_number" => nil, "role" => "admin", "status" => 1},
+               "seller" => nil
              }
 
         result_conn = post conn, contract_path(conn, :search_my_current_contracts), %{}
@@ -162,7 +164,9 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                  "phone_number" => nil,
                  "role" => "admin",
                  "status" => 1
-               }
+               },
+               "buyer" => nil,
+               "seller" => nil
              }
     end
 

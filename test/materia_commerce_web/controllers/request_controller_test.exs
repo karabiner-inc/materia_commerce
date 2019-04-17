@@ -180,6 +180,23 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
       assert request["end_datetime"] == "3000-01-01T08:59:59.000000+09:00"
       assert request["status"] == 4
     end
+    test "my new history", %{conn: conn} do
+      create_conn = post conn, request_path(conn, :create_my_new_request_history),
+                         %{
+                           "request_number" => "my new history",
+                           "user_id" => 99,
+                         }
+
+      conn = post conn, request_path(conn, :search_current_requests),
+                  %{
+                    "and" => [%{"request_number" => "my new history"}],
+                    "or" => []
+                  }
+      request = json_response(conn, 200)
+                |> List.first
+      assert request["request_number"] == "my new history"
+      assert request["user"]["id"] == 1
+    end
   end
 
   defp create_request(_) do

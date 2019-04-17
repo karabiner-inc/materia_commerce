@@ -74,6 +74,7 @@ defmodule MateriaCommerceWeb.Router do
     post "/create-my-contract-history", ContractController, :create_my_new_contract_history
     post "/current-contract-details", ContractDetailController, :current_contract_details
     post "/current-requests", RequestController, :current_requests
+    post "/create-my-request-hystory", RequestController, :create_my_new_request_history
     post "/current-request-appendices", RequestAppendixController, :current_request_appendices
   end
 
