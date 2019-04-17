@@ -2,8 +2,12 @@
 # リクエストテスト定義情報 => rest-client.env.json
 ###############################################
 ###### MateriaWeb.AuthenticatorController
+@url = http://localhost:4001
+@login_email = hogehoge@example.com
+@login_password = hogehoge
+
 ### :sign_in
-POST   {{url}}/api/sign-in   HTTP/1.1
+POST {{url}}/api/sign-in   HTTP/1.1
 Content-Type: application/json
 
 {
@@ -16,6 +20,11 @@ Content-Type: application/json
     client.global.set("refresh_token", response.body.refresh_token);
     client.global.set("user_id",       response.body.id);
   %}
+
+###
+
+POST {{url}}/api/search-my-contracts HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJNYXRlcmlhIiwiZW1haWwiOiJob2dlaG9nZUBleGFtcGxlLmNvbSIsImV4cCI6MTU1NDg3OTUxNSwiaWF0IjoxNTU0ODc4OTE1LCJpc3MiOiJNYXRlcmlhIiwianRpIjoiMzJhNTZiZTktYmVhYi00MDFkLThhMmQtZGJjMWQ4ZmVkZGUwIiwibmJmIjoxNTU0ODc4OTE0LCJzdWIiOiJ7XCJ1c2VyX2lkXCI6MX0iLCJ0eXAiOiJhY2Nlc3MifQ.Mvtu0XFE7mWS6pxBTHeXwI5FU3tiLTdOM07rG5SgdB8
 
 ###############################################
 ###### MateriaCommerceWeb.ItemController
