@@ -581,7 +581,6 @@ defmodule MateriaCommerce.Commerces do
   """
   def create_my_new_contract_history(%{}, start_datetime, attr, user_id) do
     Logger.debug("*-----  #{__MODULE__}.create_my_new_contract_history user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{attr["seller_id"]}")
-    #key_words = [{:contract_no, attr["contract_no"]}]
 
     if attr["buyer_id"] == user_id || attr["seller_id"] == user_id do
       create_new_contract_history(%{}, start_datetime, attr, user_id)
