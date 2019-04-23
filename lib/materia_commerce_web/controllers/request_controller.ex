@@ -53,4 +53,10 @@ defmodule MateriaCommerceWeb.RequestController do
     key_words = [{:request_number, params["request_number"]}]
     MateriaWeb.ControllerBase.transaction_flow(conn, :request, Commerces, :create_new_request_history, [now, key_words, params, user_id])
   end
+
+  def create_my_new_request_history(conn, params) do
+    user_id = MateriaWeb.ControllerBase.get_user_id(conn)
+    now = CalendarUtil.now()
+    MateriaWeb.ControllerBase.transaction_flow(conn, :request, Commerces, :create_my_new_request_history, [now, params, user_id])
+  end
 end

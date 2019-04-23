@@ -22,7 +22,7 @@ Accounts.create_grant(%{ role: "anybody", method: "ANY", request_path: "/api/ops
 Accounts.create_grant(%{ role: "anybody", method: "ANY", request_path: "/api/ops/mail-templates" })
 
 {:ok, user_hogehoge} = Accounts.create_user(%{ name: "hogehoge", email: "hogehoge@example.com", password: "hogehoge", role: "admin"})
-Accounts.create_user(%{ name: "fugafuga", email: "fugafuga@example.com", password: "fugafuga", role: "operator"})
+{:ok, user_fugafuga} = Accounts.create_user(%{ name: "fugafuga", email: "fugafuga@example.com", password: "fugafuga", role: "operator"})
 Locations.create_address(%{user_id: user_hogehoge.id, subject: "living", location: "福岡県", zip_code: "810-ZZZZ", address1: "福岡市中央区", address2: "港 x-x-xx"})
 Locations.create_address(%{user_id: user_hogehoge.id, subject: "billing", location: "福岡県", zip_code: "810-ZZZZ", address1: "福岡市中央区", address2: "大名 x-x-xx"})
 
@@ -173,6 +173,8 @@ contracts = [
     start_datetime: "2018-11-01 09:00:00",
     end_datetime: "2018-12-01 08:59:59",
     inserted_id: 1,
+    seller_id: user_hogehoge.id,
+    buyer_id: user_fugafuga.id
   },
   %{
     contract_no: "0000-0000-0000",
@@ -184,6 +186,8 @@ contracts = [
     start_datetime: "2018-12-01 09:00:00",
     end_datetime: "2019-01-01 08:59:59",
     inserted_id: 1,
+    seller_id: user_fugafuga.id,
+    buyer_id: user_hogehoge.id,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -193,8 +197,10 @@ contracts = [
     total_amount: 1280,
     status: 3,
     start_datetime: "2019-01-01 09:00:00",
-    end_datetime: "2019-02-01 08:59:59",
+    end_datetime: "2999-12-31 23:59:59",
     inserted_id: 1,
+    seller_id: 9,
+    buyer_id: 9,
   },
   %{
     contract_no: "1111-1111-1111",
@@ -206,6 +212,8 @@ contracts = [
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
     inserted_id: 1,
+    seller_id: 9,
+    buyer_id: 9,
   },
   %{
     contract_no: "2222-2222-2222",

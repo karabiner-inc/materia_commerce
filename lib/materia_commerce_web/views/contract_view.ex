@@ -46,6 +46,20 @@ defmodule MateriaCommerceWeb.ContractView do
     end
 
     result_map = cond do
+      Ecto.assoc_loaded?(contract.buyer) and contract.buyer != nil ->
+        Map.put(result_map, :buyer, UserView.render("user.json", %{user: contract.buyer}))
+      true ->
+        Map.put(result_map, :buyer, nil)
+    end
+
+    result_map = cond do
+      Ecto.assoc_loaded?(contract.seller) and contract.seller != nil ->
+        Map.put(result_map, :seller, UserView.render("user.json", %{user: contract.seller}))
+      true ->
+        Map.put(result_map, :seller, nil)
+    end
+
+    result_map = cond do
       Ecto.assoc_loaded?(contract.inserted) and contract.inserted != nil ->
         Map.put(result_map, :inserted, UserView.render("user.json", %{user: contract.inserted}))
       true ->

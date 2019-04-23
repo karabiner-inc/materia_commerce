@@ -6,7 +6,7 @@ defmodule MateriaCommerce.Commerces.Contract do
   schema "contracts" do
     field :request_number, :string
     field :billing_address, :integer
-    field :buyer_id, :integer
+    #field :buyer_id, :integer
     field :contract_no, :string
     field :contracted_date, :utc_datetime
     field :delivery_address, :integer
@@ -15,7 +15,7 @@ defmodule MateriaCommerce.Commerces.Contract do
     field :end_datetime, :utc_datetime
     field :expiration_date, :utc_datetime
     field :lock_version, :integer, default: 0
-    field :seller_id, :integer
+    #field :seller_id, :integer
     field :sender_address, :integer
     field :settlement, :string
     field :shipping_fee, :decimal
@@ -24,6 +24,8 @@ defmodule MateriaCommerce.Commerces.Contract do
     field :tax_amount, :decimal
     field :total_amount, :decimal
 
+    belongs_to :buyer, Materia.Accounts.User
+    belongs_to :seller,  Materia.Accounts.User
     belongs_to :inserted, Materia.Accounts.User
 
     timestamps()
