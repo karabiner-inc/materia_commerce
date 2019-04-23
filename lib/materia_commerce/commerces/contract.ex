@@ -4,6 +4,7 @@ defmodule MateriaCommerce.Commerces.Contract do
 
 
   schema "contracts" do
+    field :request_number, :string
     field :billing_address, :integer
     field :buyer_id, :integer
     field :contract_no, :string
@@ -31,13 +32,13 @@ defmodule MateriaCommerce.Commerces.Contract do
   @doc false
   def changeset(contract, attrs) do
     contract
-    |> cast(attrs, [:contract_no, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :start_datetime, :end_datetime, :lock_version, :inserted_id])
+    |> cast(attrs, [:contract_no, :request_number, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :start_datetime, :end_datetime, :lock_version, :inserted_id])
     |> validate_required([:contract_no, :start_datetime, :end_datetime, :lock_version, :inserted_id])
   end
 
   def update_changeset(contract, attrs) do
     contract
-    |> cast(attrs, [:contract_no, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :start_datetime, :end_datetime, :lock_version, :inserted_id])
+    |> cast(attrs, [:contract_no, :request_number, :settlement, :seller_id, :buyer_id, :delivery_address, :delivery_start_datetime, :delivery_end_datetime, :billing_address, :sender_address, :shipping_fee, :tax_amount, :total_amount, :status, :expiration_date, :contracted_date, :start_datetime, :end_datetime, :lock_version, :inserted_id])
     |> validate_required([:contract_no, :lock_version, :inserted_id])
   end
 end

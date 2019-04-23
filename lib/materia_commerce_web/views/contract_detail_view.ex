@@ -19,6 +19,7 @@ defmodule MateriaCommerceWeb.ContractDetailView do
   def render("contract_detail.json", %{contract_detail: contract_detail}) do
     result_map = %{
       id: contract_detail.id,
+      contract_detail_no: contract_detail.contract_detail_no,
       contract_name: contract_detail.contract_name,
       contract_no: contract_detail.contract_no,
       amount: contract_detail.amount,

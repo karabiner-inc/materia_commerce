@@ -217,7 +217,7 @@ contracts = [
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
     inserted_id: 1,
-  },
+  }
 ]
 
 contracts

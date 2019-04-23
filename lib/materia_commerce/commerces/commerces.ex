@@ -2364,6 +2364,53 @@ defmodule MateriaCommerce.Commerces do
     MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, Request, base_datetime, [], params)
   end
 
+  def search_current_requests(base_datetime, params) do
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, Request, base_datetime, [{}], params)
+  end
+
+  @doc """
+  create new history contract and contract_details
+
+  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(2)> key_word_list = [{:contract_no, "create_contract_001"}]
+  iex(2)> attrs = %{"contract_no" => "create_contract_001", "settlement" => "9999-9999-9999", "contract_details" => [%{"contract_no" => "create_contract_001", "contract_detail_no" => "create_contract_001_01", "contract_name" => "details_001"}, %{"contract_no" => "create_contract_001", "contract_detail_no" => "create_contract_001_02", "contract_name" => "details_02"}]}
+  iex(2)> {:ok, contract} = MateriaCommerce.Commerces.create_contract(%{}, base_datetime, attrs, 1)
+  iex(30)> length(contract.contract_details)
+  2
+  attrs = %{"contract_no" => "create_contract_001", "settlement" => "xxxx-xxxx-xxxx", "contract_details" => []}
+  iex(34)> length(contract.contract_details)
+  0
+  iex(35)> contract.settlement
+  "xxxx-xxxx-xxxx"
+  """
+  def create_new_contract_history(result, base_datetime, params, user_id) do
+
+    contract_no = params["contract_no"]
+
+    key_word_list = [{:contract_no, contract_no}]
+
+    contract_params = params
+    |> Map.delete("contract_details")
+
+    contract_details_params = params
+    |> Map.get("contract_details")
+
+    {:ok, contract} = create_new_contract_history(result, base_datetime, key_word_list, contract_params, user_id)
+    {:ok, contract_details} = create_new_contract_detail_history(result, base_datetime, key_word_list, contract_details_params, user_id)
+
+    params = %{"and" => [%{"contract_no" => contract_no}]}
+    [new_contract] =  get_current_contracts(base_datetime, params)
+
+    {:ok, new_contract}
+
+  end
+
+  def create_my_new_contract_history(result, base_datetime, params, user_id) do
+
+    create_new_contract_history(result, base_datetime, params, user_id)
+
+  end
+
   @doc """
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()

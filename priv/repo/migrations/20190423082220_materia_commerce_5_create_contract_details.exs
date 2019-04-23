@@ -3,6 +3,7 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContractDetails do
 
   def change do
     create table(:contract_details) do
+      add :contract_detail_no, :string
       add :contract_name, :string
       add :contract_no, :string
       add :amount, :integer
@@ -40,8 +41,9 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContractDetails do
       timestamps()
     end
 
-    create index(:contract_details, [:contract_no])
-    create index(:contract_details, [:item_code])
-    create index(:contract_details, [:inserted_id])
+    create index(:contract_details, [:contract_detail_no, :start_datetime, :end_datetime])
+    create index(:contract_details, [:contract_no, :start_datetime, :end_datetime])
+    create index(:contract_details, [:item_code, :start_datetime, :end_datetime])
+    create index(:contract_details, [:inserted_id, :start_datetime, :end_datetime])
   end
 end
