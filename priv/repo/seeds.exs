@@ -235,6 +235,7 @@ contracts
 contract_details = [
   %{
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     amount: 1,
     price: 100,
     category1: "Single Detail",
@@ -244,6 +245,7 @@ contract_details = [
   },
   %{
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     amount: 2,
     price: 200,
     category1: "Multiple Details:1",
@@ -253,6 +255,7 @@ contract_details = [
   },
   %{
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     amount: 3,
     price: 300,
     item_code: "ICZ1000",
@@ -263,6 +266,7 @@ contract_details = [
   },
   %{
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     amount: 4,
     price: 400,
     category1: "Multiple Details:1",
@@ -272,6 +276,7 @@ contract_details = [
   },
   %{
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     amount: 5,
     price: 500,
     item_code: "ICZ1000",
@@ -282,6 +287,7 @@ contract_details = [
   },
   %{
     contract_no: "1111-1111-1111",
+    contract_detail_no: "1111-1111-1111-11",
     amount: 1,
     price: 100,
     category1: "Single Detail",
@@ -291,6 +297,7 @@ contract_details = [
   },
   %{
     contract_no: "2222-2222-2222",
+    contract_detail_no: "2222-2222-2222-22",
     amount: 1,
     price: 100,
     category1: "Single Detail",

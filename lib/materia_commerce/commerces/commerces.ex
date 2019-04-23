@@ -44,6 +44,7 @@ defmodule MateriaCommerce.Commerces do
   buyer_id: 2,
   contract_details: [],
   contract_no: "0000-0000-0000",
+  request_number: nil,
   contracted_date: "",
   delivery_address: nil,
   delivery_end_datetime: "",
@@ -126,6 +127,7 @@ defmodule MateriaCommerce.Commerces do
   buyer_id: 2,
   contract_details: [],
   contract_no: "0000-0000-0000",
+  request_number: nil,
   contracted_date: "",
   delivery_address: nil,
   delivery_end_datetime: "",
@@ -192,6 +194,7 @@ defmodule MateriaCommerce.Commerces do
   buyer_id: nil,
   contract_details: [],
   contract_no: "TEST",
+  request_number: nil,
   contracted_date: "",
   delivery_address: nil,
   delivery_end_datetime: "",
@@ -246,6 +249,7 @@ defmodule MateriaCommerce.Commerces do
   },
   buyer_id: 2,
   contract_no: "TEST-UPDATE",
+  request_number: nil,
   contracted_date: "",
   delivery_address: nil,
   delivery_end_datetime: "",
@@ -343,6 +347,7 @@ defmodule MateriaCommerce.Commerces do
   buyer_id: 1,
   contract_details: [],
   contract_no: "0000-0000-0000",
+  request_number: nil,
   contracted_date: "",
   delivery_address: nil,
   delivery_end_datetime: "",
@@ -576,10 +581,10 @@ defmodule MateriaCommerce.Commerces do
   """
   def create_my_new_contract_history(%{}, start_datetime, attr, user_id) do
     Logger.debug("*-----  #{__MODULE__}.create_my_new_contract_history user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{attr["seller_id"]}")
-    key_words = [{:contract_no, attr["contract_no"]}]
+    #key_words = [{:contract_no, attr["contract_no"]}]
 
     if attr["buyer_id"] == user_id || attr["seller_id"] == user_id do
-      create_new_contract_history(%{}, start_datetime, key_words, attr, user_id)
+      create_new_contract_history(%{}, start_datetime, attr, user_id)
       else
         raise BusinessError, message: "At least either buyer_id or seller_id should be your user_id. user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{attr["seller_id"]}"
     end
@@ -614,6 +619,7 @@ defmodule MateriaCommerce.Commerces do
   size2: nil,
   tax_category: nil,
   contract_no: "0000-0000-0000",
+  contract_detail_no: "0000-0000-0000-00",
   size4: nil,
   end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
   category3: nil,
@@ -668,7 +674,7 @@ defmodule MateriaCommerce.Commerces do
 
   ## Examples
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
-  iex(1)> attr = %{"contract_name" => "TEST1", "contract_no" => "0000-0000-0000", "start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59", "inserted_id" => 1}
+  iex(1)> attr = %{"contract_name" => "TEST1", "contract_no" => "0000-0000-0000", "contract_detail_no" => "0000-0000-0000-00", "start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59", "inserted_id" => 1}
   iex(2)> {:ok, contract_detail} = MateriaCommerce.Commerces.create_contract_detail(attr)
   iex(3)> view = MateriaCommerceWeb.ContractDetailView.render("show.json", %{contract_detail: contract_detail})
   iex(4)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end) |> List.first
@@ -681,6 +687,7 @@ defmodule MateriaCommerce.Commerces do
   color: nil,
   contract_name: "TEST1",
   contract_no: "0000-0000-0000",
+  contract_detail_no: "0000-0000-0000-00",
   delivery_area: nil,
   description: nil,
   end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
@@ -733,6 +740,7 @@ defmodule MateriaCommerce.Commerces do
   color: nil,
   contract_name: "TEST1",
   contract_no: "0000-0000-0000",
+  contract_detail_no: "0000-0000-0000-00",
   delivery_area: nil,
   description: nil,
   end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
@@ -840,6 +848,7 @@ defmodule MateriaCommerce.Commerces do
     size2: nil,
     tax_category: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     size4: nil,
     end_datetime: "2019-01-01 08:59:59Z",
     category3: nil,
@@ -875,6 +884,7 @@ defmodule MateriaCommerce.Commerces do
     size2: nil,
     tax_category: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     size4: nil,
     end_datetime: "2019-01-01 08:59:59Z",
     category3: nil,
@@ -927,6 +937,7 @@ defmodule MateriaCommerce.Commerces do
     size2: nil,
     tax_category: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     size4: nil,
     end_datetime: "2019-01-01 08:59:59Z",
     category3: nil,
@@ -962,6 +973,7 @@ defmodule MateriaCommerce.Commerces do
     size2: nil,
     tax_category: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     size4: nil,
     end_datetime: "2019-01-01 08:59:59Z",
     category3: nil,
@@ -994,7 +1006,7 @@ defmodule MateriaCommerce.Commerces do
     category4: nil
   }
   ]
-  iex(5)> attrs = [%{"contract_no" => "0000-0000-0000","contract_name" => "TEST2","id" => 2,"lock_version" => 0,"price" => 2000,},%{"contract_no" => "0000-0000-0000","contract_name" => "TEST3","id" => 3,"lock_version" => 0,"price" => 3000,},%{"contract_no" => "0000-0000-0000","contract_name" => "TEST1","amount" => 1,"price" => 1000,}]
+  iex(5)> attrs = [%{"contract_no" => "0000-0000-0000", "contract_detail_no" => "0000-0000-0000-02", "contract_name" => "TEST2","id" => 2,"lock_version" => 0,"price" => 2000,},%{"contract_no" => "0000-0000-0000", "contract_detail_no" => "0000-0000-0000-03", "contract_name" => "TEST3","id" => 3,"lock_version" => 0,"price" => 3000,},%{"contract_no" => "0000-0000-0000", "contract_detail_no" => "0000-0000-0000-01", "contract_name" => "TEST1","amount" => 1,"price" => 1000,}]
   iex(6)> {:ok, contract_details} = MateriaCommerce.Commerces.create_new_contract_detail_history(%{}, base_datetime, key_word_list, attrs, 1)
   iex(7)> view = MateriaCommerceWeb.ContractDetailView.render("index.json", %{contract_details: contract_details})
   iex(8)> view = view |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end)
@@ -1003,6 +1015,7 @@ defmodule MateriaCommerce.Commerces do
     size2: nil,
     tax_category: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-02",
     size4: nil,
     end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
     category3: nil,
@@ -1038,6 +1051,7 @@ defmodule MateriaCommerce.Commerces do
     size2: nil,
     tax_category: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-03",
     size4: nil,
     end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
     category3: nil,
@@ -1073,6 +1087,7 @@ defmodule MateriaCommerce.Commerces do
     size2: nil,
     tax_category: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-01",
     size4: nil,
     end_datetime: "3000-01-01 08:59:59+09:00 JST Asia/Tokyo",
     category3: nil,
@@ -1218,6 +1233,7 @@ defmodule MateriaCommerce.Commerces do
   color: nil,
   contract_name: nil,
   contract_no: "0000-0000-0000",
+  contract_detail_no: "0000-0000-0000-00",
   delivery_area: nil,
   description: nil,
   end_datetime: "2019-01-01 08:59:59Z",
@@ -1294,6 +1310,7 @@ defmodule MateriaCommerce.Commerces do
         color: nil,
         contract_name: nil,
         contract_no: "0000-0000-0000",
+        contract_detail_no: "0000-0000-0000-00",
         delivery_area: nil,
         description: nil,
         end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
@@ -1329,6 +1346,7 @@ defmodule MateriaCommerce.Commerces do
         color: nil,
         contract_name: nil,
         contract_no: "0000-0000-0000",
+        contract_detail_no: "0000-0000-0000-00",
         delivery_area: nil,
         description: nil,
         end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
@@ -1357,6 +1375,7 @@ defmodule MateriaCommerce.Commerces do
       }
     ],
     contract_no: "0000-0000-0000",
+    request_number: nil,
     contracted_date: "",
     delivery_address: nil,
     delivery_end_datetime: "",
@@ -1491,6 +1510,7 @@ defmodule MateriaCommerce.Commerces do
     color: nil,
     contract_name: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     delivery_area: nil,
     description: nil,
     end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
@@ -1526,6 +1546,7 @@ defmodule MateriaCommerce.Commerces do
     color: nil,
     contract_name: nil,
     contract_no: "0000-0000-0000",
+    contract_detail_no: "0000-0000-0000-00",
     delivery_area: nil,
     description: nil,
     end_datetime: "2019-01-01 17:59:59.000000+09:00 JST Asia/Tokyo",
@@ -2617,17 +2638,19 @@ defmodule MateriaCommerce.Commerces do
   @doc """
   create new history contract and contract_details
 
-  iex(2)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
+  iex(1)> base_datetime = MateriaUtils.Calendar.CalendarUtil.now()
   iex(2)> key_word_list = [{:contract_no, "create_contract_001"}]
-  iex(2)> attrs = %{"contract_no" => "create_contract_001", "settlement" => "9999-9999-9999", "contract_details" => [%{"contract_no" => "create_contract_001", "contract_detail_no" => "create_contract_001_01", "contract_name" => "details_001"}, %{"contract_no" => "create_contract_001", "contract_detail_no" => "create_contract_001_02", "contract_name" => "details_02"}]}
-  iex(2)> {:ok, contract} = MateriaCommerce.Commerces.create_contract(%{}, base_datetime, attrs, 1)
-  iex(30)> length(contract.contract_details)
+  iex(3)> attrs = %{"contract_no" => "create_contract_001", "settlement" => "9999-9999-9999", "contract_details" => [%{"contract_no" => "create_contract_001", "contract_detail_no" => "create_contract_001_01", "contract_name" => "details_001"}, %{"contract_no" => "create_contract_001", "contract_detail_no" => "create_contract_001_02", "contract_name" => "details_02"}]}
+  iex(4)> {:ok, contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, attrs, 1)
+  iex(5)> length(contract.contract_details)
   2
-  attrs = %{"contract_no" => "create_contract_001", "settlement" => "xxxx-xxxx-xxxx", "contract_details" => []}
-  iex(34)> length(contract.contract_details)
+  iex(6)> attrs = %{"contract_no" => "create_contract_001", "settlement" => "xxxx-xxxx-xxxx", "contract_details" => []}
+  iex(7)> {:ok, contract} = MateriaCommerce.Commerces.create_new_contract_history(%{}, base_datetime, attrs, 1)
+  iex(8)> length(contract.contract_details)
   0
-  iex(35)> contract.settlement
+  iex(9)> contract.settlement
   "xxxx-xxxx-xxxx"
+
   """
   def create_new_contract_history(result, base_datetime, params, user_id) do
 
@@ -2642,18 +2665,15 @@ defmodule MateriaCommerce.Commerces do
     |> Map.get("contract_details")
 
     {:ok, contract} = create_new_contract_history(result, base_datetime, key_word_list, contract_params, user_id)
-    {:ok, contract_details} = create_new_contract_detail_history(result, base_datetime, key_word_list, contract_details_params, user_id)
+
+    if contract_details_params != nil do
+      {:ok, contract_details} = create_new_contract_detail_history(result, base_datetime, key_word_list, contract_details_params, user_id)
+    end
 
     params = %{"and" => [%{"contract_no" => contract_no}]}
     [new_contract] =  get_current_contracts(base_datetime, params)
 
     {:ok, new_contract}
-
-  end
-
-  def create_my_new_contract_history(result, base_datetime, params, user_id) do
-
-    create_new_contract_history(result, base_datetime, params, user_id)
 
   end
 
