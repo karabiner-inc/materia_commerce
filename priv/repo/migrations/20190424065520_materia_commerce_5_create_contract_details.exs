@@ -29,6 +29,10 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContractDetails do
       add :weight2, :string
       add :weight3, :string
       add :weight4, :string
+      add :datetime1, :utc_datetime
+      add :datetime2, :utc_datetime
+      add :datetime3, :utc_datetime
+      add :datetime4, :utc_datetime
       add :delivery_area, :string
       add :manufacturer, :string
       add :color, :string
