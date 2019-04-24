@@ -17,6 +17,7 @@ defmodule MateriaCommerceWeb.ContractView do
     result_map = %{
       id: contract.id,
       contract_no: contract.contract_no,
+      request_number: contract.request_number,
       settlement: contract.settlement,
       seller_id: contract.seller_id,
       buyer_id: contract.buyer_id,
