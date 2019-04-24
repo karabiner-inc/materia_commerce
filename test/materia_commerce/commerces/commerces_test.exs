@@ -237,9 +237,8 @@ defmodule MateriaCommerce.CommercesTest do
   describe "contract_details" do
     alias MateriaCommerce.Commerces.ContractDetail
 
-    @valid_attrs %{amount: 42, category1: "some category1", category2: "some category2", category3: "some category3", category4: "some category4", color: "some color", contract_name: "some contract_name", contract_no: "some contract_no", delivery_area: "some delivery_area", description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", image_url: "some image_url", item_code: "some item_code", jan_code: "some jan_code", lock_version: 42, manufacturer: "some manufacturer", merchandise_cost: "120.5", model_number: "some model_number", name: "some name", price: "120.5", purchase_amount: "120.5", size1: "some size1", size2: "some size2", size3: "some size3", size4: "some size4", start_datetime: "2010-04-17 14:00:00.000000Z", tax_category: "some tax_category", thumbnail: "some thumbnail", weight1: "some weight1", weight2: "some weight2", weight3: "some weight3", weight4: "some weight4", inserted_id: 1}
-    @update_attrs %{amount: 43, category1: "some updated category1", category2: "some updated category2", category3: "some updated category3", category4: "some updated category4", color: "some updated color", contract_name: "some updated contract_name", contract_no: "some updated contract_no", delivery_area: "some updated delivery_area", description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", image_url: "some updated image_url", item_code: "some updated item_code", jan_code: "some updated jan_code", lock_version: 43, manufacturer: "some updated manufacturer", merchandise_cost: "456.7", model_number: "some updated model_number", name: "some updated name", price: "456.7", purchase_amount: "456.7", size1: "some updated size1", size2: "some updated size2", size3: "some updated size3", size4: "some updated size4", start_datetime: "2011-05-18 15:01:01.000000Z", tax_category: "some updated tax_category", thumbnail: "some updated thumbnail", weight1: "some updated weight1", weight2: "some updated weight2", weight3: "some updated weight3", weight4: "some updated weight4", inserted_id: 1}
-    @invalid_attrs %{amount: nil, category1: nil, category2: nil, category3: nil, category4: nil, color: nil, contract_name: nil, contract_no: nil, delivery_area: nil, description: nil, end_datetime: nil, image_url: nil, item_code: nil, jan_code: nil, lock_version: nil, manufacturer: nil, merchandise_cost: nil, model_number: nil, name: nil, price: nil, purchase_amount: nil, size1: nil, size2: nil, size3: nil, size4: nil, start_datetime: nil, tax_category: nil, thumbnail: nil, weight1: nil, weight2: nil, weight3: nil, weight4: nil, inserted_id: nil}
+    @valid_attrs %{contract_detail_no: "some contract_detail_no", amount: 42, category1: "some category1", category2: "some category2", category3: "some category3", category4: "some category4", color: "some color", contract_name: "some contract_name", contract_no: "some contract_no", delivery_area: "some delivery_area", description: "some description", end_datetime: "2010-04-17 14:00:00.000000Z", image_url: "some image_url", item_code: "some item_code", jan_code: "some jan_code", lock_version: 42, manufacturer: "some manufacturer", merchandise_cost: "120.5", model_number: "some model_number", name: "some name", price: "120.5", purchase_amount: "120.5", size1: "some size1", size2: "some size2", size3: "some size3", size4: "some size4", start_datetime: "2010-04-17 14:00:00.000000Z", tax_category: "some tax_category", thumbnail: "some thumbnail", weight1: "some weight1", weight2: "some weight2", weight3: "some weight3", weight4: "some weight4", inserted_id: 1}
+    @update_attrs %{contract_detail_no: "some updated contract_detail_no", amount: 43, category1: "some updated category1", category2: "some updated category2", category3: "some updated category3", category4: "some updated category4", color: "some updated color", contract_name: "some updated contract_name", contract_no: "some updated contract_no", delivery_area: "some updated delivery_area", description: "some updated description", end_datetime: "2011-05-18 15:01:01.000000Z", image_url: "some updated image_url", item_code: "some updated item_code", jan_code: "some updated jan_code", lock_version: 43, manufacturer: "some updated manufacturer", merchandise_cost: "456.7", model_number: "some updated model_number", name: "some updated name", price: "456.7", purchase_amount: "456.7", size1: "some updated size1", size2: "some updated size2", size3: "some updated size3", size4: "some updated size4", start_datetime: "2011-05-18 15:01:01.000000Z", tax_category: "some updated tax_category", thumbnail: "some updated thumbnail", weight1: "some updated weight1", weight2: "some updated weight2", weight3: "some updated weight3", weight4: "some updated weight4", inserted_id: 1}
 
     def contract_detail_fixture(attrs \\ %{}) do
       {:ok, contract_detail} =
@@ -403,18 +402,21 @@ defmodule MateriaCommerce.CommercesTest do
       attrs = [
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-02",
           "contract_name" => "TEST2",
           "id" => 2,
           "lock_version" => 0,
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-03",
           "contract_name" => "TEST3",
           "id" => 3,
           "lock_version" => 1,
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-01",
           "contract_name" => "TEST1"
         }
       ]
@@ -427,14 +429,17 @@ defmodule MateriaCommerce.CommercesTest do
       attrs = [
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-02",
           "contract_name" => "TEST2",
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-03",
           "contract_name" => "TEST3",
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-01",
           "contract_name" => "TEST1"
         }
       ]
@@ -460,6 +465,7 @@ defmodule MateriaCommerce.CommercesTest do
       attrs = [
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-02",
           "contract_name" => "TEST2",
           "id" => 2,
           "lock_version" => 0,
@@ -467,6 +473,7 @@ defmodule MateriaCommerce.CommercesTest do
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-03",
           "contract_name" => "TEST3",
           "id" => 3,
           "lock_version" => 0,
@@ -474,6 +481,7 @@ defmodule MateriaCommerce.CommercesTest do
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-01",
           "contract_name" => "TEST1",
           "amount" => 1,
           "price" => 1000,
@@ -508,6 +516,7 @@ defmodule MateriaCommerce.CommercesTest do
       attrs = [
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-04",
           "contract_name" => "TEST4",
           "id" => 4,
           "lock_version" => 0,
@@ -515,6 +524,7 @@ defmodule MateriaCommerce.CommercesTest do
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-05",
           "contract_name" => "TEST5",
           "id" => 5,
           "lock_version" => 0,
@@ -522,6 +532,7 @@ defmodule MateriaCommerce.CommercesTest do
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-01",
           "contract_name" => "TEST1",
           "amount" => 1,
           "price" => 1000,
@@ -556,6 +567,7 @@ defmodule MateriaCommerce.CommercesTest do
       attrs = [
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-04",
           "contract_name" => "TEST4",
           "id" => 4,
           "lock_version" => 0,
@@ -563,6 +575,7 @@ defmodule MateriaCommerce.CommercesTest do
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-05",
           "contract_name" => "TEST5",
           "id" => 5,
           "lock_version" => 0,
@@ -570,6 +583,7 @@ defmodule MateriaCommerce.CommercesTest do
         },
         %{
           "contract_no" => "0000-0000-0000",
+          "contract_detail_no" => "0000-0000-0000-01",
           "contract_name" => "TEST1",
           "amount" => 1,
           "price" => 1000,
@@ -593,6 +607,7 @@ defmodule MateriaCommerce.CommercesTest do
       assert contract_detail.color == "some color"
       assert contract_detail.contract_name == "some contract_name"
       assert contract_detail.contract_no == "some contract_no"
+      assert contract_detail.contract_detail_no == "some contract_detail_no"
       assert contract_detail.delivery_area == "some delivery_area"
       assert contract_detail.description == "some description"
       assert contract_detail.end_datetime == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
@@ -659,12 +674,6 @@ defmodule MateriaCommerce.CommercesTest do
       assert contract_detail.weight2 == "some updated weight2"
       assert contract_detail.weight3 == "some updated weight3"
       assert contract_detail.weight4 == "some updated weight4"
-    end
-
-    test "update_contract_detail/2 with invalid data returns error changeset" do
-      contract_detail = contract_detail_fixture() |> @repo.preload(:inserted)
-      assert {:error, %Ecto.Changeset{}} = Commerces.update_contract_detail(contract_detail, @invalid_attrs)
-      assert contract_detail == Commerces.get_contract_detail!(contract_detail.id)
     end
 
     test "delete_contract_detail/1 deletes the contract_detail" do

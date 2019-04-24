@@ -46,6 +46,7 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                "billing_address" => 42,
                "buyer_id" => 1,
                "contract_no" => "some contract_no",
+               "request_number" => nil,
                "contracted_date" => "2010-04-17T23:00:00.000000+09:00",
                "delivery_address" => 42,
                "delivery_end_datetime" => "2010-04-17T23:00:00.000000+09:00",
@@ -86,6 +87,7 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
         assert length(resp) == 1
 
     end
+
     test "create my contract hostory", %{conn: conn} do
       attrs = %{buyer_id: 99, seller_id: 99, billing_address: 42, contract_no: "some contract_no2", contracted_date: "2010-04-17 14:00:00.000000Z", delivery_address: 42, delivery_end_datetime: "2010-04-17 14:00:00.000000Z", delivery_start_datetime: "2010-04-17 14:00:00.000000Z", end_datetime: "2099-12-31 23:59:59.000000Z", expiration_date: "2010-04-17 14:00:00.000000Z", lock_version: 42, sender_address: 42, settlement: "some settlement", shipping_fee: "120.5", start_datetime: "2010-04-17 14:00:00.000000Z", status: 0, tax_amount: "120.5", total_amount: "120.5"}
       error_result_conn = post conn, contract_path(conn, :create_my_new_contract_history), attrs
@@ -134,6 +136,7 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                "billing_address" => 43,
                "buyer_id" => 43,
                "contract_no" => "some updated contract_no",
+               "request_number" => nil,
                "contracted_date" => "2011-05-19T00:01:01.000000+09:00",
                "delivery_address" => 43,
                "delivery_end_datetime" => "2011-05-19T00:01:01.000000+09:00",
