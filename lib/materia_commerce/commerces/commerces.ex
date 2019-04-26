@@ -1284,7 +1284,8 @@ defmodule MateriaCommerce.Commerces do
     contract_details = MateriaCommerce.Commerces.ContractDetail
                        |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
     contracts = MateriaUtils.Ecto.EctoUtil.query_current_history(@repo, MateriaCommerce.Commerces.Contract, base_datetime, [], params)
-    dynamic_join = keywords |> Enum.reduce(
+    dynamic_join = keywords
+                   |> Enum.reduce(
                         nil,
                         fn (keyword, acc) ->
                           cond do
