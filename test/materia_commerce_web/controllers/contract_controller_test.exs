@@ -46,6 +46,8 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                "billing_address" => 42,
                "buyer_id" => 1,
                "contract_no" => "some contract_no",
+               "branch_number" => 0,
+               "branch_type" => "contract",
                "request_number" => nil,
                "contracted_date" => "2010-04-17T23:00:00.000000+09:00",
                "delivery_address" => 42,
@@ -73,12 +75,12 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                  "id" => 1,
                  "lock_version" => 2,
                  "name" => "hogehoge",
-                 "organization" => [],
+                 "organization" => nil,
                  "phone_number" => nil,
                  "role" => "admin",
                  "status" => 1
                },
-               "buyer" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => [], "phone_number" => nil, "role" => "admin", "status" => 1},
+               "buyer" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => nil, "phone_number" => nil, "role" => "admin", "status" => 1},
                "seller" => nil
              }
 
@@ -136,6 +138,8 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                "billing_address" => 43,
                "buyer_id" => 43,
                "contract_no" => "some updated contract_no",
+               "branch_number" => 0,
+               "branch_type" => "contract",
                "request_number" => nil,
                "contracted_date" => "2011-05-19T00:01:01.000000+09:00",
                "delivery_address" => 43,
@@ -163,7 +167,7 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                  "id" => 1,
                  "lock_version" => 2,
                  "name" => "hogehoge",
-                 "organization" => [],
+                 "organization" => nil,
                  "phone_number" => nil,
                  "role" => "admin",
                  "status" => 1

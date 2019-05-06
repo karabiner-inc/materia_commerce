@@ -59,7 +59,7 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
                  "id" => 1,
                  "lock_version" => 2,
                  "name" => "hogehoge",
-                 "organization" => [],
+                 "organization" => nil,
                  "phone_number" => nil,
                  "role" => "admin",
                  "status" => 1
@@ -101,7 +101,7 @@ defmodule MateriaCommerceWeb.TaxControllerTest do
                  "id" => 1,
                  "lock_version" => 2,
                  "name" => "hogehoge",
-                 "organization" => [],
+                 "organization" => nil,
                  "phone_number" => nil,
                  "role" => "admin",
                  "status" => 1

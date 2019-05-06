@@ -59,7 +59,7 @@ defmodule MateriaCommerceWeb.RequestAppendixControllerTest do
                "request_key5" => "some request_key5",
                "request_number" => "some request_number",
                "start_datetime" => "2010-04-17T23:00:00.000000+09:00",
-               "inserted" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => [], "phone_number" => nil, "role" => "admin", "status" => 1}
+               "inserted" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => nil, "phone_number" => nil, "role" => "admin", "status" => 1}
              }
     end
 
@@ -96,7 +96,7 @@ defmodule MateriaCommerceWeb.RequestAppendixControllerTest do
                "request_key5" => "some updated request_key5",
                "request_number" => "some updated request_number",
                "start_datetime" => "2011-05-19T00:01:01.000000+09:00",
-               "inserted" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => [], "phone_number" => nil, "role" => "admin", "status" => 1}
+               "inserted" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => nil, "phone_number" => nil, "role" => "admin", "status" => 1}
              }
     end
 
