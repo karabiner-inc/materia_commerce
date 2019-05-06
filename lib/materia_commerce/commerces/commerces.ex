@@ -2292,7 +2292,14 @@ defmodule MateriaCommerce.Commerces do
 
     contract_no = params["contract_no"]
 
-    key_word_list = [{:contract_no, contract_no}]
+    branch_number =
+      if params["branch_number"] == nil do
+        0
+      else
+        params["branch_number"]
+      end
+
+    key_word_list = [{:contract_no, contract_no}, {:branch_number, branch_number}]
 
     contract_params = params
     |> Map.delete("contract_details")
