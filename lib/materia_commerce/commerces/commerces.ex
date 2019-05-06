@@ -1139,7 +1139,7 @@ defmodule MateriaCommerce.Commerces do
 
     contract = MateriaUtils.Ecto.EctoUtil.query_current_history(@repo, MateriaCommerce.Commerces.Contract, base_datetime, [], params)
     results = contract
-              |> join(:left, [c], cd in subquery(contract_detail), contract_no: c.contract_no)
+              |> join(:left, [c], cd in subquery(contract_detail), [{:contract_no, c.contract_no}, {:branch_number, c.branch_number}])
               |> select([c, cd], %{contract: c, contract_details: cd})
               |> @repo.all()
               |> Enum.group_by(fn x -> x.contract end)
