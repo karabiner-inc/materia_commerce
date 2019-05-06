@@ -2340,4 +2340,26 @@ defmodule MateriaCommerce.Commerces do
   def get_current_request_appendices(base_datetime, params) do
     MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, RequestAppendix, base_datetime, [], params)
   end
+
+
+  @doc """
+  現在のbranch_noの次のbranch_noを取得する
+  Contract単位でユニーク
+  (登録されたContractからmax+1を求める仕様)
+
+  iex(1)> keywords = [{:contract_no, "0000-0000-0000"}]
+  iex(2)> MateriaCommerce.Commerces.get_next_branch_number(keywords)
+  """
+  def get_next_branch_number(keywords) do
+    [max_branch_number] = from(c in Contract, select: max(c.branch_number), group_by: c.branch_number)
+    #max_branch_no_branch = from(c in Contract)
+    |> where(^keywords)
+    #max_branch_no_branch = keywords
+    #|> Enum.reduce(query, fn(keyword, query) ->
+    #  query
+    #  |> where(^keyword)
+    #end)
+    |> @repo.all()
+    _next_branch_number = 1 + max_branch_number
+  end
 end

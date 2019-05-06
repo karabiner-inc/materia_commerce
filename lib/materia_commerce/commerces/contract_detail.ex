@@ -5,6 +5,9 @@ defmodule MateriaCommerce.Commerces.ContractDetail do
 
   schema "contract_details" do
     field :contract_detail_no, :string
+    field :contract_no, :string
+    field :branch_type, :string, default: "contract"
+    field :branch_number, :integer, default: 0
     field :amount, :integer
     field :category1, :string
     field :category2, :string
@@ -12,7 +15,6 @@ defmodule MateriaCommerce.Commerces.ContractDetail do
     field :category4, :string
     field :color, :string
     field :contract_name, :string
-    field :contract_no, :string
     field :delivery_area, :string
     field :description, :string
     field :end_datetime, :utc_datetime
@@ -50,14 +52,14 @@ defmodule MateriaCommerce.Commerces.ContractDetail do
   @doc false
   def changeset(contract_detail, attrs) do
     contract_detail
-    |> cast(attrs, [:contract_detail_no, :contract_name, :contract_no, :amount, :price, :purchase_amount, :merchandise_cost, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :datetime1, :datetime2, :datetime3, :datetime4, :delivery_area, :manufacturer, :color, :tax_category, :start_datetime, :end_datetime, :lock_version, :inserted_id])
+    |> cast(attrs, [:contract_detail_no, :contract_name, :contract_no, :branch_type, :branch_number, :amount, :price, :purchase_amount, :merchandise_cost, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :datetime1, :datetime2, :datetime3, :datetime4, :delivery_area, :manufacturer, :color, :tax_category, :start_datetime, :end_datetime, :lock_version, :inserted_id])
     |> validate_required([:contract_detail_no, :contract_no, :start_datetime, :end_datetime, :lock_version, :inserted_id])
   end
 
   @doc false
   def update_changeset(contract_detail, attrs) do
     contract_detail
-    |> cast(attrs, [:contract_detail_no, :contract_name, :contract_no, :amount, :price, :purchase_amount, :merchandise_cost, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :datetime1, :datetime2, :datetime3, :datetime4, :delivery_area, :manufacturer, :color, :tax_category, :start_datetime, :end_datetime, :lock_version, :inserted_id])
+    |> cast(attrs, [:contract_detail_no, :contract_name, :contract_no, :branch_type, :branch_number, :amount, :price, :purchase_amount, :merchandise_cost, :description, :name, :category1, :category2, :category3, :category4, :item_code, :model_number, :jan_code, :thumbnail, :image_url, :size1, :size2, :size3, :size4, :weight1, :weight2, :weight3, :weight4, :datetime1, :datetime2, :datetime3, :datetime4, :delivery_area, :manufacturer, :color, :tax_category, :start_datetime, :end_datetime, :lock_version, :inserted_id])
     |> validate_required([:contract_detail_no, :lock_version, :inserted_id])
   end
 end

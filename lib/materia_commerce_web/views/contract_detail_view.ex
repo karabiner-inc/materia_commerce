@@ -22,6 +22,8 @@ defmodule MateriaCommerceWeb.ContractDetailView do
       contract_detail_no: contract_detail.contract_detail_no,
       contract_name: contract_detail.contract_name,
       contract_no: contract_detail.contract_no,
+      branch_type: contract_detail.branch_type,
+      branch_number: contract_detail.branch_number,
       amount: contract_detail.amount,
       price: contract_detail.price,
       purchase_amount: contract_detail.purchase_amount,
