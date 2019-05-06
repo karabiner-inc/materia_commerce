@@ -2380,7 +2380,7 @@ defmodule MateriaCommerce.Commerces do
 
   """
   def get_next_branch_number(keywords) do
-    [max_branch_number] = from(c in Contract, select: max(c.branch_number), group_by: c.branch_number)
+    [max_branch_number] = from(c in Contract, select: max(c.branch_number), group_by: c.contract_no)
     |> where(^keywords)
     |> @repo.all()
     _next_branch_number = max_branch_number + 1
