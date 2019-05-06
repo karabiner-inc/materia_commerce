@@ -2313,7 +2313,7 @@ defmodule MateriaCommerce.Commerces do
       {:ok, contract_details} = create_new_contract_detail_history(result, base_datetime, key_word_list, contract_details_params, user_id)
     end
 
-    params = %{"and" => [%{"contract_no" => contract_no}]}
+    params = %{"and" => [%{"contract_no" => contract_no}, %{"branch_number" => branch_number}]}
     [new_contract] =  get_current_contracts(base_datetime, params)
 
     {:ok, new_contract}
