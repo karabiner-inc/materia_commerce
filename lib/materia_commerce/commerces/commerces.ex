@@ -547,7 +547,10 @@ defmodule MateriaCommerce.Commerces do
         # 楽観排他チェック
         _ = cond do
           !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-          attr["lock_version"] != recent_contract.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
+          attr["lock_version"] != recent_contract.lock_version ->
+            Logger.debug("*-----  #{__MODULE__}.create_new_contract_history recent_contract attempted to update a stale entry attr.lockversion:#{attr["lock_version"]} recent_contract:-----*")
+            Logger.debug("#{inspect(recent_contract)}")
+            raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
           true -> :ok
         end
 
