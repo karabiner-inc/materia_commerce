@@ -42,7 +42,7 @@ defmodule MateriaCommerceWeb.ContractController do
 
   def search_current_contracts(conn, params) do
     base_datetime = CalendarUtil.now()
-    contracts = Commerces.list_current_contracts(base_datetime, params)
+    contracts = Commerces.get_current_contracts(base_datetime, params)
     render(conn, "index.json", contracts: contracts)
   end
 
