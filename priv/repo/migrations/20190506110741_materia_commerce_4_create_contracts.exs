@@ -4,6 +4,8 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContracts do
   def change do
     create table(:contracts) do
       add :contract_no, :string
+      add :branch_type, :string
+      add :branch_number, :integer
       add :request_number, :string
       add :settlement, :string
       add :seller_id, :integer

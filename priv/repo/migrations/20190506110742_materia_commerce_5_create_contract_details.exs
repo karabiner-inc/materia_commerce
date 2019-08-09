@@ -6,6 +6,8 @@ defmodule MateriaCommerce.Repo.Migrations.CreateContractDetails do
       add :contract_detail_no, :string
       add :contract_name, :string
       add :contract_no, :string
+      add :branch_type, :string
+      add :branch_number, :integer
       add :amount, :integer
       add :price, :decimal
       add :purchase_amount, :decimal

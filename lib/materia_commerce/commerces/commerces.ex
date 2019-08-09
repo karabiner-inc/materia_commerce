@@ -36,7 +36,7 @@ defmodule MateriaCommerce.Commerces do
     id: 2,
     lock_version: 1,
     name: "fugafuga",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "operator",
     status: 1
@@ -44,6 +44,8 @@ defmodule MateriaCommerce.Commerces do
   buyer_id: 2,
   contract_details: [],
   contract_no: "0000-0000-0000",
+  branch_number: 0,
+  branch_type: "contract",
   request_number: nil,
   contracted_date: "",
   delivery_address: nil,
@@ -61,7 +63,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -77,7 +79,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -119,7 +121,7 @@ defmodule MateriaCommerce.Commerces do
     id: 2,
     lock_version: 1,
     name: "fugafuga",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "operator",
     status: 1
@@ -127,6 +129,8 @@ defmodule MateriaCommerce.Commerces do
   buyer_id: 2,
   contract_details: [],
   contract_no: "0000-0000-0000",
+  branch_number: 0,
+  branch_type: "contract",
   request_number: nil,
   contracted_date: "",
   delivery_address: nil,
@@ -145,7 +149,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -161,7 +165,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -194,6 +198,8 @@ defmodule MateriaCommerce.Commerces do
   buyer_id: nil,
   contract_details: [],
   contract_no: "TEST",
+  branch_number: 0,
+  branch_type: "contract",
   request_number: nil,
   contracted_date: "",
   delivery_address: nil,
@@ -242,13 +248,15 @@ defmodule MateriaCommerce.Commerces do
     id: 2,
     lock_version: 1,
     name: "fugafuga",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "operator",
     status: 1
   },
   buyer_id: 2,
   contract_no: "TEST-UPDATE",
+  branch_type: "contract",
+  branch_number: 0,
   request_number: nil,
   contracted_date: "",
   delivery_address: nil,
@@ -267,7 +275,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -291,7 +299,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -339,7 +347,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -347,6 +355,8 @@ defmodule MateriaCommerce.Commerces do
   buyer_id: 1,
   contract_details: [],
   contract_no: "0000-0000-0000",
+  branch_number: 0,
+  branch_type: "contract",
   request_number: nil,
   contracted_date: "",
   delivery_address: nil,
@@ -365,7 +375,7 @@ defmodule MateriaCommerce.Commerces do
     id: 2,
     lock_version: 1,
     name: "fugafuga",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "operator",
     status: 1
@@ -388,7 +398,7 @@ defmodule MateriaCommerce.Commerces do
                id: 1,
                lock_version: 2,
                name: "hogehoge",
-               organization: [],
+               organization: nil,
                phone_number: nil,
                role: "admin",
                status: 1
@@ -537,7 +547,10 @@ defmodule MateriaCommerce.Commerces do
         # 楽観排他チェック
         _ = cond do
           !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-          attr["lock_version"] != recent_contract.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
+          attr["lock_version"] != recent_contract.lock_version ->
+            Logger.debug("*-----  #{__MODULE__}.create_new_contract_history recent_contract attempted to update a stale entry attr.lockversion:#{attr["lock_version"]} recent_contract:-----*")
+            Logger.debug("#{inspect(recent_contract)}")
+            raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
           true -> :ok
         end
 
@@ -618,6 +631,8 @@ defmodule MateriaCommerce.Commerces do
   size2: nil,
   tax_category: nil,
   contract_no: "0000-0000-0000",
+  branch_type: "contract",
+  branch_number: 0,
   contract_detail_no: "0000-0000-0000-00",
   size4: nil,
   end_datetime: "2018-12-01 17:59:59.000000+09:00 JST Asia/Tokyo",
@@ -632,7 +647,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -694,6 +709,8 @@ defmodule MateriaCommerce.Commerces do
   color: nil,
   contract_name: "TEST1",
   contract_no: "0000-0000-0000",
+  branch_number: 0,
+  branch_type: "contract",
   contract_detail_no: "0000-0000-0000-00",
   delivery_area: nil,
   description: nil,
@@ -974,7 +991,7 @@ defmodule MateriaCommerce.Commerces do
       id: 1,
       lock_version: 2,
       name: "hogehoge",
-      organization: [],
+      organization: nil,
       phone_number: nil,
       role: "admin",
       status: 1
@@ -990,6 +1007,8 @@ defmodule MateriaCommerce.Commerces do
         color: nil,
         contract_name: nil,
         contract_no: "0000-0000-0000",
+        branch_type: "contract",
+        branch_number: 0,
         contract_detail_no: "0000-0000-0000-00",
         delivery_area: nil,
         description: nil,
@@ -1030,6 +1049,8 @@ defmodule MateriaCommerce.Commerces do
         color: nil,
         contract_name: nil,
         contract_no: "0000-0000-0000",
+        branch_type: "contract",
+        branch_number: 0,
         contract_detail_no: "0000-0000-0000-00",
         delivery_area: nil,
         description: nil,
@@ -1063,6 +1084,8 @@ defmodule MateriaCommerce.Commerces do
       }
     ],
     contract_no: "0000-0000-0000",
+    branch_type: "contract",
+    branch_number: 0,
     request_number: nil,
     contracted_date: "",
     delivery_address: nil,
@@ -1081,7 +1104,7 @@ defmodule MateriaCommerce.Commerces do
       id: 2,
       lock_version: 1,
       name: "fugafuga",
-      organization: [],
+      organization: nil,
       phone_number: nil,
       role: "operator",
       status: 1
@@ -1104,7 +1127,7 @@ defmodule MateriaCommerce.Commerces do
       id: 1,
       lock_version: 2,
       name: "hogehoge",
-      organization: [],
+      organization: nil,
       phone_number: nil,
       role: "admin",
       status: 1
@@ -1119,7 +1142,7 @@ defmodule MateriaCommerce.Commerces do
 
     contract = MateriaUtils.Ecto.EctoUtil.query_current_history(@repo, MateriaCommerce.Commerces.Contract, base_datetime, [], params)
     results = contract
-              |> join(:left, [c], cd in subquery(contract_detail), contract_no: c.contract_no)
+              |> join(:left, [c], cd in subquery(contract_detail), [{:contract_no, c.contract_no}, {:branch_number, c.branch_number}])
               |> select([c, cd], %{contract: c, contract_details: cd})
               |> @repo.all()
               |> Enum.group_by(fn x -> x.contract end)
@@ -1232,7 +1255,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1272,7 +1295,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1359,7 +1382,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1399,7 +1422,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1433,7 +1456,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1473,7 +1496,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1532,7 +1555,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1614,7 +1637,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1661,7 +1684,7 @@ defmodule MateriaCommerce.Commerces do
     icon_img_url: nil,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1713,7 +1736,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -1754,7 +1777,7 @@ defmodule MateriaCommerce.Commerces do
     id: 1,
     lock_version: 2,
     name: "hogehoge",
-    organization: [],
+    organization: nil,
     phone_number: nil,
     role: "admin",
     status: 1
@@ -2193,7 +2216,7 @@ defmodule MateriaCommerce.Commerces do
                  id: 1,
                  lock_version: 2,
                  name: "hogehoge",
-                 organization: [],
+                 organization: nil,
                  phone_number: nil,
                  role: "admin",
                  status: 1
@@ -2234,7 +2257,7 @@ defmodule MateriaCommerce.Commerces do
                  id: 1,
                  lock_version: 2,
                  name: "hogehoge",
-                 organization: [],
+                 organization: nil,
                  phone_number: nil,
                  role: "admin",
                  status: 1
@@ -2272,7 +2295,14 @@ defmodule MateriaCommerce.Commerces do
 
     contract_no = params["contract_no"]
 
-    key_word_list = [{:contract_no, contract_no}]
+    branch_number =
+      if params["branch_number"] == nil do
+        0
+      else
+        params["branch_number"]
+      end
+
+    key_word_list = [{:contract_no, contract_no}, {:branch_number, branch_number}]
 
     contract_params = params
     |> Map.delete("contract_details")
@@ -2286,7 +2316,7 @@ defmodule MateriaCommerce.Commerces do
       {:ok, contract_details} = create_new_contract_detail_history(result, base_datetime, key_word_list, contract_details_params, user_id)
     end
 
-    params = %{"and" => [%{"contract_no" => contract_no}]}
+    params = %{"and" => [%{"contract_no" => contract_no}, %{"branch_number" => branch_number}]}
     [new_contract] =  get_current_contracts(base_datetime, params)
 
     {:ok, new_contract}
@@ -2339,5 +2369,23 @@ defmodule MateriaCommerce.Commerces do
   """
   def get_current_request_appendices(base_datetime, params) do
     MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, RequestAppendix, base_datetime, [], params)
+  end
+
+
+  @doc """
+  現在のbranch_noの次のbranch_noを取得する
+  Contract単位でユニーク
+  (登録されたContractからmax+1を求める仕様)
+
+  iex(1)> keywords = [{:contract_no, "0000-0000-0000"}]
+  iex(2)> MateriaCommerce.Commerces.get_next_branch_number(keywords)
+  1
+
+  """
+  def get_next_branch_number(keywords) do
+    [max_branch_number] = from(c in Contract, select: max(c.branch_number), group_by: c.contract_no)
+    |> where(^keywords)
+    |> @repo.all()
+    _next_branch_number = max_branch_number + 1
   end
 end
