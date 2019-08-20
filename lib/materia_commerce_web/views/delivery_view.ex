@@ -2,6 +2,7 @@ defmodule MateriaCommerceWeb.DeliveryView do
   use MateriaCommerceWeb, :view
   alias MateriaCommerceWeb.DeliveryView
   alias MateriaWeb.UserView
+  alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{deliveries: deliveries}) do
     render_many(deliveries, DeliveryView, "delivery.json")
@@ -71,6 +72,8 @@ defmodule MateriaCommerceWeb.DeliveryView do
       clt_notation_name_p: delivery.clt_notation_name_p,
       lock_version: delivery.lock_version,
       status: delivery.status,
+      inserted_at: CalendarUtil.convert_time_utc2local(delivery.inserted_at),
+      updated_at: CalendarUtil.convert_time_utc2local(delivery.updated_at)
     }
     delivery_map = delivery
                    |> Map.from_struct()

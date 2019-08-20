@@ -97,6 +97,15 @@ defmodule MateriaCommerce.Commerces do
   def list_contracts do
     @repo.all(Contract)
     |> @repo.preload([:buyer, :seller, :inserted])
+    |> @repo.preload(
+         delivery: [
+           snd_user: [:addresses],
+           rcv_user: [:addresses],
+           clt_user: [:addresses],
+           inserted: [],
+           updated: [],
+         ]
+       )
   end
 
   @doc """
@@ -182,6 +191,15 @@ defmodule MateriaCommerce.Commerces do
   """
   def get_contract!(id), do: @repo.get!(Contract, id)
                              |> @repo.preload([:buyer, :seller, :inserted])
+                             |> @repo.preload(
+                                  delivery: [
+                                    snd_user: [:addresses],
+                                    rcv_user: [:addresses],
+                                    clt_user: [:addresses],
+                                    inserted: [],
+                                    updated: [],
+                                  ]
+                                )
 
   @doc """
   Creates a contract.
@@ -415,6 +433,15 @@ defmodule MateriaCommerce.Commerces do
         [contract] = contracts
         contract
         |> @repo.preload([:buyer, :seller, :inserted])
+        |> @repo.preload(
+             delivery: [
+               snd_user: [:addresses],
+               rcv_user: [:addresses],
+               clt_user: [:addresses],
+               inserted: [],
+               updated: [],
+             ]
+           )
       end
   end
 
@@ -462,6 +489,15 @@ defmodule MateriaCommerce.Commerces do
       [contract] = contracts
       struct(Contract, contract)
       |> @repo.preload([:buyer, :seller, :inserted])
+      |> @repo.preload(
+           delivery: [
+             snd_user: [:addresses],
+             rcv_user: [:addresses],
+             clt_user: [:addresses],
+             inserted: [],
+             updated: [],
+           ]
+         )
     end
   end
 
@@ -571,6 +607,15 @@ defmodule MateriaCommerce.Commerces do
         {:ok, updated_contract} = update_contract(recent_contract, %{end_datetime: recent_end_datetime})
         loaded_contract = contract
         |> @repo.preload([:buyer, :seller, :inserted])
+                          |> @repo.preload(
+                               delivery: [
+                                 snd_user: [:addresses],
+                                 rcv_user: [:addresses],
+                                 clt_user: [:addresses],
+                                 inserted: [],
+                                 updated: [],
+                               ]
+                             )
         {:ok, loaded_contract}
       end
   end
@@ -615,6 +660,15 @@ defmodule MateriaCommerce.Commerces do
   def list_contract_details do
     @repo.all(ContractDetail)
     |> @repo.preload([:inserted])
+    |> @repo.preload(
+         delivery: [
+           snd_user: [:addresses],
+           rcv_user: [:addresses],
+           clt_user: [:addresses],
+           inserted: [],
+           updated: [],
+         ]
+       )
   end
 
   @doc """
@@ -690,6 +744,15 @@ defmodule MateriaCommerce.Commerces do
   """
   def get_contract_detail!(id), do: @repo.get!(ContractDetail, id)
                                     |> @repo.preload([:inserted])
+                                    |> @repo.preload(
+                                         delivery: [
+                                           snd_user: [:addresses],
+                                           rcv_user: [:addresses],
+                                           clt_user: [:addresses],
+                                           inserted: [],
+                                           updated: [],
+                                         ]
+                                       )
 
   @doc """
   Creates a contract_detail.
@@ -1165,6 +1228,15 @@ defmodule MateriaCommerce.Commerces do
                    end
                  )
               |> @repo.preload([:buyer, :seller, :inserted])
+              |> @repo.preload(
+                   delivery: [
+                     snd_user: [:addresses],
+                     rcv_user: [:addresses],
+                     clt_user: [:addresses],
+                     inserted: [],
+                     updated: [],
+                   ]
+                 )
   end
 
   @doc """

@@ -40,6 +40,19 @@ Mails.create_mail_template(%{ mail_template_type: "user_registration_completed",
 Mails.create_mail_template(%{ mail_template_type: "password_reset_request", subject: "【パスワード再登録申請】{!email}様 パスワード再登録のご案内", body: "{!email}様\n当サービスよりパスワード再登録の申請を受け付けました。\n\n下記URLのリンクをクリックし、30分以内にパスワード再登録をお願いいたします。\n\n 本サービスを末長くよろしくお願いいたします。\n\n https://{!password_reset_url}?param=!{password_reset_token} \n\n------------------------------\nカラビナテクノロジー株式会社\n〒810-0001 \n福岡市中央区天神1-2-4 農業共済ビル2F\n------------------------------" })
 Mails.create_mail_template(%{ mail_template_type: "password_reset_completed", subject: "【パスワード再登録完了】{!name}様 パスワード再登録完了のご案内", body: "{!name}様\n当サービスよりパスワードが再登録されました。\n\nユーザーID: {!email}\n  パスワード: 再登録時に入力いただいたパスワード\n\n 本サービスを末長くよろしくお願いいたします。\n\n サインイン: https://{!sign_in_url} \n\n------------------------------\nカラビナテクノロジー株式会社\n〒810-0001 \n福岡市中央区天神1-2-4 農業共済ビル2F\n------------------------------" })
 
+deliveries = "
+snd_zip_code	snd_address1	snd_address1_p	snd_address2	snd_address2_p	snd_address3	snd_address3_p	snd_phone_number	snd_fax_number	snd_notation_org_name	snd_notation_org_name_p	snd_notation_name	snd_notation_name_p	snd_date	snd_time	snd_condition1	snd_condition2	snd_condition3	snd_note1	snd_note2	snd_note3	rcv_zip_code	rcv_address1	rcv_address1_p	rcv_address2	rcv_address2_p	rcv_address3	rcv_address3_p	rcv_phone_number	rcv_fax_number	rcv_notation_org_name	rcv_notation_org_name_p	rcv_notation_name	rcv_notation_name_p	rcv_date	rcv_time	rcv_condition1	rcv_condition2	rcv_condition3	rcv_note1	rcv_note2	rcv_note3	clt_zip_code	clt_address1	clt_address1_p	clt_address2	clt_address2_p	clt_address3	clt_address3_p	clt_phone_number	clt_fax_number	clt_notation_org_name	clt_notation_org_name_p	clt_notation_name	clt_notation_name_p	lock_version	status	snd_user_id	rcv_user_id	clt_user_id	inserted_id	updated_id
+810-ZZZZ	福岡県福岡市○○区	ふくおかけんふくおかしまるまるく	〇〇x-x-x	まるまる	○○ビル	まるまるびる	000-0000-0000	111-1111-1111	〇〇会社	まるまるかいしゃ	〇〇	まるまる	2019/01/01	23:59:59	条件1	条件2	条件3	備考1	備考2	備考3	810-YYYY	福岡県福岡市△△区	ふくおかけんふくおかしさんかくさんかくく	△△x-x-x	さんかくさんかく	△△ビル	さんかくさんかくびる	222-2222-2222	333-3333-3333	△△会社	さんかくさんかくかいしゃ	△△	さんかくさんかく	2019/01/02	00:00:01	条件1	条件2	条件3	備考1	備考2	備考3	810-XXXX	福岡県福岡市××区	ふくおかけんふくおかしばつばつく	××x-x-x	ばつばつ	××ビル	ばつばつびる	444-4444-4444	555-5555-5555	××会社	ばつばつかいしゃ	××	ばつばつ	0	0	1	1	1	1	1
+810-YYYY	福岡県福岡市△△区	ふくおかけんふくおかしさんかくさんかくく	△△x-x-x	さんかくさんかく	△△ビル	さんかくさんかくびる	222-2222-2222	333-3333-3333	△△会社	さんかくさんかくかいしゃ	△△	さんかくさんかく	2019/01/02	00:00:01	条件1	条件2	条件3	備考1	備考2	備考3	810-ZZZZ	福岡県福岡市○○区	ふくおかけんふくおかしまるまるく	〇〇x-x-x	まるまる	○○ビル	まるまるびる	000-0000-0000	111-1111-1111	〇〇会社	まるまるかいしゃ	〇〇	まるまる	2019/01/01	23:59:59	条件1	条件2	条件3	備考1	備考2	備考3	810-XXXX	福岡県福岡市××区	ふくおかけんふくおかしばつばつく	××x-x-x	ばつばつ	××ビル	ばつばつびる	444-4444-4444	555-5555-5555	××会社	ばつばつかいしゃ	××	ばつばつ	0	0				1	1
+"
+TsvParser.parse_tsv_to_json(deliveries, "snd_zip_code")
+|> Enum.map(
+     fn j ->
+       MateriaCommerce.Deliveries.create_delivery(%{}, j, 1)
+     end
+   )
+
+
 alias MateriaCommerce.Products
 
 items = "
@@ -174,7 +187,19 @@ contracts = [
     end_datetime: "2018-12-01 08:59:59",
     inserted_id: 1,
     seller_id: user_hogehoge.id,
-    buyer_id: user_fugafuga.id
+    buyer_id: user_fugafuga.id,
+    total_size: 9.99,
+    total_weight: 99.99,
+    total_count: 999.99,
+    billing_amount: 9999.99,
+    other_fee: 99999.99,
+    contract_name: "contract_name",
+    description: "description",
+    note1: "note1",
+    note2: "note2",
+    note3: "note3",
+    note4: "note4",
+    delivery_id: 1,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -188,6 +213,18 @@ contracts = [
     inserted_id: 1,
     seller_id: user_fugafuga.id,
     buyer_id: user_hogehoge.id,
+    total_size: 9.88,
+    total_weight: 99.88,
+    total_count: 999.88,
+    billing_amount: 9999.88,
+    other_fee: 99999.88,
+    contract_name: "contract_name",
+    description: "description",
+    note1: "note1",
+    note2: "note2",
+    note3: "note3",
+    note4: "note4",
+    delivery_id: 1,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -201,6 +238,18 @@ contracts = [
     inserted_id: 1,
     seller_id: 9,
     buyer_id: 9,
+    total_size: 9.77,
+    total_weight: 99.77,
+    total_count: 999.77,
+    billing_amount: 9999.77,
+    other_fee: 99999.77,
+    contract_name: "contract_name",
+    description: "description",
+    note1: "note1",
+    note2: "note2",
+    note3: "note3",
+    note4: "note4",
+    delivery_id: 1,
   },
   %{
     contract_no: "1111-1111-1111",
@@ -214,6 +263,18 @@ contracts = [
     inserted_id: 1,
     seller_id: 9,
     buyer_id: 9,
+    total_size: 9.66,
+    total_weight: 99.66,
+    total_count: 999.66,
+    billing_amount: 9999.66,
+    other_fee: 99999.66,
+    contract_name: "contract_name",
+    description: "description",
+    note1: "note1",
+    note2: "note2",
+    note3: "note3",
+    note4: "note4",
+    delivery_id: 1,
   },
   %{
     contract_no: "2222-2222-2222",
@@ -225,6 +286,18 @@ contracts = [
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
     inserted_id: 1,
+    total_size: 9.55,
+    total_weight: 99.55,
+    total_count: 999.55,
+    billing_amount: 9999.55,
+    other_fee: 99999.55,
+    contract_name: "contract_name",
+    description: "description",
+    note1: "note1",
+    note2: "note2",
+    note3: "note3",
+    note4: "note4",
+    delivery_id: 1,
   }
 ]
 
@@ -242,6 +315,7 @@ contract_details = [
     start_datetime: "2018-11-01 09:00:00",
     end_datetime: "2018-12-01 08:59:59",
     inserted_id: 1,
+    delivery_id: 2,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -252,6 +326,7 @@ contract_details = [
     start_datetime: "2018-12-01 09:00:00",
     end_datetime: "2019-01-01 08:59:59",
     inserted_id: 1,
+    delivery_id: 2,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -263,6 +338,7 @@ contract_details = [
     start_datetime: "2018-12-01 09:00:00",
     end_datetime: "2019-01-01 08:59:59",
     inserted_id: 1,
+    delivery_id: 2,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -273,6 +349,7 @@ contract_details = [
     start_datetime: "2019-01-01 09:00:00",
     end_datetime: "2019-02-01 08:59:59",
     inserted_id: 1,
+    delivery_id: 2,
   },
   %{
     contract_no: "0000-0000-0000",
@@ -284,6 +361,7 @@ contract_details = [
     start_datetime: "2019-01-01 09:00:00",
     end_datetime: "2019-02-01 08:59:59",
     inserted_id: 1,
+    delivery_id: 2,
   },
   %{
     contract_no: "1111-1111-1111",
@@ -294,6 +372,7 @@ contract_details = [
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
     inserted_id: 1,
+    delivery_id: 2,
   },
   %{
     contract_no: "2222-2222-2222",
@@ -304,6 +383,7 @@ contract_details = [
     start_datetime: "2018-01-01 09:00:00",
     end_datetime: "2999-12-31 23:59:59",
     inserted_id: 1,
+    delivery_id: 2,
   },
 ]
 

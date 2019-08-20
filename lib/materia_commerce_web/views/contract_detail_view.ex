@@ -2,6 +2,7 @@ defmodule MateriaCommerceWeb.ContractDetailView do
   use MateriaCommerceWeb, :view
   alias MateriaCommerceWeb.ContractDetailView
   alias MateriaWeb.UserView
+  alias MateriaCommerceWeb.DeliveryView
   alias MateriaUtils.Calendar.CalendarUtil
 
   def render("index.json", %{contract_details: contract_details}) do
@@ -67,6 +68,13 @@ defmodule MateriaCommerceWeb.ContractDetailView do
         Map.put(result_map, :inserted, UserView.render("user.json", %{user: contract_detail.inserted}))
       true ->
         Map.put(result_map, :inserted, nil)
+    end
+
+    cond do
+      Ecto.assoc_loaded?(contract_detail.delivery) and contract_detail.delivery != nil ->
+        Map.put(result_map, :delivery, DeliveryView.render("delivery.json", %{delivery: contract_detail.delivery}))
+      true ->
+        Map.put(result_map, :delivery, nil)
     end
   end
 end
