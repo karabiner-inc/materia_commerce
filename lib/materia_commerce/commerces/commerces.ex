@@ -22,8 +22,8 @@ defmodule MateriaCommerce.Commerces do
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> list_contracts = MateriaCommerce.Commerces.list_contracts
   iex(2)> view = MateriaCommerceWeb.ContractView.render("index.json", %{contracts: list_contracts}) |> Enum.map(fn x -> Map.delete(x, :id) end)
-  iex(3)> view = view |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end)
-  iex(4)> view |> List.first
+  iex(3)> view = view |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.put(x, :total_size, to_string(x.total_size)); x = Map.put(x, :total_weight, to_string(x.total_weight)); x = Map.put(x, :total_count, to_string(x.total_count)); x = Map.put(x, :billing_amount, to_string(x.billing_amount)); x = Map.put(x, :other_fee, to_string(x.other_fee)); end) |> List.first
+  iex(4)> view |> Map.delete(:delivery)
   %{
   billing_address: nil,
   buyer: %{
@@ -91,12 +91,254 @@ defmodule MateriaCommerce.Commerces do
   start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
   status: 1,
   tax_amount: "80",
-  total_amount: "1180.01"
+  total_amount: "1180.01",
+  other_fee: "99999.99",
+  total_count: "999.99",
+  note1: "note1",
+  note3: "note3",
+  note2: "note2",
+  billing_amount: "9999.99",
+  note4: "note4",
+  description: "description",
+  total_weight: "99.99",
+  contract_name: "contract_name",
+  total_size: "9.99"
+  }
+  iex(5)> delivery = view.delivery |> Map.delete(:inserted_at) |> Map.delete(:updated_at) |> Map.delete(:id)
+  iex(6)> delivery |> Map.delete(:snd_user) |> Map.delete(:rcv_user) |> Map.delete(:clt_user) |> Map.delete(:inserted) |> Map.delete(:updated)
+  %{
+    clt_notation_org_name: "××会社",
+    clt_phone_number: "444-4444-4444",
+    snd_condition2: "条件2",
+    snd_note2: "備考2",
+    clt_fax_number: "555-5555-5555",
+    rcv_notation_org_name: "△△会社",
+    snd_note1: "備考1",
+    rcv_phone_number: "222-2222-2222",
+    rcv_address3: "△△ビル",
+    clt_address2_p: "ばつばつ",
+    clt_notation_name_p: "ばつばつ",
+    rcv_note1: "備考1",
+    snd_address1_p: "ふくおかけんふくおかしまるまるく",
+    rcv_condition1: "条件1",
+    clt_address1_p: "ふくおかけんふくおかしばつばつく",
+    snd_time: "23:59:59",
+    lock_version: 0,
+    clt_address1: "福岡県福岡市××区",
+    clt_address2: "××x-x-x",
+    clt_notation_name: "××",
+    snd_notation_name_p: "まるまる",
+    snd_notation_org_name: "〇〇会社",
+    rcv_address3_p: "さんかくさんかくびる",
+    clt_zip_code: "810-XXXX",
+    rcv_notation_org_name_p: "さんかくさんかくかいしゃ",
+    snd_address3_p: "まるまるびる",
+    snd_notation_org_name_p: "まるまるかいしゃ",
+    snd_address2_p: "まるまる",
+    rcv_address2: "△△x-x-x",
+    rcv_note2: "備考2",
+    snd_address2: "〇〇x-x-x",
+    rcv_note3: "備考3",
+    rcv_notation_name: "△△",
+    clt_notation_org_name_p: "ばつばつかいしゃ",
+    rcv_condition3: "条件3",
+    rcv_notation_name_p: "さんかくさんかく",
+    rcv_address1: "福岡県福岡市△△区",
+    snd_condition1: "条件1",
+    snd_notation_name: "〇〇",
+    rcv_time: "00:00:01",
+    rcv_zip_code: "810-YYYY",
+    clt_address3_p: "ばつばつびる",
+    snd_date: "2019/01/01",
+    snd_condition3: "条件3",
+    snd_phone_number: "000-0000-0000",
+    snd_fax_number: "111-1111-1111",
+    snd_address1: "福岡県福岡市○○区",
+    rcv_address1_p: "ふくおかけんふくおかしさんかくさんかくく",
+    clt_address3: "××ビル",
+    snd_address3: "○○ビル",
+    rcv_address2_p: "さんかくさんかく",
+    rcv_condition2: "条件2",
+    rcv_date: "2019/01/02",
+    rcv_fax_number: "333-3333-3333",
+    snd_note3: "備考3",
+    snd_zip_code: "810-ZZZZ",
+    status: 0
+  }
+  iex(6)> delivery[:inserted]
+  %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  iex(7)> delivery[:updated]
+  %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  iex(8)> delivery[:snd_user]
+  %{
+    addresses: [
+      %{
+        address1: "福岡市中央区",
+        address2: "大名 x-x-xx",
+        id: 2,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "billing",
+        user: [],
+        zip_code: "810-ZZZZ"
+      },
+      %{
+        address1: "福岡市中央区",
+        address2: "港 x-x-xx",
+        id: 1,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "living",
+        user: [],
+        zip_code: "810-ZZZZ"
+      }
+    ],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  iex(9)> delivery[:clt_user]
+  %{
+    addresses: [
+      %{
+        address1: "福岡市中央区",
+        address2: "大名 x-x-xx",
+        id: 2,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "billing",
+        user: [],
+        zip_code: "810-ZZZZ"
+      },
+      %{
+        address1: "福岡市中央区",
+        address2: "港 x-x-xx",
+        id: 1,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "living",
+        user: [],
+        zip_code: "810-ZZZZ"
+      }
+    ],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  iex(10)> delivery[:rcv_user]
+  %{
+    addresses: [
+      %{
+        address1: "福岡市中央区",
+        address2: "大名 x-x-xx",
+        id: 2,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "billing",
+        user: [],
+        zip_code: "810-ZZZZ"
+      },
+      %{
+        address1: "福岡市中央区",
+        address2: "港 x-x-xx",
+        id: 1,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "living",
+        user: [],
+        zip_code: "810-ZZZZ"
+      }
+    ],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
   }
   """
   def list_contracts do
     @repo.all(Contract)
     |> @repo.preload([:buyer, :seller, :inserted])
+    |> @repo.preload(
+         delivery: [
+           snd_user: [:addresses],
+           rcv_user: [:addresses],
+           clt_user: [:addresses],
+           inserted: [],
+           updated: [],
+         ]
+       )
   end
 
   @doc """
@@ -108,7 +350,8 @@ defmodule MateriaCommerce.Commerces do
   iex(1)> Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
   iex(1)> contract = MateriaCommerce.Commerces.get_contract!(1)
   iex(2)> view = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract})
-  iex(3)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
+  iex(3)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.put(x, :total_size, to_string(x.total_size)); x = Map.put(x, :total_weight, to_string(x.total_weight)); x = Map.put(x, :total_count, to_string(x.total_count)); x = Map.put(x, :billing_amount, to_string(x.billing_amount)); x = Map.put(x, :other_fee, to_string(x.other_fee)); end) |> List.first
+  iex(4)> view |> Map.delete(:delivery)
   %{
   billing_address: nil,
   buyer: %{
@@ -177,11 +420,253 @@ defmodule MateriaCommerce.Commerces do
   start_datetime: "2018-11-01 18:00:00.000000+09:00 JST Asia/Tokyo",
   status: 1,
   tax_amount: "80",
-  total_amount: "1180.01"
+  total_amount: "1180.01",
+  other_fee: "99999.99",
+  total_count: "999.99",
+  note1: "note1",
+  note3: "note3",
+  note2: "note2",
+  billing_amount: "9999.99",
+  note4: "note4",
+  description: "description",
+  total_weight: "99.99",
+  contract_name: "contract_name",
+  total_size: "9.99"
+  }
+  iex(5)> delivery = view.delivery |> Map.delete(:inserted_at) |> Map.delete(:updated_at) |> Map.delete(:id)
+  iex(6)> delivery |> Map.delete(:snd_user) |> Map.delete(:rcv_user) |> Map.delete(:clt_user) |> Map.delete(:inserted) |> Map.delete(:updated)
+  %{
+    clt_notation_org_name: "××会社",
+    clt_phone_number: "444-4444-4444",
+    snd_condition2: "条件2",
+    snd_note2: "備考2",
+    clt_fax_number: "555-5555-5555",
+    rcv_notation_org_name: "△△会社",
+    snd_note1: "備考1",
+    rcv_phone_number: "222-2222-2222",
+    rcv_address3: "△△ビル",
+    clt_address2_p: "ばつばつ",
+    clt_notation_name_p: "ばつばつ",
+    rcv_note1: "備考1",
+    snd_address1_p: "ふくおかけんふくおかしまるまるく",
+    rcv_condition1: "条件1",
+    clt_address1_p: "ふくおかけんふくおかしばつばつく",
+    snd_time: "23:59:59",
+    lock_version: 0,
+    clt_address1: "福岡県福岡市××区",
+    clt_address2: "××x-x-x",
+    clt_notation_name: "××",
+    snd_notation_name_p: "まるまる",
+    snd_notation_org_name: "〇〇会社",
+    rcv_address3_p: "さんかくさんかくびる",
+    clt_zip_code: "810-XXXX",
+    rcv_notation_org_name_p: "さんかくさんかくかいしゃ",
+    snd_address3_p: "まるまるびる",
+    snd_notation_org_name_p: "まるまるかいしゃ",
+    snd_address2_p: "まるまる",
+    rcv_address2: "△△x-x-x",
+    rcv_note2: "備考2",
+    snd_address2: "〇〇x-x-x",
+    rcv_note3: "備考3",
+    rcv_notation_name: "△△",
+    clt_notation_org_name_p: "ばつばつかいしゃ",
+    rcv_condition3: "条件3",
+    rcv_notation_name_p: "さんかくさんかく",
+    rcv_address1: "福岡県福岡市△△区",
+    snd_condition1: "条件1",
+    snd_notation_name: "〇〇",
+    rcv_time: "00:00:01",
+    rcv_zip_code: "810-YYYY",
+    clt_address3_p: "ばつばつびる",
+    snd_date: "2019/01/01",
+    snd_condition3: "条件3",
+    snd_phone_number: "000-0000-0000",
+    snd_fax_number: "111-1111-1111",
+    snd_address1: "福岡県福岡市○○区",
+    rcv_address1_p: "ふくおかけんふくおかしさんかくさんかくく",
+    clt_address3: "××ビル",
+    snd_address3: "○○ビル",
+    rcv_address2_p: "さんかくさんかく",
+    rcv_condition2: "条件2",
+    rcv_date: "2019/01/02",
+    rcv_fax_number: "333-3333-3333",
+    snd_note3: "備考3",
+    snd_zip_code: "810-ZZZZ",
+    status: 0
+  }
+  iex(6)> delivery[:inserted]
+  %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  iex(7)> delivery[:updated]
+  %{
+    addresses: [],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  iex(8)> delivery[:snd_user]
+  %{
+    addresses: [
+      %{
+        address1: "福岡市中央区",
+        address2: "大名 x-x-xx",
+        id: 2,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "billing",
+        user: [],
+        zip_code: "810-ZZZZ"
+      },
+      %{
+        address1: "福岡市中央区",
+        address2: "港 x-x-xx",
+        id: 1,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "living",
+        user: [],
+        zip_code: "810-ZZZZ"
+      }
+    ],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  iex(9)> delivery[:clt_user]
+  %{
+    addresses: [
+      %{
+        address1: "福岡市中央区",
+        address2: "大名 x-x-xx",
+        id: 2,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "billing",
+        user: [],
+        zip_code: "810-ZZZZ"
+      },
+      %{
+        address1: "福岡市中央区",
+        address2: "港 x-x-xx",
+        id: 1,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "living",
+        user: [],
+        zip_code: "810-ZZZZ"
+      }
+    ],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
+  }
+  iex(10)> delivery[:rcv_user]
+  %{
+    addresses: [
+      %{
+        address1: "福岡市中央区",
+        address2: "大名 x-x-xx",
+        id: 2,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "billing",
+        user: [],
+        zip_code: "810-ZZZZ"
+      },
+      %{
+        address1: "福岡市中央区",
+        address2: "港 x-x-xx",
+        id: 1,
+        latitude: nil,
+        location: "福岡県",
+        lock_version: 0,
+        longitude: nil,
+        organization: nil,
+        subject: "living",
+        user: [],
+        zip_code: "810-ZZZZ"
+      }
+    ],
+    back_ground_img_url: nil,
+    descriptions: nil,
+    email: "hogehoge@example.com",
+    external_user_id: nil,
+    icon_img_url: nil,
+    id: 1,
+    lock_version: 2,
+    name: "hogehoge",
+    organization: nil,
+    phone_number: nil,
+    role: "admin",
+    status: 1
   }
   """
   def get_contract!(id), do: @repo.get!(Contract, id)
                              |> @repo.preload([:buyer, :seller, :inserted])
+                             |> @repo.preload(
+                                  delivery: [
+                                    snd_user: [:addresses],
+                                    rcv_user: [:addresses],
+                                    clt_user: [:addresses],
+                                    inserted: [],
+                                    updated: [],
+                                  ]
+                                )
 
   @doc """
   Creates a contract.
@@ -191,7 +676,7 @@ defmodule MateriaCommerce.Commerces do
   iex(1)> attrs = %{"contract_no" => "TEST","settlement" => "TEST","shipping_fee" => 9999,"tax_amount" => 99,"total_amount" => 9999,"status" => 0,"start_datetime" => "2018-01-01 09:00:00","end_datetime" => "2999-12-31 23:59:59", "inserted_id" => 1}
   iex(2)> {:ok, contract} = MateriaCommerce.Commerces.create_contract(attrs)
   iex(3)> view = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
-  iex(4)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
+  iex(4)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.put(x, :total_size, to_string(x.total_size)); x = Map.put(x, :total_weight, to_string(x.total_weight)); x = Map.put(x, :total_count, to_string(x.total_count)); x = Map.put(x, :billing_amount, to_string(x.billing_amount)); x = Map.put(x, :other_fee, to_string(x.other_fee)); end) |> List.first
   %{
   billing_address: nil,
   buyer: nil,
@@ -218,6 +703,18 @@ defmodule MateriaCommerce.Commerces do
   tax_amount: "99",
   total_amount: "9999",
   inserted: nil,
+  delivery: nil,
+  other_fee: "",
+  total_count: "",
+  note1: nil,
+  note3: nil,
+  note2: nil,
+  billing_amount: "",
+  note4: nil,
+  description: nil,
+  total_weight: "",
+  contract_name: nil,
+  total_size: ""
   }
   """
   def create_contract(attrs \\ %{}) do
@@ -235,7 +732,8 @@ defmodule MateriaCommerce.Commerces do
   iex(2)> contract = MateriaCommerce.Commerces.get_contract!(1)
   iex(3)> {:ok, contract} = MateriaCommerce.Commerces.update_contract(contract, attrs)
   iex(4)> view = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
-  iex(5)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
+  iex(5)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.put(x, :total_size, to_string(x.total_size)); x = Map.put(x, :total_weight, to_string(x.total_weight)); x = Map.put(x, :total_count, to_string(x.total_count)); x = Map.put(x, :billing_amount, to_string(x.billing_amount)); x = Map.put(x, :other_fee, to_string(x.other_fee)); end) |> List.first
+  iex(6)> view |> Map.delete(:delivery)
   %{
   billing_address: nil,
   buyer: %{
@@ -303,7 +801,18 @@ defmodule MateriaCommerce.Commerces do
     phone_number: nil,
     role: "admin",
     status: 1
-  }
+  },
+  other_fee: "99999.99",
+  total_count: "999.99",
+  note1: "note1",
+  note3: "note3",
+  note2: "note2",
+  billing_amount: "9999.99",
+  note4: "note4",
+  description: "description",
+  total_weight: "99.99",
+  contract_name: "contract_name",
+  total_size: "9.99"
   }
   """
   def update_contract(%Contract{} = contract, attrs) do
@@ -334,7 +843,8 @@ defmodule MateriaCommerce.Commerces do
   iex(2)> key_word_list = [{:contract_no, "0000-0000-0000"}]
   iex(3)> contract = MateriaCommerce.Commerces.get_current_contract_history(base_datetime, key_word_list)
   iex(4)> view = MateriaCommerceWeb.ContractView.render("show.json", %{contract: contract}) |> Map.delete(:id)
-  iex(5)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at) end) |> List.first
+  iex(5)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :tax_amount, to_string(x.tax_amount)); x = Map.put(x, :shipping_fee, to_string(x.shipping_fee)); x = Map.put(x, :total_amount, to_string(x.total_amount)); x = Map.put(x, :delivery_start_datetime, to_string(x.delivery_start_datetime)); x = Map.put(x, :delivery_end_datetime, to_string(x.delivery_end_datetime)); x = Map.put(x, :expiration_date, to_string(x.expiration_date)); x = Map.put(x, :contracted_date, to_string(x.contracted_date)); x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.put(x, :total_size, to_string(x.total_size)); x = Map.put(x, :total_weight, to_string(x.total_weight)); x = Map.put(x, :total_count, to_string(x.total_count)); x = Map.put(x, :billing_amount, to_string(x.billing_amount)); x = Map.put(x, :other_fee, to_string(x.other_fee)); end) |> List.first
+  iex(6)> view |> Map.delete(:delivery)
   %{
   billing_address: nil,
   buyer: %{
@@ -388,6 +898,17 @@ defmodule MateriaCommerce.Commerces do
   status: 2,
   tax_amount: "80",
   total_amount: "1190.01",
+  other_fee: "99999.88",
+  total_count: "999.88",
+  note1: "note1",
+  note3: "note3",
+  note2: "note2",
+  billing_amount: "9999.88",
+  note4: "note4",
+  description: "description",
+  total_weight: "99.88",
+  contract_name: "contract_name",
+  total_size: "9.88",
   inserted: %{
                addresses: [],
                back_ground_img_url: nil,
@@ -415,6 +936,15 @@ defmodule MateriaCommerce.Commerces do
         [contract] = contracts
         contract
         |> @repo.preload([:buyer, :seller, :inserted])
+        |> @repo.preload(
+             delivery: [
+               snd_user: [:addresses],
+               rcv_user: [:addresses],
+               clt_user: [:addresses],
+               inserted: [],
+               updated: [],
+             ]
+           )
       end
   end
 
@@ -462,6 +992,15 @@ defmodule MateriaCommerce.Commerces do
       [contract] = contracts
       struct(Contract, contract)
       |> @repo.preload([:buyer, :seller, :inserted])
+      |> @repo.preload(
+           delivery: [
+             snd_user: [:addresses],
+             rcv_user: [:addresses],
+             clt_user: [:addresses],
+             inserted: [],
+             updated: [],
+           ]
+         )
     end
   end
 
@@ -571,6 +1110,15 @@ defmodule MateriaCommerce.Commerces do
         {:ok, updated_contract} = update_contract(recent_contract, %{end_datetime: recent_end_datetime})
         loaded_contract = contract
         |> @repo.preload([:buyer, :seller, :inserted])
+                          |> @repo.preload(
+                               delivery: [
+                                 snd_user: [:addresses],
+                                 rcv_user: [:addresses],
+                                 clt_user: [:addresses],
+                                 inserted: [],
+                                 updated: [],
+                               ]
+                             )
         {:ok, loaded_contract}
       end
   end
@@ -615,6 +1163,15 @@ defmodule MateriaCommerce.Commerces do
   def list_contract_details do
     @repo.all(ContractDetail)
     |> @repo.preload([:inserted])
+    |> @repo.preload(
+         delivery: [
+           snd_user: [:addresses],
+           rcv_user: [:addresses],
+           clt_user: [:addresses],
+           inserted: [],
+           updated: [],
+         ]
+       )
   end
 
   @doc """
@@ -627,6 +1184,7 @@ defmodule MateriaCommerce.Commerces do
   iex(1)> contract_detail = MateriaCommerce.Commerces.get_contract_detail!(1)
   iex(2)> view = MateriaCommerceWeb.ContractDetailView.render("show.json", %{contract_detail: contract_detail})
   iex(3)> view = [view] |> Enum.map(fn x -> x =  Map.put(x, :price, to_string(x.price)); x = Map.put(x, :purchase_amount, to_string(x.purchase_amount)); x = Map.put(x, :merchandise_cost, to_string(x.merchandise_cost));  x = Map.put(x, :start_datetime, to_string(x.start_datetime)); x = Map.put(x, :end_datetime, to_string(x.end_datetime)); x = Map.delete(x, :inserted_at); x = Map.delete(x, :updated_at); x = Map.delete(x, :id) end) |> List.first
+  iex(4)> view |> Map.delete(:delivery)
   %{
   size2: nil,
   tax_category: nil,
@@ -690,6 +1248,15 @@ defmodule MateriaCommerce.Commerces do
   """
   def get_contract_detail!(id), do: @repo.get!(ContractDetail, id)
                                     |> @repo.preload([:inserted])
+                                    |> @repo.preload(
+                                         delivery: [
+                                           snd_user: [:addresses],
+                                           rcv_user: [:addresses],
+                                           clt_user: [:addresses],
+                                           inserted: [],
+                                           updated: [],
+                                         ]
+                                       )
 
   @doc """
   Creates a contract_detail.
@@ -741,6 +1308,7 @@ defmodule MateriaCommerce.Commerces do
   datetime3: nil,
   datetime4: nil,
   inserted: nil,
+  delivery: nil,
   }
   """
   def create_contract_detail(attrs \\ %{}) do
@@ -977,8 +1545,8 @@ defmodule MateriaCommerce.Commerces do
   iex(2)> key_word_list = %{"and" => [%{"contract_no" => "0000-0000-0000"}]}
   iex(3)> current_commerces = MateriaCommerce.Commerces.get_current_contracts(base_datetime, key_word_list)
   iex(4)> view = MateriaCommerceWeb.ContractView.render("index.json", %{contracts: current_commerces})
-  iex(5)> view |> Enum.map(fn x ->   x = Map.put(x, :contracted_date , to_string(x.contracted_date));  x = Map.put(x, :delivery_end_datetime , to_string(x.delivery_end_datetime));  x = Map.put(x, :delivery_start_datetime , to_string(x.delivery_start_datetime));  x = Map.put(x, :start_datetime , to_string(x.start_datetime));  x = Map.put(x, :end_datetime , to_string(x.end_datetime));  x = Map.put(x, :shipping_fee , to_string(x.shipping_fee));  x = Map.put(x, :tax_amount , to_string(x.tax_amount));  x = Map.put(x, :total_amount , to_string(x.total_amount));  x = Map.delete(x, :id);  x = Map.delete(x, :inserted_at);  x = Map.delete(x, :updated_at);  x = Map.put(x, :contract_details , x.contract_details |> Enum.map(    fn y ->       y = Map.put(y, :price , to_string(y.price));      y = Map.put(y, :end_datetime , to_string(y.end_datetime));      y = Map.put(y, :start_datetime , to_string(y.start_datetime));      y = Map.put(y, :merchandise_cost , to_string(y.merchandise_cost));      y = Map.put(y, :amount , to_string(y.amount));      y = Map.put(y, :purchase_amount , to_string(y.purchase_amount));      y = Map.delete(y, :id);      y = Map.delete(y, :updated_at);      y = Map.delete(y, :inserted_at);    end));end)
-  [
+  iex(5)> view = view |> Enum.map(fn x ->   x = Map.put(x, :contracted_date , to_string(x.contracted_date));  x = Map.put(x, :delivery_end_datetime , to_string(x.delivery_end_datetime));  x = Map.put(x, :delivery_start_datetime , to_string(x.delivery_start_datetime));  x = Map.put(x, :start_datetime , to_string(x.start_datetime));  x = Map.put(x, :end_datetime , to_string(x.end_datetime));  x = Map.put(x, :shipping_fee , to_string(x.shipping_fee));  x = Map.put(x, :tax_amount , to_string(x.tax_amount));  x = Map.put(x, :total_amount , to_string(x.total_amount));  x = Map.delete(x, :id);  x = Map.delete(x, :inserted_at);  x = Map.delete(x, :updated_at);  x = Map.put(x, :contract_details , x.contract_details |> Enum.map(    fn y ->       y = Map.put(y, :price , to_string(y.price));      y = Map.put(y, :end_datetime , to_string(y.end_datetime));      y = Map.put(y, :start_datetime , to_string(y.start_datetime));      y = Map.put(y, :merchandise_cost , to_string(y.merchandise_cost));      y = Map.put(y, :amount , to_string(y.amount));      y = Map.put(y, :purchase_amount , to_string(y.purchase_amount));      y = Map.delete(y, :id);      y = Map.delete(y, :updated_at);      y = Map.delete(y, :inserted_at);    end)); x = Map.put(x, :total_size, to_string(x.total_size)); x = Map.put(x, :total_weight, to_string(x.total_weight)); x = Map.put(x, :total_count, to_string(x.total_count)); x = Map.put(x, :billing_amount, to_string(x.billing_amount)); x = Map.put(x, :other_fee, to_string(x.other_fee)); end) |> List.first
+  iex(6)> view |> Map.delete(:delivery)
   %{
     billing_address: nil,
     buyer: %{
@@ -997,6 +1565,17 @@ defmodule MateriaCommerce.Commerces do
       status: 1
     },
     buyer_id: 1,
+    other_fee: "99999.88",
+    total_count: "999.88",
+    note1: "note1",
+    note3: "note3",
+    note2: "note2",
+    billing_amount: "9999.88",
+    note4: "note4",
+    description: "description",
+    total_weight: "99.88",
+    contract_name: "contract_name",
+    total_size: "9.88",
     contract_details: [
       %{
         amount: "3",
@@ -1039,6 +1618,7 @@ defmodule MateriaCommerce.Commerces do
         datetime3: nil,
         datetime4: nil,
         inserted: nil,
+        delivery: nil,
       },
       %{
         amount: "2",
@@ -1081,6 +1661,7 @@ defmodule MateriaCommerce.Commerces do
         datetime3: nil,
         datetime4: nil,
         inserted: nil,
+        delivery: nil,
       }
     ],
     contract_no: "0000-0000-0000",
@@ -1133,7 +1714,6 @@ defmodule MateriaCommerce.Commerces do
       status: 1
     },
   }
-  ]
   """
   def get_current_contracts(base_datetime, params) do
     Logger.debug("*-----  #{__MODULE__}.get_current_commerces -----*")
@@ -1165,6 +1745,15 @@ defmodule MateriaCommerce.Commerces do
                    end
                  )
               |> @repo.preload([:buyer, :seller, :inserted])
+              |> @repo.preload(
+                   delivery: [
+                     snd_user: [:addresses],
+                     rcv_user: [:addresses],
+                     clt_user: [:addresses],
+                     inserted: [],
+                     updated: [],
+                   ]
+                 )
   end
 
   @doc """

@@ -57,6 +57,7 @@ defmodule MateriaCommerceWeb.Router do
     resources "/contract_details", ContractDetailController, except: [:new, :edit]
     resources "/requests", RequestController, except: [:new, :edit]
     resources "/request_appendices", RequestAppendixController, except: [:new, :edit]
+    resources "/deliveries", DeliveryController, except: [:new, :edit]
 
     post "/search-items", ItemController, :search_current_items
     post "/search-taxes", TaxController, :search_current_taxes
