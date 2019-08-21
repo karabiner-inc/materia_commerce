@@ -97,7 +97,18 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                  "status" => 1
                },
                "buyer" => %{"addresses" => [], "back_ground_img_url" => nil, "descriptions" => nil, "email" => "hogehoge@example.com", "external_user_id" => nil, "icon_img_url" => nil, "id" => 1, "lock_version" => 2, "name" => "hogehoge", "organization" => nil, "phone_number" => nil, "role" => "admin", "status" => 1},
-               "seller" => nil
+               "seller" => nil,
+               "other_fee" => "99999.99",
+               "total_count" => "999.99",
+               "note1" => "note1",
+               "note3" => "note3",
+               "note2" => "note2",
+               "billing_amount" => "9999.99",
+               "note4" => "note4",
+               "description" => "description",
+               "total_weight" => "99.99",
+               "contract_name" => "contract_name",
+               "total_size" => "9.99"
              }
 
         result_conn = post conn, contract_path(conn, :search_my_current_contracts), %{}
@@ -205,7 +216,18 @@ defmodule MateriaCommerceWeb.ContractControllerTest do
                  "status" => 1
                },
                "buyer" => nil,
-               "seller" => nil
+               "seller" => nil,
+               "other_fee" => "99999.88",
+               "total_count" => "999.88",
+               "note1" => "update note1",
+               "note3" => "update note3",
+               "note2" => "update note2",
+               "billing_amount" => "9999.88",
+               "note4" => "update note4",
+               "description" => "update description",
+               "total_weight" => "99.88",
+               "contract_name" => "update contract_name",
+               "total_size" => "9.88"
              }
     end
 

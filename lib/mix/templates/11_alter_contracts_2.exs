@@ -16,5 +16,6 @@ defmodule MateriaCommerce.Repo.Migrations.AlterContracts1 do
       add :note4, :text
       add :delivery_id, references(:deliveries, on_delete: :nothing)
     end
+    create index(:contracts, [:delivery_id, :start_datetime, :end_datetime])
   end
 end
