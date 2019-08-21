@@ -87,8 +87,9 @@ defmodule MateriaCommerce.Deliveries.Delivery do
 
   def status() do
     %{
-      active: 1, #有効
-      expired: 9, #無効
+      un_shipping: 0, #未発送
+      shipping: 1, #発送済
+      cancel: 9, #キャンセル
     }
   end
 end

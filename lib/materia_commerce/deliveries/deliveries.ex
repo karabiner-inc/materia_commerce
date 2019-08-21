@@ -710,7 +710,7 @@ defmodule MateriaCommerce.Deliveries do
   def delete_delivery(_results, %Delivery{} = delivery, user_id) do
     attrs = %{}
             |> Map.put("updated_id", user_id)
-            |> Map.put("status", Delivery.status().expired)
+            |> Map.put("status", Delivery.status().cancel)
     delivery
     |> Delivery.update_changeset(attrs)
     |> @repo.update()
