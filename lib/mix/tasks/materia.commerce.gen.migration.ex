@@ -14,6 +14,6 @@ defmodule Mix.Tasks.MateriaCommerce.Gen.Migration do
   def run(args) do
     args
     |> MateriaMigration.setting_migration_module_path(@migration_module_path)
-    |> MateriaMigration.create_migration_files(@migrations_file_path, "materia")
+    |> MateriaMigration.create_migration_files(@migrations_file_path, "materia_commerce")
   end
 end
