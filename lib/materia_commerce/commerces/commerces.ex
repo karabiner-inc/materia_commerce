@@ -1170,7 +1170,6 @@ defmodule MateriaCommerce.Commerces do
       rejected_or_params = or_param
       |> Enum.reject(fn(param) -> param["buyer_id"] != nil end)
       |> Enum.reject(fn(param) -> param["seller_id"] != nil end)
-      IO.inspect(rejected_or_params)
       rejected_or_params
     else
       []
