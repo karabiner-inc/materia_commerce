@@ -13118,193 +13118,137 @@ defmodule MateriaCommerce.CommercesTest do
       assert Enum.count(current_product) == 0
     end
 
-    test "build_query_by_params/2 and" do
+    test "select_by_param/3 and" do
       alias MateriaCommerce.Products
       params = %{"and" => [%{"name" => "炊飯器Z1000"}, %{"item_code" => "ICZ1001"}]}
-      item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-       products = item
-       |> select([i], %{item: i})
-       |> @repo.all()
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
       assert Enum.count(products) == 1
      end
-     test "build_query_by_params/2 not" do
+     test "select_by_param/3 not" do
       alias MateriaCommerce.Products
       {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
       params = %{"not" => [%{"item_code" => "ICZ1001"}, %{"start_datetime" => check_datetime}]}
-      item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-       products = item
-       |> select([i], %{item: i})
-       |> @repo.all()
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
       assert Enum.count(products) == 2
      end
-     test "build_query_by_params/2 or" do
+     test "select_by_param/3 or" do
       alias MateriaCommerce.Products
       {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
       params = %{"or" => [%{"item_code" => "ICZ1001"}, %{"start_datetime" => check_datetime}]}
-      item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-       products = item
-       |> select([i], %{item: i})
-       |> @repo.all()
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
       assert Enum.count(products) == 2
      end
-    #  test "build_query_by_params/2 greater" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"greater" => [%{"status" => 0}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 3
-    #  end
-    #  test "build_query_by_params/2 greater_equal" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"greater_equal" => [%{"status" => 0}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 4
-    #  end
-    #  test "build_query_by_params/2 less" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"less" => [%{"status" => 1}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 1
-    #  end
-    #  test "build_query_by_params/2 less_equal" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"greater_equal" => [%{"status" => 0}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 4
-    #  end
-    #  test "build_query_by_params/2 order_by:asc" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"order_by" => [%{"status" => "asc"}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 4
-    #   order_check =
-    #     products
-    #     |> Enum.flat_map(fn product ->
-    #       t =
-    #         %{}
-    #         |> Map.put("status", product.item.status)
+     test "select_by_param/3 greater" do
+      alias MateriaCommerce.Products
+      params = %{"greater" => [%{"status" => 0}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 3
+     end
+     test "select_by_param/3 greater_equal" do
+      alias MateriaCommerce.Products
+      params = %{"greater_equal" => [%{"status" => 0}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 4
+     end
+     test "select_by_param/3 less" do
+      alias MateriaCommerce.Products
+      params = %{"less" => [%{"status" => 1}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 1
+     end
+     test "select_by_param/3 less_equal" do
+      alias MateriaCommerce.Products
+      params = %{"greater_equal" => [%{"status" => 0}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 4
+     end
+     test "select_by_param/3 order_by:asc" do
+      alias MateriaCommerce.Products
+      params = %{"order_by" => [%{"status" => "asc"}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 4
+      order_check =
+        products
+        |> Enum.flat_map(fn product ->
+          t =
+            %{}
+            |> Map.put("status", product.status)
 
-    #       [t]
-    #     end)
+          [t]
+        end)
 
-    #   expect_value = [
-    #     %{"status" => 0},
-    #     %{"status" => 1},
-    #     %{"status" => 1},
-    #     %{"status" => 1},
-    #   ]
+      expect_value = [
+        %{"status" => 0},
+        %{"status" => 1},
+        %{"status" => 1},
+        %{"status" => 1},
+      ]
 
-    #   assert expect_value == order_check
-    #  end
-    #  test "build_query_by_params/2 order_by:desc" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"order_by" => [%{"status" => "desc"}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 4
-    #   order_check =
-    #     products
-    #     |> Enum.flat_map(fn product ->
-    #       t =
-    #         %{}
-    #         |> Map.put("status", product.item.status)
+      assert expect_value == order_check
+     end
+     test "select_by_param/3 order_by:desc" do
+      alias MateriaCommerce.Products
+      params = %{"order_by" => [%{"status" => "desc"}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 4
+      order_check =
+        products
+        |> Enum.flat_map(fn product ->
+          t =
+            %{}
+            |> Map.put("status", product.status)
 
-    #       [t]
-    #     end)
+          [t]
+        end)
 
-    #   expect_value = [
-    #     %{"status" => 1},
-    #     %{"status" => 1},
-    #     %{"status" => 1},
-    #     %{"status" => 0},
-    #   ]
+      expect_value = [
+        %{"status" => 1},
+        %{"status" => 1},
+        %{"status" => 1},
+        %{"status" => 0},
+      ]
 
-    #   assert expect_value == order_check
-    #  end
-    #  test "build_query_by_params/2 forward_like" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"forward_like" => [%{"description" => "超"}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 2
-    #  end
-    #  test "build_query_by_params/2 backward_like" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"backward_like" => [%{"item_code" => "01"}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 1
-    #  end
-    #  test "build_query_by_params/2 like" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, start_datetime} =
-    #     MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-17 09:00:00Z")
+      assert expect_value == order_check
+     end
+     test "select_by_param/3 forward_like" do
+      alias MateriaCommerce.Products
+      params = %{"forward_like" => [%{"description" => "超"}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 2
+     end
+     test "select_by_param/3 backward_like" do
+      alias MateriaCommerce.Products
+      params = %{"backward_like" => [%{"item_code" => "01"}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 1
+     end
+     test "select_by_param/3 like" do
+      alias MateriaCommerce.Products
 
-    #   attr = %{
-    #     "name" => "炊飯器Z1000",
-    #     "item_code" => "ICZ1111",
-    #     "status" => 2,
-    #     "description" => "超低級炊飯器",
-    #     "inserted_id" => 1
-    #   }
-
-    #   {:ok, create_price} =
-    #     Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1111"}], attr, 1)
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"like" => [%{"description" => "低"}]}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 1
-    #  end
-    #  test "build_query_by_params/2 paging1p" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"paging" => %{"page" => 1, "limit" => 3}}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 3
-    #  end
-    #  test "build_query_by_params/2 paging2p" do
-    #   alias MateriaCommerce.Products
-    #   {:ok, check_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
-    #   params = %{"paging" => %{"page" => 2, "limit" => 3}}
-    #   item = MateriaUtils.Ecto.EctoUtil.build_query_by_params(MateriaCommerce.Products.Item, params)
-    #    products = item
-    #    |> select([i], %{item: i})
-    #    |> @repo.all()
-    #   assert Enum.count(products) == 1
-    #  end
+      attr = %{
+        "name" => "炊飯器Z1000",
+        "item_code" => "ICZ1111",
+        "status" => 2,
+        "description" => "超低級炊飯器",
+        "inserted_id" => 1
+      }
+      {:ok, start_datetime} = MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-11-01 09:00:00Z")
+      {:ok, create_price} = Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1111"}], attr, 1)
+      params = %{"like" => [%{"description" => "低"}]}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 1
+     end
+     test "select_by_param/3 paging1p" do
+      alias MateriaCommerce.Products
+      params = %{"paging" => %{"page" => 1, "limit" => 3}}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 3
+     end
+     test "select_by_param/3 paging2p" do
+      alias MateriaCommerce.Products
+      params = %{"paging" => %{"page" => 2, "limit" => 3}}
+      products = MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
+      assert Enum.count(products) == 1
+     end
   end
 end
