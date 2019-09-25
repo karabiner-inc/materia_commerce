@@ -1,6 +1,7 @@
 defmodule Mix.Tasks.MateriaCommerce.Gen.Migration do
   @shortdoc "Generates MateriaCommerce's migration files."
 
+  use Mix.Task
   alias Mix.Tasks.Materia.Gen.Migration
 
   @migrations_file_path "priv/repo/migrations"
