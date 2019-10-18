@@ -3394,7 +3394,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, create_price} =
         Products.create_new_item_history(%{}, base_datetime, [{:item_code, "ICZ3333"}], attr, 1)
 
-      params = %{"forward_like" => [%{"description" => "超"}]}
+      params = %{"like" => [%{"description" => "超%"}]}
       current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
       assert Enum.count(current_product) == 3
     end
@@ -3438,7 +3438,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, create_price} =
         Products.create_new_item_history(%{}, base_datetime, [{:item_code, "ICZ3333"}], attr, 1)
 
-      params = %{"forward_like" => [%{"status" => 1}]}
+      params = %{"like" => [%{"status" => "1%"}]}
 
       assert_raise(Postgrex.Error, fn ->
         MateriaCommerce.Products.get_current_products(base_datetime, params)
@@ -3484,7 +3484,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"forward_like" => [%{"status" => "2018"}]}
+      params = %{"like" => [%{"status" => "2018%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -3533,7 +3533,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, create_price} =
         Products.create_new_item_history(%{}, base_datetime, [{:item_code, "ICZ3333"}], attr, 1)
 
-      params = %{"backward_like" => [%{"description" => "炊飯器X"}]}
+      params = %{"like" => [%{"description" => "%炊飯器X"}]}
       current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
       assert Enum.count(current_product) == 2
     end
@@ -3577,7 +3577,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, create_price} =
         Products.create_new_item_history(%{}, base_datetime, [{:item_code, "ICZ3333"}], attr, 1)
 
-      params = %{"backward_like" => [%{"status" => 1}]}
+      params = %{"like" => [%{"status" => "%1"}]}
 
       assert_raise(Postgrex.Error, fn ->
         MateriaCommerce.Products.get_current_products(base_datetime, params)
@@ -3623,7 +3623,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"backward_like" => [%{"start_datetime" => "09:00:00"}]}
+      params = %{"like" => [%{"start_datetime" => "%09:00:00"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -3672,7 +3672,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, create_price} =
         Products.create_new_item_history(%{}, base_datetime, [{:item_code, "ICZ3333"}], attr, 1)
 
-      params = %{"like" => [%{"description" => "高級"}]}
+      params = %{"like" => [%{"description" => "%高級%"}]}
       current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
       assert Enum.count(current_product) == 3
     end
@@ -3716,7 +3716,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, create_price} =
         Products.create_new_item_history(%{}, base_datetime, [{:item_code, "ICZ3333"}], attr, 1)
 
-      params = %{"like" => [%{"status" => 1}]}
+      params = %{"like" => [%{"status" => "%1%"}]}
 
       assert_raise(Postgrex.Error, fn ->
         MateriaCommerce.Products.get_current_products(base_datetime, params)
@@ -3762,7 +3762,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"like" => [%{"start_datetime" => "11-01"}]}
+      params = %{"like" => [%{"start_datetime" => "%11-01%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -5335,7 +5335,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 2}
         ],
-        "forward_like" => [%{"description" => "超"}]
+        "like" => [%{"description" => "超%"}]
       }
 
       {:ok, base_datetime} =
@@ -5413,7 +5413,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 2}
         ],
-        "backward_like" => [%{"description" => "炊飯器"}]
+        "like" => [%{"description" => "%炊飯器"}]
       }
 
       {:ok, base_datetime} =
@@ -5491,7 +5491,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 2}
         ],
-        "like" => [%{"description" => "高級"}]
+        "like" => [%{"description" => "%高級%"}]
       }
 
       {:ok, base_datetime} =
@@ -6897,7 +6897,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 2}
         ],
-        "forward_like" => [%{"description" => "超"}]
+        "like" => [%{"description" => "超%"}]
       }
 
       {:ok, base_datetime} =
@@ -6975,7 +6975,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 2}
         ],
-        "backward_like" => [%{"description" => "炊飯器Z"}]
+        "like" => [%{"description" => "%炊飯器Z"}]
       }
 
       {:ok, base_datetime} =
@@ -7053,7 +7053,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 2}
         ],
-        "like" => [%{"description" => "低級"}]
+        "like" => [%{"description" => "%低級%"}]
       }
 
       {:ok, base_datetime} =
@@ -8385,7 +8385,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 3}
         ],
-        "forward_like" => [%{"description" => "超"}]
+        "like" => [%{"description" => "超%"}]
       }
 
       {:ok, base_datetime} =
@@ -8463,7 +8463,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 3}
         ],
-        "backward_like" => [%{"description" => "炊飯器Z"}]
+        "like" => [%{"description" => "%炊飯器Z"}]
       }
 
       {:ok, base_datetime} =
@@ -8541,7 +8541,7 @@ defmodule MateriaCommerce.CommercesTest do
           %{"start_datetime" => check_datetime},
           %{"status" => 3}
         ],
-        "like" => [%{"description" => "低級"}]
+        "like" => [%{"description" => "%低級%"}]
       }
 
       {:ok, base_datetime} =
@@ -9729,7 +9729,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "in" => [%{"item_code" => ["ICZ1111", "ICZ2222", "ICZ3333"]}],
-        "forward_like" => [%{"description" => "超"}]
+        "like" => [%{"description" => "超%"}]
       }
 
       {:ok, base_datetime} =
@@ -9803,7 +9803,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "in" => [%{"item_code" => ["ICZ1111", "ICZ2222", "ICZ3333"]}],
-        "backward_like" => [%{"description" => "炊飯器Z"}]
+        "like" => [%{"description" => "%炊飯器Z"}]
       }
 
       {:ok, base_datetime} =
@@ -9877,7 +9877,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "in" => [%{"item_code" => ["ICZ1111", "ICZ2222", "ICZ3333"]}],
-        "like" => [%{"description" => "低級"}]
+        "like" => [%{"description" => "%低級%"}]
       }
 
       {:ok, base_datetime} =
@@ -11544,7 +11544,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "order_by" => [%{"status" => "asc"}],
-        "forward_like" => [%{"description" => "超"}]
+        "like" => [%{"description" => "超%"}]
       }
 
       {:ok, base_datetime} =
@@ -11636,7 +11636,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "order_by" => [%{"status" => "desc"}],
-        "backward_like" => [%{"description" => "炊飯器Z"}]
+        "like" => [%{"description" => "%炊飯器Z"}]
       }
 
       {:ok, base_datetime} =
@@ -11727,7 +11727,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "in" => [%{"item_code" => ["ICZ1111", "ICZ2222", "ICZ3333"]}],
-        "like" => [%{"description" => "低級"}]
+        "like" => [%{"description" => "%低級%"}]
       }
 
       {:ok, base_datetime} =
@@ -12080,7 +12080,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"greater" => [%{"status" => 2}], "forward_like" => [%{"description" => "超"}]}
+      params = %{"greater" => [%{"status" => 2}], "like" => [%{"description" => "超%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -12153,7 +12153,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "greater_equal" => [%{"status" => 2}],
-        "forward_like" => [%{"description" => "超"}]
+        "like" => [%{"description" => "超%"}]
       }
 
       {:ok, base_datetime} =
@@ -12225,7 +12225,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"less" => [%{"status" => 2}], "forward_like" => [%{"description" => "超"}]}
+      params = %{"less" => [%{"status" => 2}], "like" => [%{"description" => "超%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -12296,7 +12296,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"less_equal" => [%{"status" => 2}], "forward_like" => [%{"description" => "超"}]}
+      params = %{"less_equal" => [%{"status" => 2}], "like" => [%{"description" => "超%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -12367,7 +12367,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"greater" => [%{"status" => 2}], "backward_like" => [%{"description" => "炊飯器Z"}]}
+      params = %{"greater" => [%{"status" => 2}], "like" => [%{"description" => "%炊飯器Z"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -12440,7 +12440,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "greater_equal" => [%{"status" => 2}],
-        "backward_like" => [%{"description" => "炊飯器Z"}]
+        "like" => [%{"description" => "%炊飯器Z"}]
       }
 
       {:ok, base_datetime} =
@@ -12512,7 +12512,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"less" => [%{"status" => 2}], "backward_like" => [%{"description" => "炊飯器Z"}]}
+      params = %{"less" => [%{"status" => 2}], "like" => [%{"description" => "%炊飯器Z"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -12585,7 +12585,7 @@ defmodule MateriaCommerce.CommercesTest do
 
       params = %{
         "less_equal" => [%{"status" => 2}],
-        "backward_like" => [%{"description" => "炊飯器Z"}]
+        "like" => [%{"description" => "%炊飯器Z"}]
       }
 
       {:ok, base_datetime} =
@@ -12657,7 +12657,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"greater" => [%{"status" => 2}], "like" => [%{"description" => "低級"}]}
+      params = %{"greater" => [%{"status" => 2}], "like" => [%{"description" => "%低級%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -12728,7 +12728,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"greater_equal" => [%{"status" => 2}], "like" => [%{"description" => "低級"}]}
+      params = %{"greater_equal" => [%{"status" => 2}], "like" => [%{"description" => "%低級%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -12799,7 +12799,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"less" => [%{"status" => 2}], "like" => [%{"description" => "低級"}]}
+      params = %{"less" => [%{"status" => 2}], "like" => [%{"description" => "%低級%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -12870,7 +12870,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"less_equal" => [%{"status" => 2}], "like" => [%{"description" => "低級"}]}
+      params = %{"less_equal" => [%{"status" => 2}], "like" => [%{"description" => "%低級%"}]}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -13510,7 +13510,7 @@ defmodule MateriaCommerce.CommercesTest do
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
       params = %{
-        "forward_like" => [%{"description" => "超"}],
+        "like" => [%{"description" => "超%"}],
         "paging" => %{"page" => 1, "limit" => 2}
       }
 
@@ -13584,7 +13584,7 @@ defmodule MateriaCommerce.CommercesTest do
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
       params = %{
-        "forward_like" => [%{"description" => "超"}],
+        "like" => [%{"description" => "超%"}],
         "paging" => %{"page" => 2, "limit" => 2}
       }
 
@@ -13658,7 +13658,7 @@ defmodule MateriaCommerce.CommercesTest do
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
       params = %{
-        "backward_like" => [%{"description" => "炊飯器Z"}],
+        "like" => [%{"description" => "%炊飯器Z"}],
         "paging" => %{"page" => 1, "limit" => 2}
       }
 
@@ -13731,7 +13731,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"like" => [%{"description" => "低級"}], "paging" => %{"page" => 1, "limit" => 2}}
+      params = %{"like" => [%{"description" => "%低級%"}], "paging" => %{"page" => 1, "limit" => 2}}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
@@ -13802,13 +13802,1038 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, check_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-17 09:00:00Z")
 
-      params = %{"like" => [%{"description" => "低級"}], "paging" => %{"page" => 2, "limit" => 2}}
+      params = %{"like" => [%{"description" => "%低級%"}], "paging" => %{"page" => 2, "limit" => 2}}
 
       {:ok, base_datetime} =
         MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-01-01 09:00:00Z")
 
       current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
       assert Enum.count(current_product) == 0
+    end
+
+    # ここに全部もりもりテスト記述
+    test "get_current_products/2 all params1" do
+      alias MateriaCommerce.Products
+
+      {:ok, start_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-31 09:00:00Z")
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1114",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "hogehoge",
+        "manufacturer" => "松芝電気",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "超高級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1114"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1113",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "松芝電気",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1113"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1112",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1112"}], attr, 1)
+
+       attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1111",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1111"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ12",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ12"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ11",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ11"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ10",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ10"}], attr, 1)
+
+      {:ok, start_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-31 12:00:00Z")
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1004",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1004"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1003",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1003"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1002",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1002"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1001",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 3,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1010"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1010",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 2,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ0001"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1100",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1011"}], attr, 1)
+      
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1101",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 4,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1101"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1110",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 5,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1110"}], attr, 1)
+
+      params = %{"and" => [%{"name" => "炊飯器Z1111"}, %{"category1" => "電化製品"}], "or" => [%{"thumbnail" => "foo"}, %{"description" => "炊飯器"}], "in" => [%{"color" => ["White", "Black"]}], "greater" => [%{"start_datetime" => "2018-12-31 09:00:00"}], "greater_equal" => [%{"model_number" => "Z2000"}], "less" => [%{"jan_code" => "123456789123"}], "less_equal" => [%{"item_code" => "ICZ1110"}], "like" => [%{"category2" => "%理道%"}, %{"category3" => "超%"}, %{"category4" => "%バージョン"}],  "order_by" => [%{"status" => "asc"}], "paging" => %{"page" => 1, "limit" => 2}}
+
+      {:ok, base_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-04-01 09:00:00Z")
+
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
+      assert Enum.count(current_product) == 2
+
+      order_check =
+        current_product
+        |> Enum.flat_map(fn product ->
+          t =
+            %{}
+            |> Map.put("status", product.status)
+
+          [t]
+        end)
+
+      expect_value = [
+        %{"status" => 1},
+        %{"status" => 2}
+      ]
+
+      assert expect_value == order_check
+
+      params = %{"and" => [%{"name" => "炊飯器Z1111"}, %{"category1" => "電化製品"}], "or" => [%{"thumbnail" => "foo"}, %{"description" => "炊飯器"}], "in" => [%{"color" => ["White", "Black"]}], "greater" => [%{"start_datetime" => "2018-12-31 09:00:00"}], "greater_equeal" => [%{"model_number" => "Z2000"}], "less" => [%{"jan_code" => "123456789123"}], "less_equal" => [%{"item_code" => "ICZ1110"}], "like" => [%{"category2" => "%理道%"}, %{"category3" => "超%"}, %{"category4" => "%バージョン"}],  "order_by" => [%{"status" => "desc"}], "paging" => %{"page" => 1, "limit" => 2}}
+
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
+      assert Enum.count(current_product) == 2
+
+      order_check =
+        current_product
+        |> Enum.flat_map(fn product ->
+          t =
+            %{}
+            |> Map.put("status", product.status)
+
+          [t]
+        end)
+
+      expect_value = [
+        %{"status" => 5},
+        %{"status" => 4}
+      ]
+
+      assert expect_value == order_check
+    end
+
+    test "get_current_products/2 all params2" do
+      alias MateriaCommerce.Products
+
+      {:ok, start_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-31 09:00:00Z")
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1114",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "hogehoge",
+        "manufacturer" => "松芝電気",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "超高級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1114"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1113",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "松芝電気",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1113"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1112",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1112"}], attr, 1)
+
+       attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1111",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1111"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ12",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ12"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ11",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ11"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ10",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ10"}], attr, 1)
+
+      {:ok, start_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-31 12:00:00Z")
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1004",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1004"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1003",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1003"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1002",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1002"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1001",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 3,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1010"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1010",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 2,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ0001"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1100",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1011"}], attr, 1)
+      
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1101",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 4,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1101"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1110",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 5,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1110"}], attr, 1)
+
+      params = %{"and" => [%{"name" => "炊飯器Z1111"}, %{"category1" => "電化製品"}], "or" => [%{"thumbnail" => "foo"}, %{"description" => "炊飯器"}], "in" => [%{"color" => ["White", "Black"]}], "greater" => [%{"start_datetime" => "2018-12-31 09:00:00"}], "greater_equal" => [%{"model_number" => "Z2000"}], "less" => [%{"jan_code" => "123456789123"}], "less_equal" => [%{"item_code" => "ICZ1110"}],"like" => [%{"category2" => "%理道%"}, %{"category3" => "超%"}, %{"category4" => "%バージョン"}],  "order_by" => [%{"status" => "asc"}], "paging" => %{"page" => 2, "limit" => 2}}
+
+      {:ok, base_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-04-01 09:00:00Z")
+
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
+      assert Enum.count(current_product) == 2
+
+      order_check =
+        current_product
+        |> Enum.flat_map(fn product ->
+          t =
+            %{}
+            |> Map.put("status", product.status)
+
+          [t]
+        end)
+
+      expect_value = [
+        %{"status" => 3},
+        %{"status" => 4}
+      ]
+
+      assert expect_value == order_check
+
+      params = %{"and" => [%{"name" => "炊飯器Z1111"}, %{"category1" => "電化製品"}], "or" => [%{"thumbnail" => "foo"}, %{"description" => "炊飯器"}], "in" => [%{"color" => ["White", "Black"]}], "greater" => [%{"start_datetime" => "2018-12-31 09:00:00"}], "greater_equeal" => [%{"model_number" => "Z2000"}], "less" => [%{"jan_code" => "123456789123"}], "less_equal" => [%{"item_code" => "ICZ1110"}], "like" => [%{"category2" => "%理道%"}, %{"category3" => "超%"}, %{"category4" => "%バージョン"}],  "order_by" => [%{"status" => "desc"}], "paging" => %{"page" => 2, "limit" => 2}}
+
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
+      assert Enum.count(current_product) == 2
+
+      order_check =
+        current_product
+        |> Enum.flat_map(fn product ->
+          t =
+            %{}
+            |> Map.put("status", product.status)
+
+          [t]
+        end)
+
+      expect_value = [
+        %{"status" => 3},
+        %{"status" => 2}
+      ]
+
+      assert expect_value == order_check
+    end
+
+    test "get_current_products/2 all params3" do
+      alias MateriaCommerce.Products
+
+      {:ok, start_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-31 09:00:00Z")
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1114",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "hogehoge",
+        "manufacturer" => "松芝電気",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "超高級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1114"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1113",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "松芝電気",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1113"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1112",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Blue",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1112"}], attr, 1)
+
+       attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1111",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1111"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ12",
+        "model_number" => "Z1000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ12"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ11",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789123",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ11"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ10",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ10"}], attr, 1)
+
+      {:ok, start_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2018-12-31 12:00:00Z")
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "調理器具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1004",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1004"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1003",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1003"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年モデル",
+        "item_code" => "ICZ1002",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1002"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1001",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 3,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1010"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1010",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 2,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ0001"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1100",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 1,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1011"}], attr, 1)
+      
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1101",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "fogefoge",
+        "manufacturer" => "Panasomic",
+        "status" => 4,
+        "color" => "Black",
+        "description" => "炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1101"}], attr, 1)
+
+      attr = %{
+        "name" => "炊飯器Z1111",
+        "category1" => "電化製品",
+        "category2" => "料理道具",
+        "category3" => "超炊飯器",
+        "category4" => "2020年バージョン",
+        "item_code" => "ICZ1110",
+        "model_number" => "Z2000",
+        "jan_code" => "123456789000",
+        "thumbnail" => "foo",
+        "manufacturer" => "Panasomic",
+        "status" => 5,
+        "color" => "Black",
+        "description" => "低級炊飯器",
+      }
+
+      {:ok, create_price} =
+        Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1110"}], attr, 1)
+
+      params = %{"and" => [%{"name" => "炊飯器Z1111"}, %{"category1" => "電化製品"}], "or" => [%{"thumbnail" => "foo"}, %{"description" => "炊飯器"}], "in" => [%{"color" => ["White", "Black"]}], "greater" => [%{"start_datetime" => "2018-12-31 09:00:00"}], "greater_equal" => [%{"model_number" => "Z2000"}], "less" => [%{"jan_code" => "123456789123"}], "less_equal" => [%{"item_code" => "ICZ1110"}], "like" => [%{"category2" => "%理道%"}, %{"category3" => "超%"}, %{"category4" => "%バージョン"}],  "order_by" => [%{"status" => "asc"}], "paging" => %{"page" => 3, "limit" => 2}}
+
+      {:ok, base_datetime} =
+        MateriaUtils.Calendar.CalendarUtil.parse_iso_extended_z("2019-04-01 09:00:00Z")
+
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
+      assert Enum.count(current_product) == 1
+
+      order_check =
+        current_product
+        |> Enum.flat_map(fn product ->
+          t =
+            %{}
+            |> Map.put("status", product.status)
+
+          [t]
+        end)
+
+      expect_value = [
+        %{"status" => 5}
+      ]
+
+      assert expect_value == order_check
+
+      params = %{"and" => [%{"name" => "炊飯器Z1111"}, %{"category1" => "電化製品"}], "or" => [%{"thumbnail" => "foo"}, %{"description" => "炊飯器"}], "in" => [%{"color" => ["White", "Black"]}], "greater" => [%{"start_datetime" => "2018-12-31 09:00:00"}], "greater_equeal" => [%{"model_number" => "Z2000"}], "less" => [%{"jan_code" => "123456789123"}], "less_equal" => [%{"item_code" => "ICZ1110"}], "like" => [%{"category2" => "%理道%"}, %{"category3" => "超%"}, %{"category4" => "%バージョン"}], "order_by" => [%{"status" => "desc"}], "paging" => %{"page" => 3, "limit" => 2}}
+
+      current_product = MateriaCommerce.Products.get_current_products(base_datetime, params)
+      assert Enum.count(current_product) == 1
+
+      order_check =
+        current_product
+        |> Enum.flat_map(fn product ->
+          t =
+            %{}
+            |> Map.put("status", product.status)
+
+          [t]
+        end)
+
+      expect_value = [
+        %{"status" => 1}
+      ]
+
+      assert expect_value == order_check
     end
 
     test "select_by_param/3 and" do
@@ -13949,7 +14974,7 @@ defmodule MateriaCommerce.CommercesTest do
 
     test "select_by_param/3 forward_like" do
       alias MateriaCommerce.Products
-      params = %{"forward_like" => [%{"description" => "超"}]}
+      params = %{"like" => [%{"description" => "超%"}]}
 
       products =
         MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
@@ -13959,7 +14984,7 @@ defmodule MateriaCommerce.CommercesTest do
 
     test "select_by_param/3 backward_like" do
       alias MateriaCommerce.Products
-      params = %{"backward_like" => [%{"item_code" => "01"}]}
+      params = %{"like" => [%{"item_code" => "%01"}]}
 
       products =
         MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
@@ -13984,7 +15009,7 @@ defmodule MateriaCommerce.CommercesTest do
       {:ok, create_price} =
         Products.create_new_item_history(%{}, start_datetime, [{:item_code, "ICZ1111"}], attr, 1)
 
-      params = %{"like" => [%{"description" => "低"}]}
+      params = %{"like" => [%{"description" => "%低%"}]}
 
       products =
         MateriaUtils.Ecto.EctoUtil.select_by_param(@repo, MateriaCommerce.Products.Item, params)
