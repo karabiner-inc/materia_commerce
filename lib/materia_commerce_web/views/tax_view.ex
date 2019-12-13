@@ -25,11 +25,13 @@ defmodule MateriaCommerceWeb.TaxView do
       updated_at: CalendarUtil.convert_time_utc2local(tax.updated_at)
     }
 
-    result_map = cond do
-      Ecto.assoc_loaded?(tax.inserted) and tax.inserted != nil ->
-        Map.put(result_map, :inserted, UserView.render("user.json", %{user: tax.inserted}))
-      true ->
-        Map.put(result_map, :inserted, nil)
-    end
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(tax.inserted) and tax.inserted != nil ->
+          Map.put(result_map, :inserted, UserView.render("user.json", %{user: tax.inserted}))
+
+        true ->
+          Map.put(result_map, :inserted, nil)
+      end
   end
 end

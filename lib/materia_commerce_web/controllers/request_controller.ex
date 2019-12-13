@@ -5,7 +5,7 @@ defmodule MateriaCommerceWeb.RequestController do
   alias MateriaCommerce.Commerces.Request
   alias MateriaUtils.Calendar.CalendarUtil
 
-  action_fallback MateriaWeb.FallbackController
+  action_fallback(MateriaWeb.FallbackController)
 
   def index(conn, _params) do
     requests = Commerces.list_requests()
@@ -36,6 +36,7 @@ defmodule MateriaCommerceWeb.RequestController do
 
   def delete(conn, %{"id" => id}) do
     request = Commerces.get_request!(id)
+
     with {:ok, %Request{}} <- Commerces.delete_request(request) do
       send_resp(conn, :no_content, "")
     end
@@ -51,12 +52,23 @@ defmodule MateriaCommerceWeb.RequestController do
     user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
     key_words = [{:request_number, params["request_number"]}]
-    MateriaWeb.ControllerBase.transaction_flow(conn, :request, Commerces, :create_new_request_history, [now, key_words, params, user_id])
+
+    MateriaWeb.ControllerBase.transaction_flow(conn, :request, Commerces, :create_new_request_history, [
+      now,
+      key_words,
+      params,
+      user_id
+    ])
   end
 
   def create_my_new_request_history(conn, params) do
     user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
-    MateriaWeb.ControllerBase.transaction_flow(conn, :request, Commerces, :create_my_new_request_history, [now, params, user_id])
+
+    MateriaWeb.ControllerBase.transaction_flow(conn, :request, Commerces, :create_my_new_request_history, [
+      now,
+      params,
+      user_id
+    ])
   end
 end

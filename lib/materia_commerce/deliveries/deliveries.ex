@@ -239,12 +239,12 @@ defmodule MateriaCommerce.Deliveries do
     Delivery
     |> @repo.all()
     |> @repo.preload(
-         snd_user: [:addresses],
-         rcv_user: [:addresses],
-         clt_user: [:addresses],
-         inserted: [],
-         updated: [],
-       )
+      snd_user: [:addresses],
+      rcv_user: [:addresses],
+      clt_user: [:addresses],
+      inserted: [],
+      updated: []
+    )
   end
 
   @doc """
@@ -478,12 +478,12 @@ defmodule MateriaCommerce.Deliveries do
     Delivery
     |> @repo.get!(id)
     |> @repo.preload(
-         snd_user: [:addresses],
-         rcv_user: [:addresses],
-         clt_user: [:addresses],
-         inserted: [],
-         updated: [],
-       )
+      snd_user: [:addresses],
+      rcv_user: [:addresses],
+      clt_user: [:addresses],
+      inserted: [],
+      updated: []
+    )
   end
 
   @doc """
@@ -555,9 +555,11 @@ defmodule MateriaCommerce.Deliveries do
   }
   """
   def create_delivery(_results, attrs, user_id) do
-    attrs = attrs
-            |> Map.put("inserted_id", user_id)
-            |> Map.put("updated_id", user_id)
+    attrs =
+      attrs
+      |> Map.put("inserted_id", user_id)
+      |> Map.put("updated_id", user_id)
+
     %Delivery{}
     |> Delivery.changeset(attrs)
     |> @repo.insert()
@@ -632,8 +634,10 @@ defmodule MateriaCommerce.Deliveries do
   }
   """
   def update_delivery(_results, %Delivery{} = delivery, attrs, user_id) do
-    attrs = attrs
-            |> Map.put("updated_id", user_id)
+    attrs =
+      attrs
+      |> Map.put("updated_id", user_id)
+
     delivery
     |> Delivery.update_changeset(attrs)
     |> @repo.update()
@@ -708,9 +712,11 @@ defmodule MateriaCommerce.Deliveries do
   }
   """
   def delete_delivery(_results, %Delivery{} = delivery, user_id) do
-    attrs = %{}
-            |> Map.put("updated_id", user_id)
-            |> Map.put("status", Delivery.status().cancel)
+    attrs =
+      %{}
+      |> Map.put("updated_id", user_id)
+      |> Map.put("status", Delivery.status().cancel)
+
     delivery
     |> Delivery.update_changeset(attrs)
     |> @repo.update()

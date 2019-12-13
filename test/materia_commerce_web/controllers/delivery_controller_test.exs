@@ -64,7 +64,7 @@ defmodule MateriaCommerceWeb.DeliveryControllerTest do
     "lock_version" => 42,
     "snd_user_id" => 1,
     "rcv_user_id" => 1,
-    "clt_user_id" => 1,
+    "clt_user_id" => 1
   }
   @update_attrs %{
     "snd_zip_code" => "some updated snd_zip_code",
@@ -126,13 +126,13 @@ defmodule MateriaCommerceWeb.DeliveryControllerTest do
     "lock_version" => 42,
     "snd_user_id" => 2,
     "rcv_user_id" => 2,
-    "clt_user_id" => 2,
+    "clt_user_id" => 2
   }
   @admin_user_attrs %{
     "name" => "hogehoge",
     "email" => "hogehoge@example.com",
     "password" => "hogehoge",
-    "role" => "admin",
+    "role" => "admin"
   }
 
   def fixture(:delivery) do
@@ -143,27 +143,28 @@ defmodule MateriaCommerceWeb.DeliveryControllerTest do
   setup %{conn: conn} do
     Application.put_env(:materia_utils, :calender_locale, "Asia/Tokyo")
     conn = put_req_header(conn, "accept", "application/json")
-    token_conn = post conn, authenticator_path(conn, :sign_in), @admin_user_attrs
+    token_conn = post(conn, authenticator_path(conn, :sign_in), @admin_user_attrs)
     %{"access_token" => token} = json_response(token_conn, 201)
     {:ok, conn: conn = put_req_header(conn, "authorization", "Bearer " <> token)}
   end
 
   describe "index" do
     test "lists all deliveries", %{conn: conn} do
-      conn = get conn, delivery_path(conn, :index)
+      conn = get(conn, delivery_path(conn, :index))
       assert json_response(conn, 200) != []
     end
   end
 
   describe "create delivery" do
     test "renders delivery when data is valid", %{conn: conn} do
-      result_conn = post conn, delivery_path(conn, :create), @create_attrs
+      result_conn = post(conn, delivery_path(conn, :create), @create_attrs)
       assert %{"id" => id} = json_response(result_conn, 201)
 
-      conn = get conn, delivery_path(conn, :show, id)
+      conn = get(conn, delivery_path(conn, :show, id))
+
       assert json_response(conn, 200)
              |> Map.delete("inserted_at")
-             |> Map.delete("updated_at")  == %{
+             |> Map.delete("updated_at") == %{
                "id" => id,
                "snd_phone_number" => "some snd_phone_number",
                "rcv_note3" => "some rcv_note3",
@@ -386,10 +387,11 @@ defmodule MateriaCommerceWeb.DeliveryControllerTest do
     setup [:create_delivery]
 
     test "renders delivery when data is valid", %{conn: conn, delivery: %Delivery{id: id} = delivery} do
-      result_con = put conn, delivery_path(conn, :update, delivery), @update_attrs
+      result_con = put(conn, delivery_path(conn, :update, delivery), @update_attrs)
       assert %{"id" => ^id} = json_response(result_con, 201)
 
-      conn = get conn, delivery_path(conn, :show, id)
+      conn = get(conn, delivery_path(conn, :show, id))
+
       assert json_response(conn, 200)
              |> Map.delete("inserted_at")
              |> Map.delete("updated_at") == %{
@@ -534,7 +536,7 @@ defmodule MateriaCommerceWeb.DeliveryControllerTest do
     setup [:create_delivery]
 
     test "deletes chosen delivery", %{conn: conn, delivery: delivery} do
-      result_con = delete conn, delivery_path(conn, :delete, delivery)
+      result_con = delete(conn, delivery_path(conn, :delete, delivery))
       assert response(result_con, 201)
     end
   end

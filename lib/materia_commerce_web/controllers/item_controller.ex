@@ -5,7 +5,7 @@ defmodule MateriaCommerceWeb.ItemController do
   alias MateriaCommerce.Products.Item
   alias MateriaUtils.Calendar.CalendarUtil
 
-  action_fallback MateriaWeb.FallbackController
+  action_fallback(MateriaWeb.FallbackController)
 
   def index(conn, _params) do
     items = Products.list_items()
@@ -36,6 +36,7 @@ defmodule MateriaCommerceWeb.ItemController do
 
   def delete(conn, %{"id" => id}) do
     item = Products.get_item!(id)
+
     with {:ok, %Item{}} <- Products.delete_item(item) do
       send_resp(conn, :no_content, "")
     end
@@ -51,6 +52,12 @@ defmodule MateriaCommerceWeb.ItemController do
     user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
     key_words = [{:item_code, params["item_code"]}]
-    MateriaWeb.ControllerBase.transaction_flow(conn, :item, Products, :create_new_item_history, [now, key_words, params, user_id])
+
+    MateriaWeb.ControllerBase.transaction_flow(conn, :item, Products, :create_new_item_history, [
+      now,
+      key_words,
+      params,
+      user_id
+    ])
   end
 end

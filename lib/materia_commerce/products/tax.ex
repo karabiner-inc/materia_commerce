@@ -2,16 +2,15 @@ defmodule MateriaCommerce.Products.Tax do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "taxes" do
-    field :end_datetime, :utc_datetime
-    field :lock_version, :integer, default: 0
-    field :name, :string
-    field :start_datetime, :utc_datetime
-    field :tax_category, :string
-    field :tax_rate, :decimal
+    field(:end_datetime, :utc_datetime)
+    field(:lock_version, :integer, default: 0)
+    field(:name, :string)
+    field(:start_datetime, :utc_datetime)
+    field(:tax_category, :string)
+    field(:tax_rate, :decimal)
 
-    belongs_to :inserted, Materia.Accounts.User
+    belongs_to(:inserted, Materia.Accounts.User)
 
     timestamps()
   end

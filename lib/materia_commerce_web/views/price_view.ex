@@ -27,11 +27,13 @@ defmodule MateriaCommerceWeb.PriceView do
       updated_at: CalendarUtil.convert_time_utc2local(price.updated_at)
     }
 
-    result_map = cond do
-      Ecto.assoc_loaded?(price.inserted) and price.inserted != nil ->
-        Map.put(result_map, :inserted, UserView.render("user.json", %{user: price.inserted}))
-      true ->
-        Map.put(result_map, :inserted, nil)
-    end
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(price.inserted) and price.inserted != nil ->
+          Map.put(result_map, :inserted, UserView.render("user.json", %{user: price.inserted}))
+
+        true ->
+          Map.put(result_map, :inserted, nil)
+      end
   end
 end

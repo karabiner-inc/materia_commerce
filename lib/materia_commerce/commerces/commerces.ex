@@ -331,14 +331,14 @@ defmodule MateriaCommerce.Commerces do
     @repo.all(Contract)
     |> @repo.preload([:buyer, :seller, :inserted])
     |> @repo.preload(
-         delivery: [
-           snd_user: [:addresses],
-           rcv_user: [:addresses],
-           clt_user: [:addresses],
-           inserted: [],
-           updated: [],
-         ]
-       )
+      delivery: [
+        snd_user: [:addresses],
+        rcv_user: [:addresses],
+        clt_user: [:addresses],
+        inserted: [],
+        updated: []
+      ]
+    )
   end
 
   @doc """
@@ -656,17 +656,19 @@ defmodule MateriaCommerce.Commerces do
     status: 1
   }
   """
-  def get_contract!(id), do: @repo.get!(Contract, id)
-                             |> @repo.preload([:buyer, :seller, :inserted])
-                             |> @repo.preload(
-                                  delivery: [
-                                    snd_user: [:addresses],
-                                    rcv_user: [:addresses],
-                                    clt_user: [:addresses],
-                                    inserted: [],
-                                    updated: [],
-                                  ]
-                                )
+  def get_contract!(id),
+    do:
+      @repo.get!(Contract, id)
+      |> @repo.preload([:buyer, :seller, :inserted])
+      |> @repo.preload(
+        delivery: [
+          snd_user: [:addresses],
+          rcv_user: [:addresses],
+          clt_user: [:addresses],
+          inserted: [],
+          updated: []
+        ]
+      )
 
   @doc """
   Creates a contract.
@@ -929,22 +931,24 @@ defmodule MateriaCommerce.Commerces do
   def get_current_contract_history(base_datetime, key_word_list) do
     Logger.debug("*-----  #{__MODULE__}.get_current_contract_history -----*")
     contracts = MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, Contract, base_datetime, key_word_list)
+
     contract =
       if contracts == [] do
         nil
       else
         [contract] = contracts
+
         contract
         |> @repo.preload([:buyer, :seller, :inserted])
         |> @repo.preload(
-             delivery: [
-               snd_user: [:addresses],
-               rcv_user: [:addresses],
-               clt_user: [:addresses],
-               inserted: [],
-               updated: [],
-             ]
-           )
+          delivery: [
+            snd_user: [:addresses],
+            rcv_user: [:addresses],
+            clt_user: [:addresses],
+            inserted: [],
+            updated: []
+          ]
+        )
       end
   end
 
@@ -986,21 +990,23 @@ defmodule MateriaCommerce.Commerces do
   def get_recent_contract_history(base_datetime, key_word_list) do
     Logger.debug("*-----  #{__MODULE__}.get_recent_contract_history -----*")
     contracts = MateriaUtils.Ecto.EctoUtil.list_recent_history(@repo, Contract, base_datetime, key_word_list)
+
     if contracts == [] do
       nil
     else
       [contract] = contracts
+
       struct(Contract, contract)
       |> @repo.preload([:buyer, :seller, :inserted])
       |> @repo.preload(
-           delivery: [
-             snd_user: [:addresses],
-             rcv_user: [:addresses],
-             clt_user: [:addresses],
-             inserted: [],
-             updated: [],
-           ]
-         )
+        delivery: [
+          snd_user: [:addresses],
+          rcv_user: [:addresses],
+          clt_user: [:addresses],
+          inserted: [],
+          updated: []
+        ]
+      )
     end
   end
 
@@ -1070,55 +1076,74 @@ defmodule MateriaCommerce.Commerces do
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
     recent_contract = get_recent_contract_history(start_datetime, key_word_list)
 
-    #未来日付のデータがある場合削除する
+    # 未来日付のデータがある場合削除する
     {i, _reason} = delete_future_contract_histories(start_datetime, key_word_list)
+
     contract =
       if recent_contract == nil do
         # 新規登録
-        attr = attr
-               |> Map.put("start_datetime", start_datetime)
-               |> Map.put("end_datetime", end_datetime)
-               |> Map.put("inserted_id", user_id)
         attr =
-          {:ok, contract} = create_contract(attr)
+          attr
+          |> Map.put("start_datetime", start_datetime)
+          |> Map.put("end_datetime", end_datetime)
+          |> Map.put("inserted_id", user_id)
+
+        attr = {:ok, contract} = create_contract(attr)
       else
         # 2回目以降のヒストリー登録の場合
         # 楽観排他チェック
-        _ = cond do
-          !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-          attr["lock_version"] != recent_contract.lock_version ->
-            Logger.debug("*-----  #{__MODULE__}.create_new_contract_history recent_contract attempted to update a stale entry attr.lockversion:#{attr["lock_version"]} recent_contract:-----*")
-            Logger.debug("#{inspect(recent_contract)}")
-            raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
-          true -> :ok
-        end
+        _ =
+          cond do
+            !Map.has_key?(attr, "lock_version") ->
+              raise KeyError, message: "parameter have not lock_version"
 
-        attr = Map.keys(attr)
-               |> Enum.reduce(recent_contract, fn(key, acc) ->
-          acc = acc
-                |> Map.put(String.to_atom(key), attr[key])
-        end)
+            attr["lock_version"] != recent_contract.lock_version ->
+              Logger.debug(
+                "*-----  #{__MODULE__}.create_new_contract_history recent_contract attempted to update a stale entry attr.lockversion:#{
+                  attr["lock_version"]
+                } recent_contract:-----*"
+              )
 
-        attr = Map.from_struct(attr)
-               |> Map.put(:lock_version, recent_contract.lock_version + 1)
-               |> Map.put(:start_datetime, start_datetime)
-               |> Map.put(:end_datetime, end_datetime)
-               |> Map.put(:inserted_id, user_id)
+              Logger.debug("#{inspect(recent_contract)}")
+              raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
+
+            true ->
+              :ok
+          end
+
+        attr =
+          Map.keys(attr)
+          |> Enum.reduce(recent_contract, fn key, acc ->
+            acc =
+              acc
+              |> Map.put(String.to_atom(key), attr[key])
+          end)
+
+        attr =
+          Map.from_struct(attr)
+          |> Map.put(:lock_version, recent_contract.lock_version + 1)
+          |> Map.put(:start_datetime, start_datetime)
+          |> Map.put(:end_datetime, end_datetime)
+          |> Map.put(:inserted_id, user_id)
+
         {:ok, contract} = create_contract(attr)
         # 直近の履歴のend_datetimeを更新する
         recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
         {:ok, updated_contract} = update_contract(recent_contract, %{end_datetime: recent_end_datetime})
-        loaded_contract = contract
-        |> @repo.preload([:buyer, :seller, :inserted])
-                          |> @repo.preload(
-                               delivery: [
-                                 snd_user: [:addresses],
-                                 rcv_user: [:addresses],
-                                 clt_user: [:addresses],
-                                 inserted: [],
-                                 updated: [],
-                               ]
-                             )
+
+        loaded_contract =
+          contract
+          |> @repo.preload([:buyer, :seller, :inserted])
+          |> @repo.preload(
+            delivery: [
+              snd_user: [:addresses],
+              rcv_user: [:addresses],
+              clt_user: [:addresses],
+              inserted: [],
+              updated: []
+            ]
+          )
+
         {:ok, loaded_contract}
       end
   end
@@ -1141,12 +1166,20 @@ defmodule MateriaCommerce.Commerces do
 
   """
   def create_my_new_contract_history(%{}, start_datetime, attr, user_id) do
-    Logger.debug("*-----  #{__MODULE__}.create_my_new_contract_history user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{attr["seller_id"]}")
+    Logger.debug(
+      "*-----  #{__MODULE__}.create_my_new_contract_history user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{
+        attr["seller_id"]
+      }"
+    )
 
     if attr["buyer_id"] == user_id || attr["seller_id"] == user_id do
       create_new_contract_history(%{}, start_datetime, attr, user_id)
-      else
-        raise BusinessError, message: "At least either buyer_id or seller_id should be your user_id. user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{attr["seller_id"]}"
+    else
+      raise BusinessError,
+        message:
+          "At least either buyer_id or seller_id should be your user_id. user_id:#{user_id} buyer_id:#{attr["buyer_id"]} seller_id:#{
+            attr["seller_id"]
+          }"
     end
   end
 
@@ -1164,14 +1197,14 @@ defmodule MateriaCommerce.Commerces do
     @repo.all(ContractDetail)
     |> @repo.preload([:inserted])
     |> @repo.preload(
-         delivery: [
-           snd_user: [:addresses],
-           rcv_user: [:addresses],
-           clt_user: [:addresses],
-           inserted: [],
-           updated: [],
-         ]
-       )
+      delivery: [
+        snd_user: [:addresses],
+        rcv_user: [:addresses],
+        clt_user: [:addresses],
+        inserted: [],
+        updated: []
+      ]
+    )
   end
 
   @doc """
@@ -1246,17 +1279,19 @@ defmodule MateriaCommerce.Commerces do
   datetime4: nil
   }
   """
-  def get_contract_detail!(id), do: @repo.get!(ContractDetail, id)
-                                    |> @repo.preload([:inserted])
-                                    |> @repo.preload(
-                                         delivery: [
-                                           snd_user: [:addresses],
-                                           rcv_user: [:addresses],
-                                           clt_user: [:addresses],
-                                           inserted: [],
-                                           updated: [],
-                                         ]
-                                       )
+  def get_contract_detail!(id),
+    do:
+      @repo.get!(ContractDetail, id)
+      |> @repo.preload([:inserted])
+      |> @repo.preload(
+        delivery: [
+          snd_user: [:addresses],
+          rcv_user: [:addresses],
+          clt_user: [:addresses],
+          inserted: [],
+          updated: []
+        ]
+      )
 
   @doc """
   Creates a contract_detail.
@@ -1425,81 +1460,87 @@ defmodule MateriaCommerce.Commerces do
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
     recent_contract_detail = get_recent_contract_detail_history(start_datetime, key_word_list)
 
-    #未来日付のデータがある場合削除する
+    # 未来日付のデータがある場合削除する
     {i, _reason} = delete_future_contract_detail_histories(start_datetime, key_word_list)
+
     contract_detail =
       if recent_contract_detail == [] do
         # 新規登録
         Logger.debug("*-----  #{__MODULE__}.create_new_contract_detail_history new -----*")
-        contract_detail = attrs
-                          |> Enum.map(
-                               fn attr ->
-                                 attr = attr
-                                        |> Map.put("start_datetime", start_datetime)
-                                        |> Map.put("end_datetime", end_datetime)
-                                        |> Map.put("inserted_id", user_id)
-                                 {:ok, contract_detail} = create_contract_detail(attr)
-                                 contract_detail
-                               end
-                             )
+
+        contract_detail =
+          attrs
+          |> Enum.map(fn attr ->
+            attr =
+              attr
+              |> Map.put("start_datetime", start_datetime)
+              |> Map.put("end_datetime", end_datetime)
+              |> Map.put("inserted_id", user_id)
+
+            {:ok, contract_detail} = create_contract_detail(attr)
+            contract_detail
+          end)
+
         {:ok, contract_detail}
       else
         # 2回目以降のヒストリー登録の場合
         # 楽観排他チェック
         Logger.debug("*-----  #{__MODULE__}.create_new_contract_detail_history recent -----*")
-        attrs
-        |> Enum.map(
-             fn attr ->
-               cond do
-                 Map.has_key?(attr, "id") and !Map.has_key?(attr, "lock_version") ->
-                   raise KeyError, message: "parameter have not lock_version"
-                 Map.has_key?(attr, "id") and !check_recent_contract_detail(recent_contract_detail, attr["id"], attr["lock_version"]) ->
-                   raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
-                 true -> :ok
-               end
-             end
-           )
 
-        contract_detail = attrs
-                          |> Enum.map(
-                               fn attr ->
-                                 recent = check_recent_contract_detail(
-                                   recent_contract_detail,
-                                   attr["id"],
-                                   attr["lock_version"]
-                                 )
-                                 unless recent do
-                                   recent = Map.from_struct(%ContractDetail{})
-                                 end
-                                 recent = Map.keys(attr)
-                                          |> Enum.reduce(
-                                               recent,
-                                               fn (key, acc) ->
-                                                 acc = acc
-                                                       |> Map.put(String.to_atom(key), attr[key])
-                                               end
-                                             )
-                                          |> Map.put(:lock_version, recent.lock_version + 1)
-                                          |> Map.put(:start_datetime, start_datetime)
-                                          |> Map.put(:end_datetime, end_datetime)
-                                          |> Map.put(:inserted_id, user_id)
-                               end
-                             )
-                          |> Enum.map(
-                               fn attr ->
-                                 {:ok, contract_detail} = create_contract_detail(attr)
-                                 contract_detail
-                               end
-                             )
+        attrs
+        |> Enum.map(fn attr ->
+          cond do
+            Map.has_key?(attr, "id") and !Map.has_key?(attr, "lock_version") ->
+              raise KeyError, message: "parameter have not lock_version"
+
+            Map.has_key?(attr, "id") and
+                !check_recent_contract_detail(recent_contract_detail, attr["id"], attr["lock_version"]) ->
+              raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
+
+            true ->
+              :ok
+          end
+        end)
+
+        contract_detail =
+          attrs
+          |> Enum.map(fn attr ->
+            recent =
+              check_recent_contract_detail(
+                recent_contract_detail,
+                attr["id"],
+                attr["lock_version"]
+              )
+
+            unless recent do
+              recent = Map.from_struct(%ContractDetail{})
+            end
+
+            recent =
+              Map.keys(attr)
+              |> Enum.reduce(recent, fn key, acc ->
+                acc =
+                  acc
+                  |> Map.put(String.to_atom(key), attr[key])
+              end)
+              |> Map.put(:lock_version, recent.lock_version + 1)
+              |> Map.put(:start_datetime, start_datetime)
+              |> Map.put(:end_datetime, end_datetime)
+              |> Map.put(:inserted_id, user_id)
+          end)
+          |> Enum.map(fn attr ->
+            {:ok, contract_detail} = create_contract_detail(attr)
+            contract_detail
+          end)
 
         recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
+
         recent_contract_detail
-        |> Enum.map(
-             fn recent ->
-               struct_contract = struct(ContractDetail, recent)
-               update_contract_detail(struct_contract, %{end_datetime: recent_end_datetime})
-             end
-           )
+        |> Enum.map(fn recent ->
+          struct_contract = struct(ContractDetail, recent)
+          update_contract_detail(struct_contract, %{end_datetime: recent_end_datetime})
+        end)
+
         {:ok, contract_detail}
       end
   end
@@ -1528,13 +1569,13 @@ defmodule MateriaCommerce.Commerces do
   """
   def check_recent_contract_detail(recent_contract_detail, id, lock_version) do
     Logger.debug("*-----  #{__MODULE__}.check_recent_contract_detail -----*")
-    filter = Enum.filter(recent_contract_detail, fn x -> x.id == id end) |> List.first
+    filter = Enum.filter(recent_contract_detail, fn x -> x.id == id end) |> List.first()
+
     cond do
       filter != nil and filter.lock_version != lock_version -> false
       true -> filter
     end
   end
-
 
   @doc """
   主キーを想定したパラメータで現在のContract情報を取得し､
@@ -1717,43 +1758,56 @@ defmodule MateriaCommerce.Commerces do
   """
   def get_current_contracts(base_datetime, params) do
     Logger.debug("*-----  #{__MODULE__}.get_current_commerces -----*")
-    contract_detail = MateriaCommerce.Commerces.ContractDetail
-                      |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
 
-    contract = MateriaUtils.Ecto.EctoUtil.query_current_history(@repo, MateriaCommerce.Commerces.Contract, base_datetime, [], params)
-    results = contract
-              |> join(:left, [c], cd in subquery(contract_detail), [{:contract_no, c.contract_no}, {:branch_number, c.branch_number}])
-              |> select([c, cd], %{contract: c, contract_details: cd})
-              |> @repo.all()
-              |> Enum.group_by(fn x -> x.contract end)
+    contract_detail =
+      MateriaCommerce.Commerces.ContractDetail
+      |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
 
-    results = results
-              |> Map.keys()
-              |> Enum.map(
-                   fn key ->
-                     contract_details = results[key]
-                                        |> Enum.flat_map(
-                                             fn result ->
-                                               cond do
-                                                 result.contract_details.id == nil -> []
-                                                 true -> [result.contract_details]
-                                               end
-                                             end
-                                           )
-                     key
-                     |> Map.put(:contract_details, contract_details)
-                   end
-                 )
-              |> @repo.preload([:buyer, :seller, :inserted])
-              |> @repo.preload(
-                   delivery: [
-                     snd_user: [:addresses],
-                     rcv_user: [:addresses],
-                     clt_user: [:addresses],
-                     inserted: [],
-                     updated: [],
-                   ]
-                 )
+    contract =
+      MateriaUtils.Ecto.EctoUtil.query_current_history(
+        @repo,
+        MateriaCommerce.Commerces.Contract,
+        base_datetime,
+        [],
+        params
+      )
+
+    results =
+      contract
+      |> join(:left, [c], cd in subquery(contract_detail), [
+        {:contract_no, c.contract_no},
+        {:branch_number, c.branch_number}
+      ])
+      |> select([c, cd], %{contract: c, contract_details: cd})
+      |> @repo.all()
+      |> Enum.group_by(fn x -> x.contract end)
+
+    results =
+      results
+      |> Map.keys()
+      |> Enum.map(fn key ->
+        contract_details =
+          results[key]
+          |> Enum.flat_map(fn result ->
+            cond do
+              result.contract_details.id == nil -> []
+              true -> [result.contract_details]
+            end
+          end)
+
+        key
+        |> Map.put(:contract_details, contract_details)
+      end)
+      |> @repo.preload([:buyer, :seller, :inserted])
+      |> @repo.preload(
+        delivery: [
+          snd_user: [:addresses],
+          rcv_user: [:addresses],
+          clt_user: [:addresses],
+          inserted: [],
+          updated: []
+        ]
+      )
   end
 
   @doc """
@@ -1777,16 +1831,20 @@ defmodule MateriaCommerce.Commerces do
   """
   def search_my_current_contracts(user_id, base_datetime, params) do
     or_param = params["or"]
+
     rejected_or_params =
-    if or_param != nil do
-      rejected_or_params = or_param
-      |> Enum.reject(fn(param) -> param["buyer_id"] != nil end)
-      |> Enum.reject(fn(param) -> param["seller_id"] != nil end)
-      IO.inspect(rejected_or_params)
-      rejected_or_params
-    else
-      []
-    end
+      if or_param != nil do
+        rejected_or_params =
+          or_param
+          |> Enum.reject(fn param -> param["buyer_id"] != nil end)
+          |> Enum.reject(fn param -> param["seller_id"] != nil end)
+
+        IO.inspect(rejected_or_params)
+        rejected_or_params
+      else
+        []
+      end
+
     replaced_params = Map.put(params, "or", rejected_or_params ++ [%{"buyer_id" => user_id}, %{"seller_id" => user_id}])
     _contracts = get_current_contracts(base_datetime, replaced_params)
   end
@@ -1805,7 +1863,14 @@ defmodule MateriaCommerce.Commerces do
   """
   def get_current_contract_details(base_datetime, params) do
     Logger.debug("*-----  #{__MODULE__}.get_current_contract_details -----*")
-    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, MateriaCommerce.Commerces.ContractDetail, base_datetime, [], params)
+
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(
+      @repo,
+      MateriaCommerce.Commerces.ContractDetail,
+      base_datetime,
+      [],
+      params
+    )
   end
 
   @doc """
@@ -2375,10 +2440,12 @@ defmodule MateriaCommerce.Commerces do
   """
   def get_current_request_history(base_datetime, keywords) do
     requests = MateriaUtils.Ecto.EctoUtil.list_current_history(@repo, Request, base_datetime, keywords)
+
     if requests == [] do
       nil
     else
       [request] = requests
+
       request
       |> @repo.preload([:user, :inserted])
     end
@@ -2426,6 +2493,7 @@ defmodule MateriaCommerce.Commerces do
   """
   def get_recent_request_history(base_datetime, keywords) do
     requests = MateriaUtils.Ecto.EctoUtil.list_recent_history(@repo, Request, base_datetime, keywords)
+
     if requests == [] do
       nil
     else
@@ -2480,36 +2548,43 @@ defmodule MateriaCommerce.Commerces do
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
     recent = get_recent_request_history(start_datetime, keywords)
     {i, _reason} = delete_future_request_histories(start_datetime, keywords)
+
     request =
       if recent == nil do
-        attr = attr
-               |> Map.put("start_datetime", start_datetime)
-               |> Map.put("end_datetime", end_datetime)
-               |> Map.put("inserted_id", user_id)
+        attr =
+          attr
+          |> Map.put("start_datetime", start_datetime)
+          |> Map.put("end_datetime", end_datetime)
+          |> Map.put("inserted_id", user_id)
+
         {:ok, request} = create_request(attr)
       else
-        _ = cond do
-          !Map.has_key?(attr, "lock_version") ->
-            raise KeyError, message: "parameter have not lock_version"
-          attr["lock_version"] != recent.lock_version ->
-            raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
-          true -> :ok
-        end
+        _ =
+          cond do
+            !Map.has_key?(attr, "lock_version") ->
+              raise KeyError, message: "parameter have not lock_version"
 
-        attr = Map.keys(attr)
-               |> Enum.reduce(
-                    recent,
-                    fn (key, acc) ->
-                      acc = acc
-                            |> Map.put(String.to_atom(key), attr[key])
-                    end
-                  )
+            attr["lock_version"] != recent.lock_version ->
+              raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
 
-        attr = attr
-               |> Map.put(:lock_version, recent.lock_version + 1)
-               |> Map.put(:start_datetime, start_datetime)
-               |> Map.put(:end_datetime, end_datetime)
-               |> Map.put(:inserted_id, user_id)
+            true ->
+              :ok
+          end
+
+        attr =
+          Map.keys(attr)
+          |> Enum.reduce(recent, fn key, acc ->
+            acc =
+              acc
+              |> Map.put(String.to_atom(key), attr[key])
+          end)
+
+        attr =
+          attr
+          |> Map.put(:lock_version, recent.lock_version + 1)
+          |> Map.put(:start_datetime, start_datetime)
+          |> Map.put(:end_datetime, end_datetime)
+          |> Map.put(:inserted_id, user_id)
 
         {:ok, request} = create_request(attr)
         recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
@@ -2533,11 +2608,12 @@ defmodule MateriaCommerce.Commerces do
   """
   def create_my_new_request_history(%{}, start_datetime, attr, user_id) do
     key_words = [{:request_number, attr["request_number"]}]
-    replaced_attr = attr
-    |> Map.put("user_id", user_id)
+
+    replaced_attr =
+      attr
+      |> Map.put("user_id", user_id)
 
     create_new_request_history(%{}, start_datetime, key_words, replaced_attr, user_id)
-
   end
 
   @doc """
@@ -2679,74 +2755,78 @@ defmodule MateriaCommerce.Commerces do
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
     recent_request_appendix = get_recent_request_appendix_history(start_datetime, keywords)
     {i, _reason} = delete_future_request_appendix_histories(start_datetime, keywords)
+
     request_appendix =
       if recent_request_appendix == [] do
-        request_appendix = attrs
-                           |> Enum.map(
-                                fn attr ->
-                                  attr = attr
-                                         |> Map.put("start_datetime", start_datetime)
-                                         |> Map.put("end_datetime", end_datetime)
-                                         |> Map.put("inserted_id", user_id)
-                                  {:ok, request_appendix} = create_request_appendix(attr)
-                                  request_appendix
-                                end
-                              )
+        request_appendix =
+          attrs
+          |> Enum.map(fn attr ->
+            attr =
+              attr
+              |> Map.put("start_datetime", start_datetime)
+              |> Map.put("end_datetime", end_datetime)
+              |> Map.put("inserted_id", user_id)
+
+            {:ok, request_appendix} = create_request_appendix(attr)
+            request_appendix
+          end)
+
         {:ok, request_appendix}
       else
         attrs
-        |> Enum.map(
-             fn attr ->
-               cond do
-                 Map.has_key?(attr, "id") and !Map.has_key?(attr, "lock_version") ->
-                   raise KeyError, message: "parameter have not lock_version"
-                 Map.has_key?(attr, "id") and !check_recent_request_appendix(recent_request_appendix, attr["id"], attr["lock_version"]) ->
-                   raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
-                 true -> :ok
-               end
-             end
-           )
+        |> Enum.map(fn attr ->
+          cond do
+            Map.has_key?(attr, "id") and !Map.has_key?(attr, "lock_version") ->
+              raise KeyError, message: "parameter have not lock_version"
 
-        request_appendix = attrs
-                           |> Enum.map(
-                                fn attr ->
-                                  recent = check_recent_request_appendix(
-                                    recent_request_appendix,
-                                    attr["id"],
-                                    attr["lock_version"]
-                                  )
-                                  unless recent do
-                                    recent = Map.from_struct(%RequestAppendix{})
-                                  end
-                                  recent = Map.keys(attr)
-                                           |> Enum.reduce(
-                                                recent,
-                                                fn (key, acc) ->
-                                                  acc = acc
-                                                        |> Map.put(String.to_atom(key), attr[key])
-                                                end
-                                              )
-                                           |> Map.put(:lock_version, recent.lock_version + 1)
-                                           |> Map.put(:start_datetime, start_datetime)
-                                           |> Map.put(:end_datetime, end_datetime)
-                                           |> Map.put(:inserted_id, user_id)
-                                end
-                              )
-                           |> Enum.map(
-                                fn attr ->
-                                  {:ok, request_appendix} = create_request_appendix(attr)
-                                  request_appendix
-                                end
-                              )
+            Map.has_key?(attr, "id") and
+                !check_recent_request_appendix(recent_request_appendix, attr["id"], attr["lock_version"]) ->
+              raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
+
+            true ->
+              :ok
+          end
+        end)
+
+        request_appendix =
+          attrs
+          |> Enum.map(fn attr ->
+            recent =
+              check_recent_request_appendix(
+                recent_request_appendix,
+                attr["id"],
+                attr["lock_version"]
+              )
+
+            unless recent do
+              recent = Map.from_struct(%RequestAppendix{})
+            end
+
+            recent =
+              Map.keys(attr)
+              |> Enum.reduce(recent, fn key, acc ->
+                acc =
+                  acc
+                  |> Map.put(String.to_atom(key), attr[key])
+              end)
+              |> Map.put(:lock_version, recent.lock_version + 1)
+              |> Map.put(:start_datetime, start_datetime)
+              |> Map.put(:end_datetime, end_datetime)
+              |> Map.put(:inserted_id, user_id)
+          end)
+          |> Enum.map(fn attr ->
+            {:ok, request_appendix} = create_request_appendix(attr)
+            request_appendix
+          end)
 
         recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
+
         recent_request_appendix
-        |> Enum.map(
-             fn recent ->
-               struct_request_appendix = struct(RequestAppendix, recent)
-               update_request_appendix(struct_request_appendix, %{end_datetime: recent_end_datetime})
-             end
-           )
+        |> Enum.map(fn recent ->
+          struct_request_appendix = struct(RequestAppendix, recent)
+          update_request_appendix(struct_request_appendix, %{end_datetime: recent_end_datetime})
+        end)
+
         {:ok, request_appendix}
       end
   end
@@ -2775,7 +2855,8 @@ defmodule MateriaCommerce.Commerces do
   false
   """
   def check_recent_request_appendix(recent_request_appendix, id, lock_version) do
-    filter = Enum.filter(recent_request_appendix, fn x -> x.id == id end) |> List.first
+    filter = Enum.filter(recent_request_appendix, fn x -> x.id == id end) |> List.first()
+
     cond do
       filter != nil and filter.lock_version != lock_version -> false
       filter == nil -> false
@@ -2881,7 +2962,6 @@ defmodule MateriaCommerce.Commerces do
 
   """
   def create_new_contract_history(result, base_datetime, params, user_id) do
-
     contract_no = params["contract_no"]
 
     branch_number =
@@ -2893,23 +2973,25 @@ defmodule MateriaCommerce.Commerces do
 
     key_word_list = [{:contract_no, contract_no}, {:branch_number, branch_number}]
 
-    contract_params = params
-    |> Map.delete("contract_details")
+    contract_params =
+      params
+      |> Map.delete("contract_details")
 
-    contract_details_params = params
-    |> Map.get("contract_details")
+    contract_details_params =
+      params
+      |> Map.get("contract_details")
 
     {:ok, contract} = create_new_contract_history(result, base_datetime, key_word_list, contract_params, user_id)
 
     if contract_details_params != nil do
-      {:ok, contract_details} = create_new_contract_detail_history(result, base_datetime, key_word_list, contract_details_params, user_id)
+      {:ok, contract_details} =
+        create_new_contract_detail_history(result, base_datetime, key_word_list, contract_details_params, user_id)
     end
 
     params = %{"and" => [%{"contract_no" => contract_no}, %{"branch_number" => branch_number}]}
-    [new_contract] =  get_current_contracts(base_datetime, params)
+    [new_contract] = get_current_contracts(base_datetime, params)
 
     {:ok, new_contract}
-
   end
 
   @doc """
@@ -2960,7 +3042,6 @@ defmodule MateriaCommerce.Commerces do
     MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, RequestAppendix, base_datetime, [], params)
   end
 
-
   @doc """
   現在のbranch_noの次のbranch_noを取得する
   Contract単位でユニーク
@@ -2972,9 +3053,11 @@ defmodule MateriaCommerce.Commerces do
 
   """
   def get_next_branch_number(keywords) do
-    [max_branch_number] = from(c in Contract, select: max(c.branch_number), group_by: c.contract_no)
-    |> where(^keywords)
-    |> @repo.all()
+    [max_branch_number] =
+      from(c in Contract, select: max(c.branch_number), group_by: c.contract_no)
+      |> where(^keywords)
+      |> @repo.all()
+
     _next_branch_number = max_branch_number + 1
   end
 end
