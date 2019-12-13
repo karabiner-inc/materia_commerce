@@ -100,9 +100,9 @@ defmodule MateriaCommerce.Products do
   #    %Ecto.Changeset{source: %Item{}}
 
   """
-  #def change_item(%Item{} = item) do
+  # def change_item(%Item{} = item) do
   #  Item.changeset(item, %{})
-  #end
+  # end
 
   @doc """
   主キーを想定したパラメータで現在のItem情報を取得する
@@ -113,29 +113,32 @@ defmodule MateriaCommerce.Products do
   1
   """
   def get_current_item_history(base_datetime, key_word_list) do
-    items = MateriaUtils.Ecto.EctoUtil.list_current_history(
-      @repo,
-      MateriaCommerce.Products.Item,
-      base_datetime,
-      key_word_list
-    )
+    items =
+      MateriaUtils.Ecto.EctoUtil.list_current_history(
+        @repo,
+        MateriaCommerce.Products.Item,
+        base_datetime,
+        key_word_list
+      )
+
     item =
-    if items == [] do
-      nil
-    else
-      [item] = items
-      item
-    end
+      if items == [] do
+        nil
+      else
+        [item] = items
+        item
+      end
   end
 
   @doc false
   def delete_future_item_histories(base_datetime, key_word_list) do
-    items = MateriaUtils.Ecto.EctoUtil.delete_future_histories(
-      @repo,
-      MateriaCommerce.Products.Item,
-      base_datetime,
-      key_word_list
-    )
+    items =
+      MateriaUtils.Ecto.EctoUtil.delete_future_histories(
+        @repo,
+        MateriaCommerce.Products.Item,
+        base_datetime,
+        key_word_list
+      )
   end
 
   @doc """
@@ -146,12 +149,14 @@ defmodule MateriaCommerce.Products do
   0
   """
   def get_recent_item_history(base_datetime, key_word_list) do
-    items = MateriaUtils.Ecto.EctoUtil.list_recent_history(
-      @repo,
-      MateriaCommerce.Products.Item,
-      base_datetime,
-      key_word_list
-    )
+    items =
+      MateriaUtils.Ecto.EctoUtil.list_recent_history(
+        @repo,
+        MateriaCommerce.Products.Item,
+        base_datetime,
+        key_word_list
+      )
+
     if items == [] do
       nil
     else
@@ -193,61 +198,69 @@ defmodule MateriaCommerce.Products do
   #DateTime<2019-12-17 08:59:59Z>
   """
   def create_new_item_history(%{}, start_datetime, key_word_list, attr, user_id) do
-
-   {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
+    {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
 
     recent_item = get_recent_item_history(start_datetime, key_word_list)
 
-    #未来日付のデータがある場合削除する
+    # 未来日付のデータがある場合削除する
     {i, _reason} = delete_future_item_histories(start_datetime, key_word_list)
+
     item =
-    if recent_item == nil do
-      # 新規登録
-      attr = attr
-             |> Map.put("start_datetime", start_datetime)
-             |> Map.put("end_datetime", end_datetime)
-             |> Map.put("inserted_id", user_id)
-      attr =
-      #if Map.has_key?(attr, "end_datetime") do
-      #  attr
-      #else
-      #   Map.put(attr, "end_datetime", end_datetime)
-      #end
-      {:ok, item} = create_item(attr)
-    else
-      # 2回目以降のヒストリー登録の場合
-      # 楽観排他チェック
-      _ = cond do
-        !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-        attr["lock_version"] != recent_item.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
-        true -> :ok
+      if recent_item == nil do
+        # 新規登録
+        attr =
+          attr
+          |> Map.put("start_datetime", start_datetime)
+          |> Map.put("end_datetime", end_datetime)
+          |> Map.put("inserted_id", user_id)
+
+        # if Map.has_key?(attr, "end_datetime") do
+        #  attr
+        # else
+        #   Map.put(attr, "end_datetime", end_datetime)
+        # end
+        attr = {:ok, item} = create_item(attr)
+      else
+        # 2回目以降のヒストリー登録の場合
+        # 楽観排他チェック
+        _ =
+          cond do
+            !Map.has_key?(attr, "lock_version") ->
+              raise KeyError, message: "parameter have not lock_version"
+
+            attr["lock_version"] != recent_item.lock_version ->
+              raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
+
+            true ->
+              :ok
+          end
+
+        attr =
+          Map.keys(attr)
+          |> Enum.reduce(recent_item, fn key, acc ->
+            acc =
+              acc
+              |> Map.put(String.to_atom(key), attr[key])
+          end)
+
+        attr =
+          attr
+          |> Map.put(:lock_version, recent_item.lock_version + 1)
+          |> Map.put(:start_datetime, start_datetime)
+          |> Map.put(:end_datetime, end_datetime)
+          |> Map.put(:inserted_id, user_id)
+
+        # if !Map.has_key?(attr, :end_datetime) do
+        #  attr = Map.put(attr, :end_datetime, end_datetime)
+        # end
+        {:ok, item} = create_item(attr)
+        # 直近の履歴のend_datetimeを更新する
+        recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
+        struct_item = struct(Item, recent_item)
+        update_item(struct_item, %{end_datetime: recent_end_datetime})
+        {:ok, item}
       end
-
-      attr = Map.keys(attr)
-      |> Enum.reduce(recent_item, fn(key, acc) ->
-        acc = acc
-        |> Map.put(String.to_atom(key), attr[key])
-      end)
-
-      attr = attr
-             |> Map.put(:lock_version, recent_item.lock_version + 1)
-             |> Map.put(:start_datetime, start_datetime)
-             |> Map.put(:end_datetime, end_datetime)
-             |> Map.put(:inserted_id, user_id)
-      #if !Map.has_key?(attr, :end_datetime) do
-      #  attr = Map.put(attr, :end_datetime, end_datetime)
-      #end
-      {:ok, item} =create_item(attr)
-      # 直近の履歴のend_datetimeを更新する
-      recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
-      struct_item = struct(Item, recent_item)
-      update_item(struct_item, %{end_datetime: recent_end_datetime})
-      {:ok, item}
-    end
-
-
   end
-
 
   alias MateriaCommerce.Products.Tax
 
@@ -279,8 +292,10 @@ defmodule MateriaCommerce.Products do
       ** (Ecto.NoResultsError)
 
   """
-  def get_tax!(id), do: @repo.get!(Tax, id)
-                        |> @repo.preload([:inserted])
+  def get_tax!(id),
+    do:
+      @repo.get!(Tax, id)
+      |> @repo.preload([:inserted])
 
   @doc """
   主キーを想定したパラメータで現在のTax情報を取得する
@@ -291,19 +306,21 @@ defmodule MateriaCommerce.Products do
   "test2 tax"
   """
   def get_current_tax_history(base_datetime, key_word_list) do
-    taxes = MateriaUtils.Ecto.EctoUtil.list_current_history(
-      @repo,
-      MateriaCommerce.Products.Tax,
-      base_datetime,
-      key_word_list
-    )
+    taxes =
+      MateriaUtils.Ecto.EctoUtil.list_current_history(
+        @repo,
+        MateriaCommerce.Products.Tax,
+        base_datetime,
+        key_word_list
+      )
+
     tax =
-    if taxes == [] do
-      nil
-    else
-      [tax] = taxes
-      tax
-    end
+      if taxes == [] do
+        nil
+      else
+        [tax] = taxes
+        tax
+      end
   end
 
   @doc false
@@ -324,12 +341,14 @@ defmodule MateriaCommerce.Products do
   "test1 tax"
   """
   def get_recent_tax_history(base_datetime, key_word_list) do
-    taxes = MateriaUtils.Ecto.EctoUtil.list_recent_history(
-      @repo,
-      MateriaCommerce.Products.Tax,
-      base_datetime,
-      key_word_list
-    )
+    taxes =
+      MateriaUtils.Ecto.EctoUtil.list_recent_history(
+        @repo,
+        MateriaCommerce.Products.Tax,
+        base_datetime,
+        key_word_list
+      )
+
     if taxes == [] do
       nil
     else
@@ -371,60 +390,70 @@ defmodule MateriaCommerce.Products do
   #DateTime<2019-12-17 08:59:59Z>
   """
   def create_new_tax_history(%{}, start_datetime, key_word_list, attr, user_id) do
-
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
- 
-     recent_tax = get_recent_tax_history(start_datetime, key_word_list)
 
-     #未来日付のデータがある場合削除する
-     {i, _reason} = delete_future_tax_histories(start_datetime, key_word_list)
-     tax =
-     if recent_tax == nil do
-       # 新規登録
-       attr = attr
-              |> Map.put("start_datetime", start_datetime)
-              |> Map.put("end_datetime", end_datetime)
-              |> Map.put("inserted_id", user_id)
-       attr =
-       #if Map.has_key?(attr, "end_datetime") do
-       #  attr
-       #else
-       #   Map.put(attr, "end_datetime", end_datetime)
-       #end
-       {:ok, tax} = create_tax(attr)
-     else
-       # 2回目以降のヒストリー登録の場合
-       # 楽観排他チェック
-       _ = cond do
-        !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-        attr["lock_version"] != recent_tax.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
-        true -> :ok
-       end
- 
-       attr = Map.keys(attr)
-       |> Enum.reduce(recent_tax, fn(key, acc) ->
-         acc = acc
-         |> Map.put(String.to_atom(key), attr[key])
-       end)
- 
-       attr = attr
-              |> Map.put(:lock_version, recent_tax.lock_version + 1)
-              |> Map.put(:start_datetime, start_datetime)
-              |> Map.put(:end_datetime, end_datetime)
-              |> Map.put(:inserted_id, user_id)
-       #if !Map.has_key?(attr, :end_datetime) do
-       #  attr = Map.put(attr, :end_datetime, end_datetime)
-       #end
-       {:ok, tax} = create_tax(attr)
-       # 直近の履歴のend_datetimeを更新する
-       recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
-       struct_tax = struct(Tax, recent_tax)
-       update_tax(struct_tax, %{end_datetime: recent_end_datetime})
-       {:ok, tax}
-     end
- 
-   end
-  
+    recent_tax = get_recent_tax_history(start_datetime, key_word_list)
+
+    # 未来日付のデータがある場合削除する
+    {i, _reason} = delete_future_tax_histories(start_datetime, key_word_list)
+
+    tax =
+      if recent_tax == nil do
+        # 新規登録
+        attr =
+          attr
+          |> Map.put("start_datetime", start_datetime)
+          |> Map.put("end_datetime", end_datetime)
+          |> Map.put("inserted_id", user_id)
+
+        # if Map.has_key?(attr, "end_datetime") do
+        #  attr
+        # else
+        #   Map.put(attr, "end_datetime", end_datetime)
+        # end
+        attr = {:ok, tax} = create_tax(attr)
+      else
+        # 2回目以降のヒストリー登録の場合
+        # 楽観排他チェック
+        _ =
+          cond do
+            !Map.has_key?(attr, "lock_version") ->
+              raise KeyError, message: "parameter have not lock_version"
+
+            attr["lock_version"] != recent_tax.lock_version ->
+              raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
+
+            true ->
+              :ok
+          end
+
+        attr =
+          Map.keys(attr)
+          |> Enum.reduce(recent_tax, fn key, acc ->
+            acc =
+              acc
+              |> Map.put(String.to_atom(key), attr[key])
+          end)
+
+        attr =
+          attr
+          |> Map.put(:lock_version, recent_tax.lock_version + 1)
+          |> Map.put(:start_datetime, start_datetime)
+          |> Map.put(:end_datetime, end_datetime)
+          |> Map.put(:inserted_id, user_id)
+
+        # if !Map.has_key?(attr, :end_datetime) do
+        #  attr = Map.put(attr, :end_datetime, end_datetime)
+        # end
+        {:ok, tax} = create_tax(attr)
+        # 直近の履歴のend_datetimeを更新する
+        recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
+        struct_tax = struct(Tax, recent_tax)
+        update_tax(struct_tax, %{end_datetime: recent_end_datetime})
+        {:ok, tax}
+      end
+  end
+
   @doc """
   Creates a tax.
 
@@ -520,9 +549,10 @@ defmodule MateriaCommerce.Products do
       ** (Ecto.NoResultsError)
 
   """
-  def get_price!(id), do: @repo.get!(Price, id)
-                          |> @repo.preload([:inserted])
-
+  def get_price!(id),
+    do:
+      @repo.get!(Price, id)
+      |> @repo.preload([:inserted])
 
   @doc """
   主キーを想定したパラメータで現在のPrice情報を取得する
@@ -533,12 +563,14 @@ defmodule MateriaCommerce.Products do
   Decimal.new(200)
   """
   def get_current_price_history(base_datetime, key_word_list) do
-    prices = MateriaUtils.Ecto.EctoUtil.list_current_history(
-      @repo,
-      MateriaCommerce.Products.Price,
-      base_datetime,
-      key_word_list
-    )
+    prices =
+      MateriaUtils.Ecto.EctoUtil.list_current_history(
+        @repo,
+        MateriaCommerce.Products.Price,
+        base_datetime,
+        key_word_list
+      )
+
     if prices == [] do
       nil
     else
@@ -565,12 +597,14 @@ defmodule MateriaCommerce.Products do
   Decimal.new(100)
   """
   def get_recent_price_history(base_datetime, key_word_list) do
-    prices = MateriaUtils.Ecto.EctoUtil.list_recent_history(
-      @repo,
-      MateriaCommerce.Products.Price,
-      base_datetime,
-      key_word_list
-    )
+    prices =
+      MateriaUtils.Ecto.EctoUtil.list_recent_history(
+        @repo,
+        MateriaCommerce.Products.Price,
+        base_datetime,
+        key_word_list
+      )
+
     if prices == [] do
       nil
     else
@@ -623,50 +657,61 @@ defmodule MateriaCommerce.Products do
   #DateTime<2019-12-17 08:59:59Z>
   """
   def create_new_price_history(%{}, start_datetime, key_word_list, attr, user_id) do
-
     {ok, end_datetime} = CalendarUtil.parse_iso_extended_z("2999-12-31 23:59:59Z")
 
     recent_price = get_recent_price_history(start_datetime, key_word_list)
 
-    #未来日付のデータがある場合削除する
+    # 未来日付のデータがある場合削除する
     {i, _reason} = delete_future_price_histories(start_datetime, key_word_list)
+
     tax =
       if recent_price == nil do
         # 新規登録
-        attr = attr
-               |> Map.put("start_datetime", start_datetime)
-               |> Map.put("end_datetime", end_datetime)
-               |> Map.put("inserted_id", user_id)
         attr =
-          #if Map.has_key?(attr, "end_datetime") do
-          #  attr
-          #else
-          #   Map.put(attr, "end_datetime", end_datetime)
-          #end
-          {:ok, price} = create_price(attr)
+          attr
+          |> Map.put("start_datetime", start_datetime)
+          |> Map.put("end_datetime", end_datetime)
+          |> Map.put("inserted_id", user_id)
+
+        # if Map.has_key?(attr, "end_datetime") do
+        #  attr
+        # else
+        #   Map.put(attr, "end_datetime", end_datetime)
+        # end
+        attr = {:ok, price} = create_price(attr)
       else
         # 2回目以降のヒストリー登録の場合
         # 楽観排他チェック
-        _ = cond do
-          !Map.has_key?(attr, "lock_version") -> raise KeyError, message: "parameter have not lock_version"
-          attr["lock_version"] != recent_price.lock_version -> raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
-          true -> :ok
-        end
+        _ =
+          cond do
+            !Map.has_key?(attr, "lock_version") ->
+              raise KeyError, message: "parameter have not lock_version"
 
-        attr = Map.keys(attr)
-               |> Enum.reduce(recent_price, fn(key, acc) ->
-          acc = acc
-                |> Map.put(String.to_atom(key), attr[key])
-        end)
+            attr["lock_version"] != recent_price.lock_version ->
+              raise Ecto.StaleEntryError, struct: nil, action: "update", message: "attempted to update a stale entry"
 
-        attr = attr
-               |> Map.put(:lock_version, recent_price.lock_version + 1)
-               |> Map.put(:start_datetime, start_datetime)
-               |> Map.put(:end_datetime, end_datetime)
-               |> Map.put(:inserted_id, user_id)
-        #if !Map.has_key?(attr, :end_datetime) do
+            true ->
+              :ok
+          end
+
+        attr =
+          Map.keys(attr)
+          |> Enum.reduce(recent_price, fn key, acc ->
+            acc =
+              acc
+              |> Map.put(String.to_atom(key), attr[key])
+          end)
+
+        attr =
+          attr
+          |> Map.put(:lock_version, recent_price.lock_version + 1)
+          |> Map.put(:start_datetime, start_datetime)
+          |> Map.put(:end_datetime, end_datetime)
+          |> Map.put(:inserted_id, user_id)
+
+        # if !Map.has_key?(attr, :end_datetime) do
         #  attr = Map.put(attr, :end_datetime, end_datetime)
-        #end
+        # end
         {:ok, price} = create_price(attr)
         # 直近の履歴のend_datetimeを更新する
         recent_end_datetime = Timex.shift(start_datetime, seconds: -1)
@@ -674,7 +719,6 @@ defmodule MateriaCommerce.Products do
         update_price(struct_price, %{end_datetime: recent_end_datetime})
         {:ok, price}
       end
-
   end
 
   @doc """
@@ -741,7 +785,6 @@ defmodule MateriaCommerce.Products do
   def change_price(%Price{} = price) do
     Price.changeset(price, %{})
   end
-
 
   @doc """
   主キーを想定したパラメータで現在のItem情報を取得し､
@@ -816,36 +859,43 @@ defmodule MateriaCommerce.Products do
   }
   """
   def get_current_products(base_datetime, params) do
-    tax = MateriaCommerce.Products.Tax
-          |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
-    price = MateriaCommerce.Products.Price
-            |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
-    item = MateriaUtils.Ecto.EctoUtil.query_current_history(@repo, MateriaCommerce.Products.Item, base_datetime, [], params)
+    tax =
+      MateriaCommerce.Products.Tax
+      |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
+
+    price =
+      MateriaCommerce.Products.Price
+      |> where([q], q.start_datetime <= ^base_datetime and q.end_datetime >= ^base_datetime)
+
+    item =
+      MateriaUtils.Ecto.EctoUtil.query_current_history(@repo, MateriaCommerce.Products.Item, base_datetime, [], params)
 
     item
     |> join(:left, [i], p in subquery(price), item_code: i.item_code)
     |> join(:left, [i], t in subquery(tax), tax_category: i.tax_category)
     |> select([i, p, t], %{item: i, price: p, tax: t})
     |> @repo.all()
-    |> Enum.map(
-         fn result ->
-           item = result.item
-           item =
-             cond do
-               result.price.id != nil ->
-                 Map.put(item, :price, result.price)
-               true ->
-                 Map.put(item, :price, nil)
-             end
-           item =
-             cond do
-               result.tax.id != nil ->
-                 Map.put(item, :tax, result.tax)
-               true ->
-                 Map.put(item, :tax, nil)
-             end
-         end
-       )
+    |> Enum.map(fn result ->
+      item = result.item
+
+      item =
+        cond do
+          result.price.id != nil ->
+            Map.put(item, :price, result.price)
+
+          true ->
+            Map.put(item, :price, nil)
+        end
+
+      item =
+        cond do
+          result.tax.id != nil ->
+            Map.put(item, :tax, result.tax)
+
+          true ->
+            Map.put(item, :tax, nil)
+        end
+    end)
   end
 
   @doc """
@@ -857,7 +907,13 @@ defmodule MateriaCommerce.Products do
   Decimal.new(200)
   """
   def get_current_price(base_datetime, params) do
-    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, MateriaCommerce.Products.Price, base_datetime, [], params)
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(
+      @repo,
+      MateriaCommerce.Products.Price,
+      base_datetime,
+      [],
+      params
+    )
   end
 
   @doc """
@@ -869,6 +925,12 @@ defmodule MateriaCommerce.Products do
   "test2 tax"
   """
   def get_current_tax(base_datetime, params) do
-    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(@repo, MateriaCommerce.Products.Tax, base_datetime, [], params)
+    MateriaUtils.Ecto.EctoUtil.list_current_history_no_lock(
+      @repo,
+      MateriaCommerce.Products.Tax,
+      base_datetime,
+      [],
+      params
+    )
   end
 end

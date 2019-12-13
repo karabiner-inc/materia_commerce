@@ -48,23 +48,27 @@ defmodule MateriaCommerceWeb.ItemView do
       updated_at: CalendarUtil.convert_time_utc2local(item.updated_at)
     }
 
-    result_map = if Map.has_key?(item, :price) and item.price != nil do
-      Map.put(result_map, :price, PriceView.render("show.json", %{price: item.price}))
-    else
-      Map.put(result_map, :price, nil)
-    end
+    result_map =
+      if Map.has_key?(item, :price) and item.price != nil do
+        Map.put(result_map, :price, PriceView.render("show.json", %{price: item.price}))
+      else
+        Map.put(result_map, :price, nil)
+      end
 
-    result_map = if Map.has_key?(item, :tax) and item.tax != nil do
-      Map.put(result_map, :tax, TaxView.render("show.json", %{tax: item.tax}))
-    else
-      Map.put(result_map, :tax, nil)
-    end
+    result_map =
+      if Map.has_key?(item, :tax) and item.tax != nil do
+        Map.put(result_map, :tax, TaxView.render("show.json", %{tax: item.tax}))
+      else
+        Map.put(result_map, :tax, nil)
+      end
 
-    result_map = cond do
-      Ecto.assoc_loaded?(item.inserted) and item.inserted != nil ->
-        Map.put(result_map, :inserted, UserView.render("user.json", %{user: item.inserted}))
-      true ->
-        Map.put(result_map, :inserted, nil)
-    end
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(item.inserted) and item.inserted != nil ->
+          Map.put(result_map, :inserted, UserView.render("user.json", %{user: item.inserted}))
+
+        true ->
+          Map.put(result_map, :inserted, nil)
+      end
   end
 end

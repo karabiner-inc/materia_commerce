@@ -63,16 +63,19 @@ defmodule MateriaCommerceWeb.ContractDetailView do
       updated_at: CalendarUtil.convert_time_utc2local(contract_detail.updated_at)
     }
 
-    result_map = cond do
-      Ecto.assoc_loaded?(contract_detail.inserted) and contract_detail.inserted != nil ->
-        Map.put(result_map, :inserted, UserView.render("user.json", %{user: contract_detail.inserted}))
-      true ->
-        Map.put(result_map, :inserted, nil)
-    end
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(contract_detail.inserted) and contract_detail.inserted != nil ->
+          Map.put(result_map, :inserted, UserView.render("user.json", %{user: contract_detail.inserted}))
+
+        true ->
+          Map.put(result_map, :inserted, nil)
+      end
 
     cond do
       Ecto.assoc_loaded?(contract_detail.delivery) and contract_detail.delivery != nil ->
         Map.put(result_map, :delivery, DeliveryView.render("delivery.json", %{delivery: contract_detail.delivery}))
+
       true ->
         Map.put(result_map, :delivery, nil)
     end

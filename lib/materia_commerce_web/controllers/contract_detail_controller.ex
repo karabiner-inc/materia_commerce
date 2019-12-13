@@ -5,7 +5,7 @@ defmodule MateriaCommerceWeb.ContractDetailController do
   alias MateriaCommerce.Commerces.ContractDetail
   alias MateriaUtils.Calendar.CalendarUtil
 
-  action_fallback MateriaWeb.FallbackController
+  action_fallback(MateriaWeb.FallbackController)
 
   def index(conn, _params) do
     contract_details = Commerces.list_contract_details()
@@ -29,13 +29,15 @@ defmodule MateriaCommerceWeb.ContractDetailController do
   def update(conn, contract_detail_params) do
     contract_detail = Commerces.get_contract_detail!(contract_detail_params["id"])
 
-    with {:ok, %ContractDetail{} = contract_detail} <- Commerces.update_contract_detail(contract_detail, contract_detail_params) do
+    with {:ok, %ContractDetail{} = contract_detail} <-
+           Commerces.update_contract_detail(contract_detail, contract_detail_params) do
       render(conn, "show.json", contract_detail: contract_detail)
     end
   end
 
   def delete(conn, %{"id" => id}) do
     contract_detail = Commerces.get_contract_detail!(id)
+
     with {:ok, %ContractDetail{}} <- Commerces.delete_contract_detail(contract_detail) do
       send_resp(conn, :no_content, "")
     end
@@ -52,6 +54,13 @@ defmodule MateriaCommerceWeb.ContractDetailController do
     now = CalendarUtil.now()
     key_words = [{:contract_no, params["contract_no"]}]
     contract_details = params["contract_details"]
-    MateriaWeb.ControllerBase.transaction_flow(conn, :contract_details, Commerces, :create_new_contract_detail_history, [now, key_words, contract_details, user_id])
+
+    MateriaWeb.ControllerBase.transaction_flow(
+      conn,
+      :contract_details,
+      Commerces,
+      :create_new_contract_detail_history,
+      [now, key_words, contract_details, user_id]
+    )
   end
 end

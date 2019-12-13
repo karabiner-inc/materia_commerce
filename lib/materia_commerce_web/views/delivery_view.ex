@@ -75,22 +75,24 @@ defmodule MateriaCommerceWeb.DeliveryView do
       inserted_at: CalendarUtil.convert_time_utc2local(delivery.inserted_at),
       updated_at: CalendarUtil.convert_time_utc2local(delivery.updated_at)
     }
-    delivery_map = delivery
-                   |> Map.from_struct()
+
+    delivery_map =
+      delivery
+      |> Map.from_struct()
+
     ~w/snd_user rcv_user clt_user inserted updated/
-    |> Enum.reduce(
-         result_map,
-         fn (preload, acc) ->
-           key = String.to_atom(preload)
-           cond do
-             Ecto.assoc_loaded?(delivery_map[key]) and delivery_map[key] != nil ->
-               acc
-               |> Map.put(key, UserView.render("user.json", %{user: delivery_map[key]}))
-             true ->
-               acc
-               |> Map.put(key, nil)
-           end
-         end
-       )
+    |> Enum.reduce(result_map, fn preload, acc ->
+      key = String.to_atom(preload)
+
+      cond do
+        Ecto.assoc_loaded?(delivery_map[key]) and delivery_map[key] != nil ->
+          acc
+          |> Map.put(key, UserView.render("user.json", %{user: delivery_map[key]}))
+
+        true ->
+          acc
+          |> Map.put(key, nil)
+      end
+    end)
   end
 end

@@ -53,36 +53,48 @@ defmodule MateriaCommerceWeb.ContractView do
       updated_at: CalendarUtil.convert_time_utc2local(contract.updated_at)
     }
 
-    result_map = if Map.has_key?(contract, :contract_details) and contract.contract_details != [] do
-      Map.put(result_map, :contract_details, ContractDetailView.render("index.json", %{contract_details: contract.contract_details}))
-    else
-      Map.put(result_map, :contract_details, [])
-    end
+    result_map =
+      if Map.has_key?(contract, :contract_details) and contract.contract_details != [] do
+        Map.put(
+          result_map,
+          :contract_details,
+          ContractDetailView.render("index.json", %{contract_details: contract.contract_details})
+        )
+      else
+        Map.put(result_map, :contract_details, [])
+      end
 
-    result_map = cond do
-      Ecto.assoc_loaded?(contract.buyer) and contract.buyer != nil ->
-        Map.put(result_map, :buyer, UserView.render("user.json", %{user: contract.buyer}))
-      true ->
-        Map.put(result_map, :buyer, nil)
-    end
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(contract.buyer) and contract.buyer != nil ->
+          Map.put(result_map, :buyer, UserView.render("user.json", %{user: contract.buyer}))
 
-    result_map = cond do
-      Ecto.assoc_loaded?(contract.seller) and contract.seller != nil ->
-        Map.put(result_map, :seller, UserView.render("user.json", %{user: contract.seller}))
-      true ->
-        Map.put(result_map, :seller, nil)
-    end
+        true ->
+          Map.put(result_map, :buyer, nil)
+      end
 
-    result_map = cond do
-      Ecto.assoc_loaded?(contract.inserted) and contract.inserted != nil ->
-        Map.put(result_map, :inserted, UserView.render("user.json", %{user: contract.inserted}))
-      true ->
-        Map.put(result_map, :inserted, nil)
-    end
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(contract.seller) and contract.seller != nil ->
+          Map.put(result_map, :seller, UserView.render("user.json", %{user: contract.seller}))
+
+        true ->
+          Map.put(result_map, :seller, nil)
+      end
+
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(contract.inserted) and contract.inserted != nil ->
+          Map.put(result_map, :inserted, UserView.render("user.json", %{user: contract.inserted}))
+
+        true ->
+          Map.put(result_map, :inserted, nil)
+      end
 
     cond do
       Ecto.assoc_loaded?(contract.delivery) and contract.delivery != nil ->
         Map.put(result_map, :delivery, DeliveryView.render("delivery.json", %{delivery: contract.delivery}))
+
       true ->
         Map.put(result_map, :delivery, nil)
     end

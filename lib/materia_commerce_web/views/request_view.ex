@@ -49,25 +49,35 @@ defmodule MateriaCommerceWeb.RequestView do
       updated_at: CalendarUtil.convert_time_utc2local(request.updated_at)
     }
 
-    result_map = cond do
-      Ecto.assoc_loaded?(request.user) and request.user != nil ->
-        Map.put(result_map, :user, UserView.render("user.json", %{user: request.user}))
-      true ->
-        Map.put(result_map, :user, nil)
-    end
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(request.user) and request.user != nil ->
+          Map.put(result_map, :user, UserView.render("user.json", %{user: request.user}))
 
-    result_map = cond do
-      Ecto.assoc_loaded?(request.inserted) and request.inserted != nil ->
-        Map.put(result_map, :inserted, UserView.render("user.json", %{user: request.inserted}))
-      true ->
-        Map.put(result_map, :inserted, nil)
-    end
+        true ->
+          Map.put(result_map, :user, nil)
+      end
 
-    result_map = cond do
-      Map.has_key?(request, :request_appendices) and request.request_appendices != [] ->
-        Map.put(result_map, :request_appendices, RequestAppendixView.render("index.json", %{request_appendices: request.request_appendices}))
-      true ->
-        Map.put(result_map, :request_appendices, [])
-    end
+    result_map =
+      cond do
+        Ecto.assoc_loaded?(request.inserted) and request.inserted != nil ->
+          Map.put(result_map, :inserted, UserView.render("user.json", %{user: request.inserted}))
+
+        true ->
+          Map.put(result_map, :inserted, nil)
+      end
+
+    result_map =
+      cond do
+        Map.has_key?(request, :request_appendices) and request.request_appendices != [] ->
+          Map.put(
+            result_map,
+            :request_appendices,
+            RequestAppendixView.render("index.json", %{request_appendices: request.request_appendices})
+          )
+
+        true ->
+          Map.put(result_map, :request_appendices, [])
+      end
   end
 end

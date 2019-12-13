@@ -17,7 +17,7 @@ defmodule MateriaCommerceWeb.RequestAppendixView do
   end
 
   def render("request_appendix.json", %{request_appendix: request_appendix}) do
-    result_map =  %{
+    result_map = %{
       id: request_appendix.id,
       request_key1: request_appendix.request_key1,
       request_key2: request_appendix.request_key2,
@@ -41,6 +41,7 @@ defmodule MateriaCommerceWeb.RequestAppendixView do
     cond do
       Ecto.assoc_loaded?(request_appendix.inserted) and request_appendix.inserted != nil ->
         Map.put(result_map, :inserted, UserView.render("user.json", %{user: request_appendix.inserted}))
+
       true ->
         Map.put(result_map, :inserted, nil)
     end

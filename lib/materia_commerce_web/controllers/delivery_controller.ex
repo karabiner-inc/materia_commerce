@@ -4,7 +4,7 @@ defmodule MateriaCommerceWeb.DeliveryController do
   alias MateriaCommerce.Deliveries
   alias MateriaCommerce.Deliveries.Delivery
 
-  action_fallback MateriaWeb.FallbackController
+  action_fallback(MateriaWeb.FallbackController)
 
   def index(conn, _params) do
     deliveries = Deliveries.list_deliveries()
@@ -13,6 +13,7 @@ defmodule MateriaCommerceWeb.DeliveryController do
 
   def create(conn, delivery_params) do
     user_id = MateriaWeb.ControllerBase.get_user_id(conn)
+
     MateriaWeb.ControllerBase.transaction_flow(conn, :delivery, Deliveries, :create_delivery, [delivery_params, user_id])
   end
 
@@ -24,7 +25,12 @@ defmodule MateriaCommerceWeb.DeliveryController do
   def update(conn, delivery_params) do
     user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     delivery = Deliveries.get_delivery!(delivery_params["id"])
-    MateriaWeb.ControllerBase.transaction_flow(conn, :delivery, Deliveries, :update_delivery, [delivery, delivery_params, user_id])
+
+    MateriaWeb.ControllerBase.transaction_flow(conn, :delivery, Deliveries, :update_delivery, [
+      delivery,
+      delivery_params,
+      user_id
+    ])
   end
 
   def delete(conn, %{"id" => id}) do

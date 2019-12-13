@@ -5,7 +5,7 @@ defmodule MateriaCommerceWeb.TaxController do
   alias MateriaCommerce.Products.Tax
   alias MateriaUtils.Calendar.CalendarUtil
 
-  action_fallback MateriaWeb.FallbackController
+  action_fallback(MateriaWeb.FallbackController)
 
   def index(conn, _params) do
     taxes = Products.list_taxes()
@@ -36,6 +36,7 @@ defmodule MateriaCommerceWeb.TaxController do
 
   def delete(conn, %{"id" => id}) do
     tax = Products.get_tax!(id)
+
     with {:ok, %Tax{}} <- Products.delete_tax(tax) do
       send_resp(conn, :no_content, "")
     end
@@ -51,6 +52,12 @@ defmodule MateriaCommerceWeb.TaxController do
     user_id = MateriaWeb.ControllerBase.get_user_id(conn)
     now = CalendarUtil.now()
     key_words = [{:tax_category, params["tax_category"]}]
-    MateriaWeb.ControllerBase.transaction_flow(conn, :tax, Products, :create_new_tax_history, [now, key_words, params, user_id])
+
+    MateriaWeb.ControllerBase.transaction_flow(conn, :tax, Products, :create_new_tax_history, [
+      now,
+      key_words,
+      params,
+      user_id
+    ])
   end
 end

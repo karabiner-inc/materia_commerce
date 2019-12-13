@@ -67,7 +67,7 @@ defmodule MateriaCommerce.DeliveriesTest do
       "lock_version" => 42,
       "snd_user_id" => 1,
       "rcv_user_id" => 1,
-      "clt_user_id" => 1,
+      "clt_user_id" => 1
     }
     @update_attrs %{
       "snd_zip_code" => "some updated snd_zip_code",
@@ -129,7 +129,7 @@ defmodule MateriaCommerce.DeliveriesTest do
       "lock_version" => 42,
       "snd_user_id" => 2,
       "rcv_user_id" => 2,
-      "clt_user_id" => 2,
+      "clt_user_id" => 2
     }
     @invalid_attrs %{
       "snd_zip_code" => nil,
@@ -191,7 +191,7 @@ defmodule MateriaCommerce.DeliveriesTest do
       "lock_version" => nil,
       "snd_user_id" => nil,
       "rcv_user_id" => nil,
-      "clt_user_id" => nil,
+      "clt_user_id" => nil
     }
 
     def delivery_fixture(attrs \\ %{}) do
@@ -200,26 +200,30 @@ defmodule MateriaCommerce.DeliveriesTest do
     end
 
     test "list_deliveries/0 returns all deliveries" do
-      delivery = delivery_fixture()
-                 |> @repo.preload(
-                      snd_user: [:addresses],
-                      rcv_user: [:addresses],
-                      clt_user: [:addresses],
-                      inserted: [],
-                      updated: [],
-                    )
+      delivery =
+        delivery_fixture()
+        |> @repo.preload(
+          snd_user: [:addresses],
+          rcv_user: [:addresses],
+          clt_user: [:addresses],
+          inserted: [],
+          updated: []
+        )
+
       assert Deliveries.list_deliveries() != []
     end
 
     test "get_delivery!/1 returns the delivery with given id" do
-      delivery = delivery_fixture()
-                 |> @repo.preload(
-                      snd_user: [:addresses],
-                      rcv_user: [:addresses],
-                      clt_user: [:addresses],
-                      inserted: [],
-                      updated: [],
-                    )
+      delivery =
+        delivery_fixture()
+        |> @repo.preload(
+          snd_user: [:addresses],
+          rcv_user: [:addresses],
+          clt_user: [:addresses],
+          inserted: [],
+          updated: []
+        )
+
       assert Deliveries.get_delivery!(delivery.id) == delivery
     end
 
@@ -358,14 +362,16 @@ defmodule MateriaCommerce.DeliveriesTest do
     end
 
     test "update_delivery/2 with invalid data returns error changeset" do
-      delivery = delivery_fixture()
-                 |> @repo.preload(
-                      snd_user: [:addresses],
-                      rcv_user: [:addresses],
-                      clt_user: [:addresses],
-                      inserted: [],
-                      updated: [],
-                    )
+      delivery =
+        delivery_fixture()
+        |> @repo.preload(
+          snd_user: [:addresses],
+          rcv_user: [:addresses],
+          clt_user: [:addresses],
+          inserted: [],
+          updated: []
+        )
+
       assert {:error, %Ecto.Changeset{}} = Deliveries.update_delivery(%{}, delivery, @invalid_attrs, 1)
       assert delivery == Deliveries.get_delivery!(delivery.id)
     end
