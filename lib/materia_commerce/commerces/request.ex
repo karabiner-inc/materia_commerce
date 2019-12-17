@@ -32,6 +32,8 @@ defmodule MateriaCommerce.Commerces.Request do
     field(:request_number, :string)
     field(:start_datetime, :utc_datetime)
     field(:status, :integer, default: 0)
+    field(:request_relation_number, :string)
+    field(:request_abbreviated, :string)
 
     belongs_to(:user, Materia.Accounts.User)
     belongs_to(:inserted, Materia.Accounts.User)
@@ -72,6 +74,8 @@ defmodule MateriaCommerce.Commerces.Request do
       :end_datetime,
       :status,
       :lock_version,
+      :request_relation_number,
+      :request_abbreviated,
       :user_id,
       :inserted_id
     ])

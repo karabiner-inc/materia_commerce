@@ -2487,6 +2487,8 @@ defmodule MateriaCommerce.Commerces do
   quantity4: 3,
   quantity5: 4,
   quantity6: 5,
+  request_relation_number: nil,
+  request_abbreviated: nil,
   status: 2,
   user_id: 1
   }

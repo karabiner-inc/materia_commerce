@@ -60,6 +60,9 @@ defmodule MateriaCommerce.Deliveries.Delivery do
     field(:snd_note1, :string)
     field(:snd_address2_p, :string)
     field(:status, :integer, default: 1)
+    field(:snd_area_code, :string)
+    field(:rcv_area_code, :string)
+    field(:clt_area_code, :string)
     belongs_to(:snd_user, Materia.Accounts.User)
     belongs_to(:rcv_user, Materia.Accounts.User)
     belongs_to(:clt_user, Materia.Accounts.User)
@@ -130,6 +133,9 @@ defmodule MateriaCommerce.Deliveries.Delivery do
       :clt_notation_name_p,
       :lock_version,
       :status,
+      :snd_area_code,
+      :rcv_area_code,
+      :clt_area_code,
       :snd_user_id,
       :rcv_user_id,
       :clt_user_id,
@@ -200,6 +206,9 @@ defmodule MateriaCommerce.Deliveries.Delivery do
       :clt_notation_name_p,
       :lock_version,
       :status,
+      :snd_area_code,
+      :rcv_area_code,
+      :clt_area_code,
       :snd_user_id,
       :rcv_user_id,
       :clt_user_id,
