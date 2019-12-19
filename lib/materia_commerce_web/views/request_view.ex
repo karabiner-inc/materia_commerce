@@ -46,7 +46,9 @@ defmodule MateriaCommerceWeb.RequestView do
       status: request.status,
       lock_version: request.lock_version,
       inserted_at: CalendarUtil.convert_time_utc2local(request.inserted_at),
-      updated_at: CalendarUtil.convert_time_utc2local(request.updated_at)
+      updated_at: CalendarUtil.convert_time_utc2local(request.updated_at),
+      request_relation_number: request.request_relation_number,
+      request_abbreviated: request.request_abbreviated
     }
 
     result_map =
