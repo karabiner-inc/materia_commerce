@@ -34,7 +34,9 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
     request_number: "some request_number",
     start_datetime: "2010-04-17 14:00:00.000000Z",
     status: 42,
-    inserted_id: 1
+    inserted_id: 1,
+    request_relation_number: "some request_relation_number",
+    request_abbreviated: "some request_abbreviated"
   }
   @update_attrs %{
     accuracy: "some updated accuracy",
@@ -182,7 +184,9 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
                  "status" => 1
                },
                "request_appendices" => [],
-               "user" => nil
+               "user" => nil,
+               "request_abbreviated" => "some request_abbreviated",
+               "request_relation_number" => "some request_relation_number"
              }
     end
 
@@ -250,7 +254,9 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
                  "status" => 1
                },
                "request_appendices" => [],
-               "user" => nil
+               "user" => nil,
+               "request_abbreviated" => "some request_abbreviated",
+               "request_relation_number" => "some request_relation_number"
              }
     end
 
@@ -267,19 +273,26 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
       result_conn = delete(conn, request_path(conn, :delete, request))
       assert response(result_conn, 204)
 
-      assert_error_sent(404, fn ->
-        get(conn, request_path(conn, :show, request))
-      end)
+      assert_error_sent(
+        404,
+        fn ->
+          get(conn, request_path(conn, :show, request))
+        end
+      )
     end
   end
 
   describe "current request" do
     test "search", %{conn: conn} do
       conn =
-        post(conn, request_path(conn, :search_current_requests), %{
-          "and" => [%{"request_number" => "PJ-01"}],
-          "or" => []
-        })
+        post(
+          conn,
+          request_path(conn, :search_current_requests),
+          %{
+            "and" => [%{"request_number" => "PJ-01"}],
+            "or" => []
+          }
+        )
 
       request =
         json_response(conn, 200)
@@ -293,17 +306,25 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
 
     test "new history", %{conn: conn} do
       create_conn =
-        post(conn, request_path(conn, :current_requests), %{
-          "request_number" => "PJ-01",
-          "status" => 4,
-          "lock_version" => 2
-        })
+        post(
+          conn,
+          request_path(conn, :current_requests),
+          %{
+            "request_number" => "PJ-01",
+            "status" => 4,
+            "lock_version" => 2
+          }
+        )
 
       conn =
-        post(conn, request_path(conn, :search_current_requests), %{
-          "and" => [%{"request_number" => "PJ-01"}],
-          "or" => []
-        })
+        post(
+          conn,
+          request_path(conn, :search_current_requests),
+          %{
+            "and" => [%{"request_number" => "PJ-01"}],
+            "or" => []
+          }
+        )
 
       request =
         json_response(conn, 200)
@@ -316,16 +337,24 @@ defmodule MateriaCommerceWeb.RequestControllerTest do
 
     test "my new history", %{conn: conn} do
       create_conn =
-        post(conn, request_path(conn, :create_my_new_request_history), %{
-          "request_number" => "my new history",
-          "user_id" => 99
-        })
+        post(
+          conn,
+          request_path(conn, :create_my_new_request_history),
+          %{
+            "request_number" => "my new history",
+            "user_id" => 99
+          }
+        )
 
       conn =
-        post(conn, request_path(conn, :search_current_requests), %{
-          "and" => [%{"request_number" => "my new history"}],
-          "or" => []
-        })
+        post(
+          conn,
+          request_path(conn, :search_current_requests),
+          %{
+            "and" => [%{"request_number" => "my new history"}],
+            "or" => []
+          }
+        )
 
       request =
         json_response(conn, 200)

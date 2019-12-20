@@ -1940,6 +1940,8 @@ defmodule MateriaCommerce.Commerces do
   quantity5: 4,
   quantity6: 5,
   status: 0,
+  request_relation_number: nil,
+  request_abbreviated: nil,
   user: %{
     addresses: [],
     back_ground_img_url: nil,
@@ -2003,7 +2005,9 @@ defmodule MateriaCommerce.Commerces do
   quantity5: nil,
   quantity6: nil,
   status: 0,
-  user: nil
+  user: nil,
+  request_relation_number: nil,
+  request_abbreviated: nil
   }
   """
   def create_request(attrs \\ %{}) do
@@ -2067,6 +2071,8 @@ defmodule MateriaCommerce.Commerces do
   quantity5: 4,
   quantity6: 5,
   status: 0,
+  request_relation_number: nil,
+  request_abbreviated: nil,
   user: %{
     addresses: [],
     back_ground_img_url: nil,
@@ -2141,6 +2147,8 @@ defmodule MateriaCommerce.Commerces do
   quantity5: 4,
   quantity6: 5,
   status: 0,
+  request_relation_number: nil,
+  request_abbreviated: nil,
   user: %{
     addresses: [],
     back_ground_img_url: nil,
@@ -2421,6 +2429,8 @@ defmodule MateriaCommerce.Commerces do
   quantity5: 4,
   quantity6: 5,
   status: 2,
+  request_relation_number: nil,
+  request_abbreviated: nil,
   user: %{
     addresses: [],
     back_ground_img_url: nil,
@@ -2487,6 +2497,8 @@ defmodule MateriaCommerce.Commerces do
   quantity4: 3,
   quantity5: 4,
   quantity6: 5,
+  request_relation_number: nil,
+  request_abbreviated: nil,
   status: 2,
   user_id: 1
   }
@@ -2541,7 +2553,9 @@ defmodule MateriaCommerce.Commerces do
   quantity5: 4,
   quantity6: 5,
   status: 2,
-  user: nil
+  user: nil,
+  request_relation_number: nil,
+  request_abbreviated: nil
   }
   """
   def create_new_request_history(%{}, start_datetime, keywords, attr, user_id) do
@@ -2917,6 +2931,8 @@ defmodule MateriaCommerce.Commerces do
     quantity5: 4,
     quantity6: 5,
     status: 2,
+    request_relation_number: nil,
+    request_abbreviated: nil,
     user: %{
                  addresses: [],
                  back_ground_img_url: nil,
